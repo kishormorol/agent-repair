@@ -98,6 +98,7 @@ repair:
   topk_for_repair: 3
   threshold_percentile: 75
   backtrack_offsets: [0, 1, 2, 3]
+  nudge_types: ["generic", "informed"]
   seeds: [0, 1, 2]              # 3 seeds -> proper confidence intervals (affordable locally)
   nudge:
     enabled: true

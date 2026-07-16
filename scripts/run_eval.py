@@ -227,9 +227,82 @@ def main() -> None:
         save_json(bt_summary, os.path.join(TAB, "backtrack_ablation.json"))
         log.info(f"backtrack ablation:\n{bt_df.to_string(index=False)}")
 
+    # ---- nudge type analysis (generic vs informed) -------------------------- #
+    if "informed" not in df.columns:
+        df["informed"] = df["strategy"].apply(lambda s: parse_strategy(s)["informed"])
+
+    has_informed = df["informed"].any()
+    if has_informed:
+        # Compare generic vs informed across backtrack offsets
+        unc_all = df[df.strategy.str.startswith("unc__")]
+        oracle_all = df[df.strategy.str.startswith("oracle_targeted")]
+
+        nudge_summary = []
+        bt_vals_present = sorted(df["backtrack"].unique())
+        for bt in bt_vals_present:
+            for inf_flag in [False, True]:
+                label = f"{'informed' if inf_flag else 'generic'}_bt{bt}"
+                # Oracle
+                o_sub = oracle_all[(oracle_all.backtrack == bt) & (oracle_all.informed == inf_flag)]
+                o_rate = o_sub["success"].mean() if len(o_sub) > 0 else float("nan")
+                # Best uncertainty
+                u_sub = unc_all[(unc_all.backtrack == bt) & (unc_all.informed == inf_flag)]
+                u_avg = u_sub["success"].mean() if len(u_sub) > 0 else float("nan")
+                u_best = (u_sub.groupby("strategy")["success"].mean().max()
+                          if len(u_sub) > 0 else float("nan"))
+                nudge_summary.append({
+                    "label": label, "backtrack": bt, "informed": inf_flag,
+                    "oracle_success": float(o_rate),
+                    "avg_unc_success": float(u_avg),
+                    "best_unc_success": float(u_best),
+                })
+        nudge_df = pd.DataFrame(nudge_summary)
+        nudge_df.to_csv(os.path.join(TAB, "nudge_type_ablation.csv"), index=False)
+        save_json(nudge_summary, os.path.join(TAB, "nudge_type_ablation.json"))
+        log.info(f"nudge ablation:\n{nudge_df.to_string(index=False)}")
+
+        # 2x2 grouped bar chart: (bt0, bt2) x (generic, informed)
+        fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
+        # Left panel: Oracle
+        for ax, col, title in [(axes[0], "oracle_success", "Oracle Repair"),
+                                (axes[1], "best_unc_success", "Best Uncertainty Repair")]:
+            generic_vals = [nudge_df[(nudge_df.backtrack == bt) &
+                           (~nudge_df.informed)][col].values[0]
+                           if len(nudge_df[(nudge_df.backtrack == bt) &
+                           (~nudge_df.informed)]) > 0 else 0
+                           for bt in bt_vals_present]
+            informed_vals = [nudge_df[(nudge_df.backtrack == bt) &
+                            (nudge_df.informed)][col].values[0]
+                            if len(nudge_df[(nudge_df.backtrack == bt) &
+                            (nudge_df.informed)]) > 0 else 0
+                            for bt in bt_vals_present]
+            x = np.arange(len(bt_vals_present))
+            w = 0.35
+            bars1 = ax.bar(x - w/2, generic_vals, w, label="Generic nudge",
+                          color="#0072B2", edgecolor="white")
+            bars2 = ax.bar(x + w/2, informed_vals, w, label="Informed nudge",
+                          color="#D55E00", edgecolor="white")
+            for b in bars1:
+                ax.text(b.get_x() + b.get_width()/2, b.get_height() + 0.005,
+                       f"{b.get_height():.2f}", ha="center", fontsize=9)
+            for b in bars2:
+                ax.text(b.get_x() + b.get_width()/2, b.get_height() + 0.005,
+                       f"{b.get_height():.2f}", ha="center", fontsize=9)
+            ax.set_xticks(x)
+            ax.set_xticklabels([f"bt{bt}" for bt in bt_vals_present])
+            ax.set_ylabel("Repair success rate")
+            ax.set_title(title)
+            ax.legend(fontsize=9)
+            if "full_restart" in si.index:
+                ax.axhline(si.loc["full_restart", "success"], color="#999999",
+                           linestyle=":", linewidth=1.5, alpha=0.7)
+        fig.tight_layout()
+        fig.savefig(os.path.join(FIG, "nudge_type_ablation.png"))
+        plt.close(fig)
+
     # ---- RQ tests ----------------------------------------------------------- #
-    # Filter to bt0 strategies only for the standard RQ comparisons
-    df_bt0 = df[df.backtrack == 0].copy() if has_bt else df.copy()
+    # Filter to bt0 + generic strategies only for the standard RQ comparisons
+    df_bt0 = df[(df.backtrack == 0) & (~df.informed)].copy() if has_bt else df.copy()
     rq = rq_comparisons(df_bt0)
     save_json(rq, os.path.join(TAB, "rq_tests.json"))
     n_sig = sum(1 for v in rq.values() if v.get("significant_0.05"))
@@ -312,6 +385,11 @@ def main() -> None:
             "best_unc_backtrack": best_bt_unc,
             "best_unc_backtrack_success": bt_best.get(best_bt_unc),
         }
+
+    # Nudge type results
+    if has_informed:
+        report["nudge_ablation"] = nudge_summary
+
     save_json(report, os.path.join(TAB, "final_report.json"))
 
     # ---- plain-English summary --------------------------------------------- #
@@ -354,6 +432,20 @@ def main() -> None:
             f"   Best unc bt{bta['best_unc_backtrack']}:               "
             f"{P(bta['best_unc_backtrack_success'])}",
             f"   Full Restart:               {P(g('full_restart'))}",
+        ]
+    if has_informed:
+        # Find best informed vs best generic
+        inf_best = nudge_df[nudge_df.informed]["best_unc_success"].max()
+        gen_best = nudge_df[~nudge_df.informed]["best_unc_success"].max()
+        inf_oracle_best = nudge_df[nudge_df.informed]["oracle_success"].max()
+        gen_oracle_best = nudge_df[~nudge_df.informed]["oracle_success"].max()
+        lines += [
+            "",
+            "RQ5 — Does telling the agent WHAT went wrong help?",
+            f"   Oracle + generic (best bt):  {P(gen_oracle_best)}",
+            f"   Oracle + informed (best bt): {P(inf_oracle_best)}",
+            f"   Best unc + generic:          {P(gen_best)}",
+            f"   Best unc + informed:         {P(inf_best)}",
         ]
     lines += [
         "=" * 78,

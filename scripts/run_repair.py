@@ -2,11 +2,10 @@
 
     python scripts/run_repair.py --config config/config_local.yaml
 
-18 strategies (3 baselines + 5 metrics x 3 rules) x seeds, on every failed
+Strategies x backtrack offsets x nudge types x seeds, on every failed
 trajectory. Two efficiencies:
-  * DEDUP  — strategies that pick the SAME step share one repair (same step +
-             same seed => same result), so we run at most `n_steps` repairs per
-             trajectory instead of 18.
+  * DEDUP  — strategies that pick the SAME (step, nudge_text) share one repair,
+             so we run far fewer GPU jobs than result rows.
   * BATCH  — the unique repairs are executed many-at-once on the GPU.
 Resumable: checkpointed per (qid, strategy, seed).
 """
@@ -19,7 +18,7 @@ from _common import parse_args, boot, load_agent  # type: ignore
 
 from src.agent import Step, run_repair_batch
 from src.repair import (build_strategies, select_target_step, repair_record,
-                        make_rng)
+                        make_rng, get_nudge_text, parse_strategy)
 from src.utils import Checkpoint, load_item, load_json, append_jsonl
 
 
@@ -34,16 +33,18 @@ def main() -> None:
             load_json(os.path.join(cfg.path("data_processed"), "pool.json"))}
 
     bt_offsets = cfg.raw["repair"].get("backtrack_offsets", [0])
+    nudge_types = cfg.raw["repair"].get("nudge_types", ["generic"])
     STRATS = build_strategies(cfg.raw["repair"]["uncertainty_metrics"],
                               cfg.raw["repair"]["uncertainty_rules"],
-                              backtrack_offsets=bt_offsets)
+                              backtrack_offsets=bt_offsets,
+                              nudge_types=nudge_types)
     seeds = cfg.raw["repair"]["seeds"]
     nudge_cfg = cfg.raw["repair"]["nudge"]
     topk = cfg.raw["repair"]["topk_for_repair"]
     pctl = cfg.raw["repair"]["threshold_percentile"]
     multiplier = 1.0
 
-    nudge = nudge_cfg.get("retry_hint") if nudge_cfg.get("enabled") else None
+    generic_nudge = nudge_cfg.get("retry_hint") if nudge_cfg.get("enabled") else None
     temperature = nudge_cfg.get("temperature", 0.7) if nudge_cfg.get("enabled") else 0.0
 
     results_path = os.path.join(cfg.path("repairs"), "results.jsonl")
@@ -64,8 +65,10 @@ def main() -> None:
         for ci in range(0, len(failed_ids), QB):
             chunk = failed_ids[ci:ci + QB]
 
-            job_map = {}          # (qid, step) -> [strategies needing it]
-            info = {}             # qid -> (orig_steps, oracle, base, budget, record)
+            # (qid, step, nudge_text) -> [strategies needing it]
+            job_map = {}
+            # qid -> (orig_steps, oracle, error_type, base, budget, record)
+            info = {}
             for qid in chunk:
                 pending = [s for s in STRATS
                            if not ckpt.is_done(f"{qid}|{s}|{seed}|{multiplier}")]
@@ -75,29 +78,32 @@ def main() -> None:
                 unc = load_item(cfg.path("uncertainty"), qid)
                 ann = load_item(cfg.path("annotations"), qid)
                 oracle = ann["broken_step"]
+                error_type = ann.get("error_type")
                 n = len(orig["steps"])
                 base = max(1, orig["total_gen_tokens"])
-                info[qid] = (orig["steps"], oracle, base, int(multiplier * base),
-                             pool[qid])
+                info[qid] = (orig["steps"], oracle, error_type, base,
+                             int(multiplier * base), pool[qid])
                 for s in pending:
                     k = select_target_step(s, n, oracle, unc,
                                            make_rng(qid, s, seed),
                                            topk=topk, percentile=pctl)
-                    job_map.setdefault((qid, k), []).append(s)
+                    nudge_text = get_nudge_text(s, error_type, generic_nudge)
+                    job_map.setdefault((qid, k, nudge_text), []).append(s)
 
             if not job_map:
                 continue
 
-            # unique repair jobs (this is the dedup)
+            # unique repair jobs (dedup by step + nudge_text)
             jobs = []
-            for (qid, k) in job_map:
-                steps_d, oracle, base, budget, record = info[qid]
+            for (qid, k, nudge_text) in job_map:
+                steps_d, oracle, error_type, base, budget, record = info[qid]
                 prefix = [Step.from_dict(s) for s in steps_d[:k]]
                 for s in prefix:
                     s.generation = None          # prefix logprobs not needed -> save RAM
                 jobs.append({"record": record, "prefix_steps": prefix,
-                             "nudge": nudge, "token_budget": budget,
-                             "meta": {"qid": qid, "target_step": k}})
+                             "nudge": nudge_text, "token_budget": budget,
+                             "meta": {"qid": qid, "target_step": k,
+                                      "nudge_text": nudge_text}})
 
             # run the unique jobs, batched
             done_jobs = {}
@@ -109,13 +115,15 @@ def main() -> None:
                     max_tokens_per_step=cfg.agent.max_tokens_per_step,
                     temperature=temperature, seed=seed)
                 for j, t in zip(sub, trajs):
-                    done_jobs[(j["meta"]["qid"], j["meta"]["target_step"])] = t
+                    key = (j["meta"]["qid"], j["meta"]["target_step"],
+                           j["meta"]["nudge_text"])
+                    done_jobs[key] = t
                 n_gen += len(sub)
 
-            # fan the shared result back out to every strategy that picked that step
-            for (qid, k), strats in job_map.items():
-                traj = done_jobs[(qid, k)]
-                _, oracle, base, budget, _ = info[qid]
+            # fan the shared result back out to every strategy that picked that key
+            for (qid, k, nudge_text), strats in job_map.items():
+                traj = done_jobs[(qid, k, nudge_text)]
+                _, oracle, _, base, budget, _ = info[qid]
                 for s in strats:
                     row = repair_record(traj, s, seed, k, oracle, base, budget)
                     row["multiplier"] = multiplier

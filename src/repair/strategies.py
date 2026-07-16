@@ -12,8 +12,12 @@ Backtrack offsets (btN): after selecting step k, back up N additional steps to
 k-N.  This tests the cascade hypothesis — if errors propagate forward, repairing
 from further upstream should help.
 
+Nudge types:
+  generic   — "Your previous attempt may have been wrong. Reconsider carefully."
+  informed  — error-type-specific hint from the judge annotation, e.g.
+              "Your search query was likely wrong. Try different search terms."
+
 Fairness controls (see design):
-  * identical `nudge` (retry hint + temperature) applied to EVERY strategy;
   * matched compute budget: token cap = multiplier * original episode cost.
 """
 from __future__ import annotations
@@ -29,72 +33,135 @@ from ..utils.seed import derive_seed
 
 BASELINES = ["full_restart", "random_step", "oracle_targeted"]
 
-# An uncertainty strategy name encodes its metric + rule as:
-#   "unc__<metric_key>__<rule>"   e.g. "unc__max_token_prob_max__argmax"
-# With optional backtrack suffix:
-#   "unc__<metric_key>__<rule>__bt2"  or  "oracle_targeted__bt2"
-# (double underscore separates the parts; metric/rule use single ones.)
+# Strategy name encoding:
+#   "unc__<metric>__<rule>"                         base case
+#   "unc__<metric>__<rule>__bt2"                    + backtrack
+#   "unc__<metric>__<rule>__bt2__informed"           + backtrack + informed nudge
+#   "oracle_targeted__bt1__informed"                oracle + backtrack + informed
+# double underscore separates parts; metric/rule use single underscores.
 _SEP = "__"
 _BT_PREFIX = "bt"
+_NUDGE_INFORMED = "informed"
+
+# Error-type-specific nudge hints (keyed by annotation error_type)
+INFORMED_NUDGES = {
+    "wrong_search_query": (
+        "Your previous search query was likely wrong or too vague. "
+        "Try searching for a different entity or using more specific terms."
+    ),
+    "wrong_fact_extraction": (
+        "You may have extracted the wrong fact from the search results. "
+        "Re-read the passage carefully and look for the specific detail "
+        "the question asks about."
+    ),
+    "faulty_reasoning": (
+        "Your reasoning in the previous attempt had a logical error. "
+        "Reconsider the relationships between the facts you have gathered "
+        "and check your conclusion step by step."
+    ),
+    "premature_or_wrong_answer": (
+        "Your previous answer was given too early or was incorrect. "
+        "You may need more information before answering. Consider doing "
+        "another search to verify your answer."
+    ),
+    "formatting_tool_error": (
+        "Your previous attempt had a formatting or tool-use error. "
+        "Make sure to use the exact format: Action: <tool>\\nAction Input: <argument>."
+    ),
+}
+GENERIC_NUDGE_DEFAULT = "Your previous attempt at this step may have been wrong. Reconsider carefully."
 
 
 def uncertainty_strategy_name(metric: str, rule: str,
-                              backtrack: int = 0) -> str:
+                              backtrack: int = 0,
+                              informed: bool = False) -> str:
     base = f"unc{_SEP}{metric}{_SEP}{rule}"
     if backtrack > 0:
         base += f"{_SEP}{_BT_PREFIX}{backtrack}"
+    if informed:
+        base += f"{_SEP}{_NUDGE_INFORMED}"
     return base
 
 
 def parse_strategy(name: str) -> dict:
     """Parse any strategy name into its components.
 
-    Returns dict with keys: base, metric, rule, backtrack.
+    Returns dict with keys: base, metric, rule, backtrack, informed.
     """
     backtrack = 0
-    # Check for backtrack suffix on any strategy
+    informed = False
+
+    # Check for informed suffix
+    if name.endswith(_SEP + _NUDGE_INFORMED):
+        informed = True
+        name = name[:-(len(_SEP) + len(_NUDGE_INFORMED))]
+
+    # Check for backtrack suffix
     if _SEP + _BT_PREFIX in name:
         parts = name.rsplit(_SEP, 1)
-        name_base = parts[0]
         bt_str = parts[1]
-        if bt_str.startswith(_BT_PREFIX):
+        if bt_str.startswith(_BT_PREFIX) and bt_str[len(_BT_PREFIX):].isdigit():
             backtrack = int(bt_str[len(_BT_PREFIX):])
-            name = name_base
+            name = parts[0]
 
     if name.startswith("unc" + _SEP):
         _, metric, rule = name.split(_SEP)
         return {"base": "uncertainty", "metric": metric, "rule": rule,
-                "backtrack": backtrack}
-    return {"base": name, "metric": None, "rule": None, "backtrack": backtrack}
+                "backtrack": backtrack, "informed": informed}
+    return {"base": name, "metric": None, "rule": None,
+            "backtrack": backtrack, "informed": informed}
 
 
 def parse_uncertainty_strategy(name: str) -> tuple[str, str]:
-    """Return (metric_key, rule) from an 'unc__metric__rule[__btN]' name."""
+    """Return (metric_key, rule) from an 'unc__metric__rule[__btN][__informed]' name."""
     p = parse_strategy(name)
     return p["metric"], p["rule"]
 
 
-def build_strategies(metric_keys: List[str], rule_keys: List[str],
-                     backtrack_offsets: Optional[List[int]] = None) -> List[str]:
-    """Baselines + (metrics x rules) uncertainty strategies, optionally with
-    backtrack variants.
+def get_nudge_text(strategy: str, error_type: Optional[str],
+                   generic_hint: str = GENERIC_NUDGE_DEFAULT) -> Optional[str]:
+    """Return the appropriate nudge text for a strategy.
 
-    backtrack_offsets=[0, 1, 2, 3] adds bt1/bt2/bt3 variants of oracle and
-    every uncertainty strategy (bt0 = no suffix = the default).
+    - full_restart: no nudge (fresh start)
+    - informed strategies: error-type-specific hint
+    - all others: generic hint
+    """
+    p = parse_strategy(strategy)
+    if p["base"] == "full_restart":
+        return None
+    if p["informed"] and error_type:
+        return INFORMED_NUDGES.get(error_type, generic_hint)
+    return generic_hint
+
+
+def build_strategies(metric_keys: List[str], rule_keys: List[str],
+                     backtrack_offsets: Optional[List[int]] = None,
+                     nudge_types: Optional[List[str]] = None) -> List[str]:
+    """Baselines + (metrics x rules) uncertainty strategies, optionally with
+    backtrack variants and nudge type variants.
+
+    backtrack_offsets=[0, 1, 2, 3] adds bt1/bt2/bt3 variants.
+    nudge_types=["generic", "informed"] adds informed variants.
     """
     offsets = backtrack_offsets or [0]
+    ntypes = nudge_types or ["generic"]
     strats = ["full_restart", "random_step"]
-    # oracle + backtrack variants
+    # oracle + backtrack × nudge variants
     for bt in offsets:
-        if bt == 0:
-            strats.append("oracle_targeted")
-        else:
-            strats.append(f"oracle_targeted{_SEP}{_BT_PREFIX}{bt}")
-    # uncertainty strategies + backtrack variants
+        for nt in ntypes:
+            suffix = ""
+            if bt > 0:
+                suffix += f"{_SEP}{_BT_PREFIX}{bt}"
+            if nt == "informed":
+                suffix += f"{_SEP}{_NUDGE_INFORMED}"
+            strats.append(f"oracle_targeted{suffix}")
+    # uncertainty strategies + backtrack × nudge variants
     for m in metric_keys:
         for r in rule_keys:
             for bt in offsets:
-                strats.append(uncertainty_strategy_name(m, r, bt))
+                for nt in ntypes:
+                    strats.append(uncertainty_strategy_name(
+                        m, r, bt, informed=(nt == "informed")))
     return strats
 
 
@@ -162,6 +229,7 @@ def repair_record(traj: Trajectory, strategy: str, seed: int, target_step: int,
         "metric": metric,
         "rule": rule,
         "backtrack": p["backtrack"],
+        "informed": p["informed"],
         "seed": seed,
         "target_step": target_step,
         "oracle_step": oracle_step,

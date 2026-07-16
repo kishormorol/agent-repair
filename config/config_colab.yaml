@@ -94,7 +94,8 @@ repair:
                       "cascade_upstream", "cascade_gradient", "cascade_weighted"]
   topk_for_repair: 3
   threshold_percentile: 75
-  backtrack_offsets: [0, 1, 2, 3]
+  backtrack_offsets: [0, 2]
+  nudge_types: ["generic", "informed"]
   seeds: [0, 1, 2]
   nudge:
     enabled: true
