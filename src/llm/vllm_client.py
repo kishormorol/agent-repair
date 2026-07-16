@@ -42,7 +42,9 @@ def resolve_agent_model(cfg, save: bool = True) -> Dict[str, Any]:
 
     base = cfg.models.agent
     if vram is not None and vram < 20:
-        choice = {"name": "Qwen/Qwen2.5-7B-Instruct-AWQ", "dtype": "auto",
+        # Small GPU: try AWQ quantized variant of the configured model
+        awq_name = base.name.rstrip("/") + "-AWQ"
+        choice = {"name": awq_name, "dtype": "auto",
                   "gpu_memory_utilization": 0.90, "vram_gb": round(vram, 1),
                   "reason": f"{vram:.0f} GB GPU -> 4-bit AWQ (fits small GPUs)"}
     else:

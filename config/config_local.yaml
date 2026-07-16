@@ -43,7 +43,7 @@ runtime:
 
 models:
   agent:
-    name: "Qwen/Qwen2.5-7B-Instruct"
+    name: "Qwen/Qwen3.6-27B"
     dtype: "float16"
     max_model_len: 8192
     gpu_memory_utilization: 0.85   # leave room for a large KV cache (big batches)

@@ -1,5 +1,5 @@
 # ============================================================================
-# COLAB profile — sampled HotpotQA (500 questions), fits T4/L4 GPU.
+# COLAB H100 profile — HotpotQA (500 questions), Qwen3.6-27B agent.
 # Use with:  python scripts/<stage>.py --config config/config_colab.yaml
 # ============================================================================
 
@@ -31,15 +31,16 @@ dataset:
   human_val_size: 50
   stratify_by: ["level", "type"]
 
+# H100 80GB — can handle large batches
 runtime:
-  gen_batch_size: 16
-  repair_batch_size: 16
-  uncertainty_batch_size: 8
-  judge_batch_size: 8
+  gen_batch_size: 64
+  repair_batch_size: 64
+  uncertainty_batch_size: 32
+  judge_batch_size: 32
 
 models:
   agent:
-    name: "Qwen/Qwen2.5-7B-Instruct"
+    name: "Qwen/Qwen3.6-27B"
     dtype: "float16"
     max_model_len: 8192
     gpu_memory_utilization: 0.85
@@ -49,7 +50,7 @@ models:
     max_model_len: 8192
     gpu_memory_utilization: 0.92
     fallback:
-      use_fallback: true
+      use_fallback: false
       name: "Qwen/Qwen2.5-32B-Instruct-AWQ"
 
 agent:
