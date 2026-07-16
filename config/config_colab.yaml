@@ -40,7 +40,7 @@ runtime:
 
 models:
   agent:
-    name: "Qwen/Qwen3-32B-AWQ"
+    name: "Qwen/Qwen2.5-32B-Instruct-AWQ"
     dtype: "auto"
     max_model_len: 8192
     gpu_memory_utilization: 0.90
