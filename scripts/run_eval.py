@@ -47,6 +47,11 @@ def main() -> None:
 
     # ---- load + ensemble --------------------------------------------------- #
     df = pd.DataFrame(list(read_jsonl(os.path.join(cfg.path("repairs"), "results.jsonl"))))
+    if df.empty:
+        log.error("No repair results found. Run stage 5 first.")
+        return
+    if "multiplier" not in df.columns:
+        df["multiplier"] = 1.0
     df = df[df.multiplier == 1.0].copy()
     df = df.drop_duplicates(subset=["qid", "strategy", "seed"])   # safety
     unc_strats = [s for s in df.strategy.unique() if s.startswith("unc__")]
