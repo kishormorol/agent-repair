@@ -17,6 +17,7 @@ from _common import parse_args, boot  # type: ignore
 
 from src.eval import (summarize_strategies, rq_comparisons, ensemble_rows)
 from src.localize import get_step_scores, rule_argmax
+from src.repair import parse_strategy
 from src.analysis import (add_failure_mode_flags, summarize_failure_modes,
                           fit_localization_model)
 from src.utils import load_item, load_json, save_json, read_jsonl
@@ -52,12 +53,17 @@ def main() -> None:
         return
     if "multiplier" not in df.columns:
         df["multiplier"] = 1.0
+    if "backtrack" not in df.columns:
+        df["backtrack"] = df["strategy"].apply(lambda s: parse_strategy(s)["backtrack"])
     df = df[df.multiplier == 1.0].copy()
     df = df.drop_duplicates(subset=["qid", "strategy", "seed"])   # safety
     unc_strats = [s for s in df.strategy.unique() if s.startswith("unc__")]
-    df = pd.concat([df, ensemble_rows(df, unc_strats, "uncertainty_ensemble_any")],
+    # Ensemble uses bt0 uncertainty strategies only
+    bt0_unc = [s for s in unc_strats if parse_strategy(s)["backtrack"] == 0]
+    df = pd.concat([df, ensemble_rows(df, bt0_unc, "uncertainty_ensemble_any")],
                    ignore_index=True)
-    log.info(f"rows: {len(df)} | uncertainty strategies: {len(unc_strats)} | + ensemble")
+    log.info(f"rows: {len(df)} | uncertainty strategies: {len(unc_strats)} "
+             f"(bt0: {len(bt0_unc)}) | + ensemble")
 
     # ---- main table -------------------------------------------------------- #
     summary = summarize_strategies(df, iters=cfg.raw["evaluation"]["bootstrap_iters"],
@@ -81,8 +87,8 @@ def main() -> None:
     print("=" * 78)
     print(readable.to_string(index=False))
 
-    # ---- metric x rule heatmap --------------------------------------------- #
-    u = df[df.strategy.isin(unc_strats)]
+    # ---- metric x rule heatmap (bt0 only) --------------------------------- #
+    u = df[df.strategy.isin(bt0_strats)] if bt0_strats else df[df.strategy.isin(unc_strats)]
     piv = u.groupby(["metric", "rule"])["success"].mean().unstack("rule")
     mo = [m for m in cfg.raw["repair"]["uncertainty_metrics"] if m in piv.index]
     ro = [r for r in cfg.raw["repair"]["uncertainty_rules"] if r in piv.columns]
@@ -100,13 +106,25 @@ def main() -> None:
     fig.tight_layout(); fig.savefig(os.path.join(FIG, "metric_rule_heatmap.png")); plt.close(fig)
 
     # ---- headline bars ------------------------------------------------------ #
-    best_unc = u.groupby("strategy")["success"].mean().idxmax()
+    # best uncertainty among bt0 (no backtrack) strategies only
+    bt0_strats = [s for s in unc_strats
+                  if parse_strategy(s)["backtrack"] == 0]
+    best_unc = (u[u.strategy.isin(bt0_strats)]
+                .groupby("strategy")["success"].mean().idxmax()
+                if bt0_strats else u.groupby("strategy")["success"].mean().idxmax())
 
     def blab(s):
         if s in BASE_LABELS:
             return BASE_LABELS[s]
-        _, mm, rr = s.split("__")
-        return f"{METRIC_LABELS.get(mm, mm)}/{RULE_LABELS.get(rr, rr)}"
+        p = parse_strategy(s)
+        if p["metric"] and p["rule"]:
+            label = f"{METRIC_LABELS.get(p['metric'], p['metric'])}/{RULE_LABELS.get(p['rule'], p['rule'])}"
+            if p["backtrack"] > 0:
+                label += f" bt{p['backtrack']}"
+            return label
+        if p["backtrack"] > 0:
+            return f"{p['base']} bt{p['backtrack']}"
+        return s
 
     order = [s for s in ["random_step", "full_restart", best_unc,
                          "uncertainty_ensemble_any", "oracle_targeted"] if s in si.index]
@@ -137,11 +155,82 @@ def main() -> None:
                     color=BASE_COLORS[s])
     ax.set_xlabel("Recovery cost (generated tokens)")
     ax.set_ylabel("Repair success rate")
-    ax.set_title("Cost vs success (grey = 15 single-metric strategies)")
+    ax.set_title("Cost vs success (grey = single-metric strategies)")
     fig.tight_layout(); fig.savefig(os.path.join(FIG, "pareto_cost_success.png")); plt.close(fig)
 
+    # ---- backtrack ablation -------------------------------------------------- #
+    # Parse backtrack offset from strategy names
+    if "backtrack" not in df.columns:
+        df["backtrack"] = df["strategy"].apply(lambda s: parse_strategy(s)["backtrack"])
+
+    has_bt = df["backtrack"].max() > 0
+    if has_bt:
+        # Oracle backtrack curve
+        oracle_bt = df[df.strategy.str.startswith("oracle_targeted")]
+        oracle_by_bt = oracle_bt.groupby("backtrack")["success"].mean()
+
+        # Average across all uncertainty strategies per backtrack offset
+        unc_all = df[df.strategy.str.startswith("unc__")]
+        unc_by_bt = unc_all.groupby("backtrack")["success"].mean()
+
+        # Best uncertainty strategy per backtrack offset
+        def best_per_bt(bt_val):
+            sub = unc_all[unc_all.backtrack == bt_val]
+            if sub.empty:
+                return None
+            return sub.groupby("strategy")["success"].mean().max()
+
+        bt_vals = sorted(unc_all["backtrack"].unique())
+        best_unc_by_bt = pd.Series({bt: best_per_bt(bt) for bt in bt_vals})
+
+        fig, ax = plt.subplots(figsize=(6.5, 4.5))
+        if len(oracle_by_bt) > 1:
+            ax.plot(oracle_by_bt.index, oracle_by_bt.values, "o-",
+                    color="#009E73", linewidth=2.5, markersize=8,
+                    label="Oracle + backtrack", zorder=3)
+        if len(unc_by_bt) > 1:
+            ax.plot(unc_by_bt.index, unc_by_bt.values, "s--",
+                    color="#E69F00", linewidth=2, markersize=7,
+                    label="Avg uncertainty + backtrack", zorder=2)
+        if len(best_unc_by_bt.dropna()) > 1:
+            ax.plot(best_unc_by_bt.index, best_unc_by_bt.values, "D-.",
+                    color="#D55E00", linewidth=2, markersize=7,
+                    label="Best uncertainty + backtrack", zorder=2)
+        # Full restart reference line
+        if "full_restart" in si.index:
+            ax.axhline(si.loc["full_restart", "success"], color="#0072B2",
+                       linestyle=":", linewidth=1.5, label="Full Restart")
+        ax.set_xlabel("Backtrack offset (additional steps upstream)")
+        ax.set_ylabel("Repair success rate")
+        ax.set_title("Effect of backtracking: fixing earlier steps helps")
+        ax.set_xticks(bt_vals)
+        ax.legend(loc="best", fontsize=9)
+        fig.tight_layout()
+        fig.savefig(os.path.join(FIG, "backtrack_ablation.png"))
+        plt.close(fig)
+
+        # Save backtrack summary table
+        bt_summary = []
+        for bt in bt_vals:
+            oracle_s = df[(df.strategy == f"oracle_targeted__bt{bt}" if bt > 0
+                          else df.strategy == "oracle_targeted") &
+                          (df.backtrack == bt)]
+            # Simpler: just use the grouped values
+            bt_summary.append({
+                "backtrack": bt,
+                "oracle_success": float(oracle_by_bt.get(bt, float("nan"))),
+                "avg_unc_success": float(unc_by_bt.get(bt, float("nan"))),
+                "best_unc_success": float(best_unc_by_bt.get(bt, float("nan"))),
+            })
+        bt_df = pd.DataFrame(bt_summary)
+        bt_df.to_csv(os.path.join(TAB, "backtrack_ablation.csv"), index=False)
+        save_json(bt_summary, os.path.join(TAB, "backtrack_ablation.json"))
+        log.info(f"backtrack ablation:\n{bt_df.to_string(index=False)}")
+
     # ---- RQ tests ----------------------------------------------------------- #
-    rq = rq_comparisons(df)
+    # Filter to bt0 strategies only for the standard RQ comparisons
+    df_bt0 = df[df.backtrack == 0].copy() if has_bt else df.copy()
+    rq = rq_comparisons(df_bt0)
     save_json(rq, os.path.join(TAB, "rq_tests.json"))
     n_sig = sum(1 for v in rq.values() if v.get("significant_0.05"))
     log.info(f"{len(rq)} comparisons, {n_sig} significant after Holm")
@@ -208,6 +297,21 @@ def main() -> None:
         "best_localizing_metric": head["best_metric"],
         "failure_modes": fm,
     }
+
+    # Backtrack results
+    if has_bt:
+        bt_oracle = {int(bt): float(v) for bt, v in oracle_by_bt.items()}
+        bt_best = {int(bt): float(v) for bt, v in best_unc_by_bt.items() if not pd.isna(v)}
+        best_bt_oracle = max(bt_oracle, key=bt_oracle.get) if bt_oracle else 0
+        best_bt_unc = max(bt_best, key=bt_best.get) if bt_best else 0
+        report["backtrack_ablation"] = {
+            "oracle_by_backtrack": bt_oracle,
+            "best_unc_by_backtrack": bt_best,
+            "best_oracle_backtrack": best_bt_oracle,
+            "best_oracle_backtrack_success": bt_oracle.get(best_bt_oracle),
+            "best_unc_backtrack": best_bt_unc,
+            "best_unc_backtrack_success": bt_best.get(best_bt_unc),
+        }
     save_json(report, os.path.join(TAB, "final_report.json"))
 
     # ---- plain-English summary --------------------------------------------- #
@@ -231,12 +335,27 @@ def main() -> None:
         f"   It fixed {P(report['best_single_strategy']['success'])} "
         f"(vs Oracle's {P(r1['oracle'])}).", "",
         "RQ3 — Is uncertainty better than guessing?",
-        f"   Ensemble (any of the 15) fixed {P(ens['success'])}, "
+        f"   Ensemble (any of the bt0 strategies) fixed {P(ens['success'])}, "
         f"which is {P(ens['delta_vs_random'])} above Random.", "",
         f"Best metric at FINDING the broken step: {report['best_localizing_metric']}",
         f"Uncertainty pointed at the true step {P(fm['localization_top1'])} of the time.",
         f"   When it missed: {P(fm['among_misses_upstream'])} of misses were because the",
         f"   error happened BEFORE the uncertainty peak.",
+    ]
+    if has_bt:
+        bta = report["backtrack_ablation"]
+        lines += [
+            "",
+            "RQ4 — Does backtracking further upstream improve repair?",
+            f"   Oracle bt0 (exact step):    {P(bt_oracle.get(0))}",
+            f"   Oracle bt{bta['best_oracle_backtrack']} (best backtrack): "
+            f"{P(bta['best_oracle_backtrack_success'])}",
+            f"   Best unc bt0:               {P(bt_best.get(0, None))}",
+            f"   Best unc bt{bta['best_unc_backtrack']}:               "
+            f"{P(bta['best_unc_backtrack_success'])}",
+            f"   Full Restart:               {P(g('full_restart'))}",
+        ]
+    lines += [
         "=" * 78,
         f"Tables : {TAB}",
         f"Figures: {FIG}",

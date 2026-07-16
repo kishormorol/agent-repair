@@ -33,8 +33,10 @@ def main() -> None:
     pool = {r["_id"]: r for r in
             load_json(os.path.join(cfg.path("data_processed"), "pool.json"))}
 
+    bt_offsets = cfg.raw["repair"].get("backtrack_offsets", [0])
     STRATS = build_strategies(cfg.raw["repair"]["uncertainty_metrics"],
-                              cfg.raw["repair"]["uncertainty_rules"])
+                              cfg.raw["repair"]["uncertainty_rules"],
+                              backtrack_offsets=bt_offsets)
     seeds = cfg.raw["repair"]["seeds"]
     nudge_cfg = cfg.raw["repair"]["nudge"]
     topk = cfg.raw["repair"]["topk_for_repair"]

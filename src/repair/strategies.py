@@ -8,6 +8,10 @@ ReAct loop from step k":
   uncertainty_targeted  k = argmax uncertainty      (the practical method)
   oracle_targeted       k = annotated broken step   (upper bound)
 
+Backtrack offsets (btN): after selecting step k, back up N additional steps to
+k-N.  This tests the cascade hypothesis — if errors propagate forward, repairing
+from further upstream should help.
+
 Fairness controls (see design):
   * identical `nudge` (retry hint + temperature) applied to EVERY strategy;
   * matched compute budget: token cap = multiplier * original episode cost.
@@ -27,26 +31,70 @@ BASELINES = ["full_restart", "random_step", "oracle_targeted"]
 
 # An uncertainty strategy name encodes its metric + rule as:
 #   "unc__<metric_key>__<rule>"   e.g. "unc__max_token_prob_max__argmax"
-# (double underscore separates the three parts; metric/rule use single ones.)
+# With optional backtrack suffix:
+#   "unc__<metric_key>__<rule>__bt2"  or  "oracle_targeted__bt2"
+# (double underscore separates the parts; metric/rule use single ones.)
 _SEP = "__"
+_BT_PREFIX = "bt"
 
 
-def uncertainty_strategy_name(metric: str, rule: str) -> str:
-    return f"unc{_SEP}{metric}{_SEP}{rule}"
+def uncertainty_strategy_name(metric: str, rule: str,
+                              backtrack: int = 0) -> str:
+    base = f"unc{_SEP}{metric}{_SEP}{rule}"
+    if backtrack > 0:
+        base += f"{_SEP}{_BT_PREFIX}{backtrack}"
+    return base
+
+
+def parse_strategy(name: str) -> dict:
+    """Parse any strategy name into its components.
+
+    Returns dict with keys: base, metric, rule, backtrack.
+    """
+    backtrack = 0
+    # Check for backtrack suffix on any strategy
+    if _SEP + _BT_PREFIX in name:
+        parts = name.rsplit(_SEP, 1)
+        name_base = parts[0]
+        bt_str = parts[1]
+        if bt_str.startswith(_BT_PREFIX):
+            backtrack = int(bt_str[len(_BT_PREFIX):])
+            name = name_base
+
+    if name.startswith("unc" + _SEP):
+        _, metric, rule = name.split(_SEP)
+        return {"base": "uncertainty", "metric": metric, "rule": rule,
+                "backtrack": backtrack}
+    return {"base": name, "metric": None, "rule": None, "backtrack": backtrack}
 
 
 def parse_uncertainty_strategy(name: str) -> tuple[str, str]:
-    """Return (metric_key, rule) from an 'unc__metric__rule' strategy name."""
-    _, metric, rule = name.split(_SEP)
-    return metric, rule
+    """Return (metric_key, rule) from an 'unc__metric__rule[__btN]' name."""
+    p = parse_strategy(name)
+    return p["metric"], p["rule"]
 
 
-def build_strategies(metric_keys: List[str], rule_keys: List[str]) -> List[str]:
-    """3 baselines + (metrics x rules) uncertainty strategies."""
-    strats = list(BASELINES)
+def build_strategies(metric_keys: List[str], rule_keys: List[str],
+                     backtrack_offsets: Optional[List[int]] = None) -> List[str]:
+    """Baselines + (metrics x rules) uncertainty strategies, optionally with
+    backtrack variants.
+
+    backtrack_offsets=[0, 1, 2, 3] adds bt1/bt2/bt3 variants of oracle and
+    every uncertainty strategy (bt0 = no suffix = the default).
+    """
+    offsets = backtrack_offsets or [0]
+    strats = ["full_restart", "random_step"]
+    # oracle + backtrack variants
+    for bt in offsets:
+        if bt == 0:
+            strats.append("oracle_targeted")
+        else:
+            strats.append(f"oracle_targeted{_SEP}{_BT_PREFIX}{bt}")
+    # uncertainty strategies + backtrack variants
     for m in metric_keys:
         for r in rule_keys:
-            strats.append(uncertainty_strategy_name(m, r))
+            for bt in offsets:
+                strats.append(uncertainty_strategy_name(m, r, bt))
     return strats
 
 
@@ -59,22 +107,30 @@ def select_target_step(strategy: str, n_steps: int, oracle_step: int,
     For an uncertainty strategy, the metric and rule are read from its name; a
     'miss' vs the oracle is fine — we repair from the rule's chosen step
     regardless. Clamped to [0, n_steps-1].
+
+    Backtrack: if the strategy name ends with '__btN', the selected step is
+    shifted upstream by N additional positions.
     """
     if n_steps <= 0:
         return 0
-    if strategy == "full_restart":
+    p = parse_strategy(strategy)
+    base = p["base"]
+    backtrack = p["backtrack"]
+
+    if base == "full_restart":
         k = 0
-    elif strategy == "random_step":
+    elif base == "random_step":
         k = rng.randint(0, n_steps - 1)
-    elif strategy == "oracle_targeted":
+    elif base == "oracle_targeted":
         k = oracle_step
-    elif strategy.startswith("unc" + _SEP):
-        metric, rule = parse_uncertainty_strategy(strategy)
-        scores = get_step_scores(uncertainty_traj, metric) if uncertainty_traj else []
-        pred = localize_step(scores, rule, k=topk, percentile=percentile)
+    elif base == "uncertainty":
+        scores = get_step_scores(uncertainty_traj, p["metric"]) if uncertainty_traj else []
+        pred = localize_step(scores, p["rule"], k=topk, percentile=percentile)
         k = pred if pred is not None else 0
     else:
         raise ValueError(f"unknown strategy '{strategy}'")
+
+    k = max(0, k - backtrack)
     return max(0, min(n_steps - 1, k))
 
 
@@ -98,13 +154,14 @@ def repair_record(traj: Trajectory, strategy: str, seed: int, target_step: int,
                   budget: Optional[int]) -> Dict[str, Any]:
     """Flatten one repair outcome into an analysis row."""
     m = traj.meta
-    metric, rule = (parse_uncertainty_strategy(strategy)
-                    if strategy.startswith("unc" + _SEP) else (None, None))
+    p = parse_strategy(strategy)
+    metric, rule = p["metric"], p["rule"]
     return {
         "qid": traj.qid,
         "strategy": strategy,
         "metric": metric,
         "rule": rule,
+        "backtrack": p["backtrack"],
         "seed": seed,
         "target_step": target_step,
         "oracle_step": oracle_step,
