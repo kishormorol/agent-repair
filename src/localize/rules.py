@@ -66,14 +66,86 @@ def mrr(scores: List[Tuple[int, float]], oracle_step: int) -> float:
     return 1.0 / (ranking.index(oracle_step) + 1)
 
 
+def rule_cascade_upstream(scores: List[Tuple[int, float]],
+                         lookback: int = 2) -> Optional[int]:
+    """Cascade-aware: find the uncertainty peak, then go `lookback` steps
+    upstream.  Rationale: errors cascade forward, so by the time uncertainty
+    peaks the damage started earlier.  Clamped to step 0."""
+    if not scores:
+        return None
+    peak = rule_argmax(scores)
+    if peak is None:
+        return None
+    step_indices = sorted(idx for idx, _ in scores)
+    peak_pos = step_indices.index(peak) if peak in step_indices else 0
+    target_pos = max(0, peak_pos - lookback)
+    return step_indices[target_pos]
+
+
+def rule_cascade_gradient(scores: List[Tuple[int, float]]) -> Optional[int]:
+    """Cascade-aware: find the step with the largest uncertainty *increase*
+    from the previous step.  A sudden jump in uncertainty suggests that step
+    is where the reasoning first went wrong, before the error cascades into
+    higher uncertainty downstream."""
+    if not scores or len(scores) < 2:
+        return rule_argmax(scores)
+    ordered = sorted(scores, key=lambda x: x[0])
+    best_step, best_delta = ordered[0][0], -float("inf")
+    for i in range(1, len(ordered)):
+        delta = ordered[i][1] - ordered[i - 1][1]
+        if delta > best_delta:
+            best_delta = delta
+            best_step = ordered[i][0]
+    return best_step
+
+
+def rule_cascade_weighted(scores: List[Tuple[int, float]],
+                          position_weight: float = 0.5) -> Optional[int]:
+    """Cascade-aware: score each step as a blend of its uncertainty and how
+    early it is.  Earlier steps get a bonus because errors cascade forward.
+
+    composite = (1 - w) * norm_uncertainty + w * (1 - norm_position)
+
+    where norm_uncertainty and norm_position are min-max normalized to [0, 1].
+    Returns the step with the highest composite score.
+    """
+    if not scores:
+        return None
+    if len(scores) == 1:
+        return scores[0][0]
+    ordered = sorted(scores, key=lambda x: x[0])
+    indices = [idx for idx, _ in ordered]
+    vals = [v for _, v in ordered]
+    v_min, v_max = min(vals), max(vals)
+    v_range = v_max - v_min if v_max > v_min else 1.0
+    i_min, i_max = min(indices), max(indices)
+    i_range = i_max - i_min if i_max > i_min else 1.0
+
+    best_step, best_score = ordered[0][0], -float("inf")
+    w = position_weight
+    for idx, v in ordered:
+        norm_unc = (v - v_min) / v_range
+        norm_pos = (idx - i_min) / i_range
+        composite = (1.0 - w) * norm_unc + w * (1.0 - norm_pos)
+        if composite > best_score:
+            best_score = composite
+            best_step = idx
+    return best_step
+
+
 def localize_step(scores: List[Tuple[int, float]], rule: str,
                   k: int = 3, percentile: float = 75.0) -> Optional[int]:
     """Collapse a rule to a SINGLE step to repair from (used by Stage 5).
 
-    - 'argmax'                  -> highest-uncertainty step
-    - 'topk'                    -> EARLIEST step among the top-k (per user design:
-                                   act on the earliest suspicious step)
-    - 'earliest_above_threshold'-> earliest step over the percentile bar
+    Standard rules:
+    - 'argmax'                   -> highest-uncertainty step
+    - 'topk'                     -> EARLIEST step among the top-k
+    - 'earliest_above_threshold' -> earliest step over the percentile bar
+
+    Cascade-aware rules (address the upstream error problem):
+    - 'cascade_upstream'         -> go 2 steps before the uncertainty peak
+    - 'cascade_gradient'         -> step with largest uncertainty jump
+    - 'cascade_weighted'         -> blend of uncertainty + early-position bonus
     """
     if not scores:
         return None
@@ -84,6 +156,12 @@ def localize_step(scores: List[Tuple[int, float]], rule: str,
         return min(topset) if topset else None      # earliest index in the set
     if rule == "earliest_above_threshold":
         return rule_earliest_above_threshold(scores, percentile)
+    if rule == "cascade_upstream":
+        return rule_cascade_upstream(scores, lookback=2)
+    if rule == "cascade_gradient":
+        return rule_cascade_gradient(scores)
+    if rule == "cascade_weighted":
+        return rule_cascade_weighted(scores, position_weight=0.5)
     raise ValueError(f"unknown localization rule '{rule}'")
 
 
@@ -97,6 +175,10 @@ def evaluate_localization(traj_unc: Dict[str, Any], oracle_step: int,
 
     pred_argmax = rule_argmax(scores)
     pred_thr = rule_earliest_above_threshold(scores, threshold_percentile)
+    pred_upstream = rule_cascade_upstream(scores, lookback=2)
+    pred_gradient = rule_cascade_gradient(scores)
+    pred_weighted = rule_cascade_weighted(scores, position_weight=0.5)
+
     res: Dict[str, Any] = {
         "has_scores": True,
         "n_steps": len(scores),
@@ -108,6 +190,16 @@ def evaluate_localization(traj_unc: Dict[str, Any], oracle_step: int,
         "pred_threshold": pred_thr,
         "threshold_hit": int(pred_thr == oracle_step),
         "threshold_within1": int(pred_thr is not None and abs(pred_thr - oracle_step) <= 1),
+        # cascade-aware rules
+        "pred_cascade_upstream": pred_upstream,
+        "cascade_upstream_hit": int(pred_upstream == oracle_step),
+        "cascade_upstream_within1": int(pred_upstream is not None and abs(pred_upstream - oracle_step) <= 1),
+        "pred_cascade_gradient": pred_gradient,
+        "cascade_gradient_hit": int(pred_gradient == oracle_step),
+        "cascade_gradient_within1": int(pred_gradient is not None and abs(pred_gradient - oracle_step) <= 1),
+        "pred_cascade_weighted": pred_weighted,
+        "cascade_weighted_hit": int(pred_weighted == oracle_step),
+        "cascade_weighted_within1": int(pred_weighted is not None and abs(pred_weighted - oracle_step) <= 1),
     }
     for k in topk_list:
         res[f"top{k}_hit"] = int(oracle_step in rule_topk(scores, k))

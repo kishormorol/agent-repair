@@ -30,7 +30,10 @@ METRIC_LABELS = {"token_entropy_max": "Entropy", "perplexity": "Perplexity",
                  "max_token_prob_max": "MaxProb", "self_consistency": "SelfConsist",
                  "verbalized_confidence": "Verbalized"}
 RULE_LABELS = {"argmax": "argmax", "topk": "top-k",
-               "earliest_above_threshold": "earliest>thr"}
+               "earliest_above_threshold": "earliest>thr",
+               "cascade_upstream": "cascade-up",
+               "cascade_gradient": "cascade-grad",
+               "cascade_weighted": "cascade-wt"}
 
 
 def main() -> None:

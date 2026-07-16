@@ -81,7 +81,8 @@ annotation:
   judge_temperature: 0.0
 
 localization:
-  rules: ["argmax", "topk", "earliest_above_threshold"]
+  rules: ["argmax", "topk", "earliest_above_threshold",
+          "cascade_upstream", "cascade_gradient", "cascade_weighted"]
   topk: [2, 3]
   threshold_percentile: 75
 
@@ -89,7 +90,8 @@ repair:
   baselines: ["full_restart", "random_step", "oracle_targeted"]
   uncertainty_metrics: ["token_entropy_max", "perplexity", "max_token_prob_max",
                         "self_consistency", "verbalized_confidence"]
-  uncertainty_rules: ["argmax", "topk", "earliest_above_threshold"]
+  uncertainty_rules: ["argmax", "topk", "earliest_above_threshold",
+                      "cascade_upstream", "cascade_gradient", "cascade_weighted"]
   topk_for_repair: 3
   threshold_percentile: 75
   seeds: [0, 1, 2]
