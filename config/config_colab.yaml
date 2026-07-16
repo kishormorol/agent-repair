@@ -1,5 +1,5 @@
 # ============================================================================
-# COLAB A100-80GB profile — HotpotQA (500 questions), Qwen3-32B agent.
+# COLAB A100-80GB profile — HotpotQA (500 questions), Qwen3-32B-AWQ agent.
 # Use with:  python scripts/<stage>.py --config config/config_colab.yaml
 # ============================================================================
 
@@ -40,8 +40,8 @@ runtime:
 
 models:
   agent:
-    name: "Qwen/Qwen3-32B"
-    dtype: "float16"
+    name: "Qwen/Qwen3-32B-AWQ"
+    dtype: "auto"
     max_model_len: 8192
     gpu_memory_utilization: 0.90
   judge:

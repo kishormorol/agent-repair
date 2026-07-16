@@ -172,9 +172,15 @@ class VLLMClient:
 
     # --------------------------------------------------------------------- #
     def _render(self, messages: List[Dict[str, str]]) -> str:
-        """Apply the chat template, adding the generation prompt."""
-        return self._tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True)
+        """Apply the chat template, adding the generation prompt.
+
+        Passes enable_thinking=False for Qwen3 models to suppress
+        <think>...</think> blocks that break ReAct action parsing.
+        """
+        kwargs = dict(tokenize=False, add_generation_prompt=True)
+        if "qwen3" in self.model_name.lower():
+            kwargs["enable_thinking"] = False
+        return self._tokenizer.apply_chat_template(messages, **kwargs)
 
     def _sampling_params(self, temperature: float, max_tokens: int,
                          n: int, stop: Optional[List[str]], seed: Optional[int]):
