@@ -1,5 +1,5 @@
 # ============================================================================
-# COLAB H100 profile — HotpotQA (500 questions), Qwen3.6-27B agent.
+# COLAB A100-40GB profile — HotpotQA (500 questions), Qwen3.6-27B-AWQ agent.
 # Use with:  python scripts/<stage>.py --config config/config_colab.yaml
 # ============================================================================
 
@@ -31,26 +31,26 @@ dataset:
   human_val_size: 50
   stratify_by: ["level", "type"]
 
-# H100 80GB — can handle large batches
+# A100 40GB — moderate batches to avoid OOM
 runtime:
-  gen_batch_size: 64
-  repair_batch_size: 64
-  uncertainty_batch_size: 32
-  judge_batch_size: 32
+  gen_batch_size: 32
+  repair_batch_size: 32
+  uncertainty_batch_size: 16
+  judge_batch_size: 16
 
 models:
   agent:
-    name: "Qwen/Qwen3.6-27B"
-    dtype: "float16"
+    name: "QuantTrio/Qwen3.6-27B-AWQ"
+    dtype: "auto"
     max_model_len: 8192
-    gpu_memory_utilization: 0.85
+    gpu_memory_utilization: 0.90
   judge:
-    name: "Qwen/Qwen2.5-72B-Instruct-AWQ"
+    name: "Qwen/Qwen2.5-32B-Instruct-AWQ"
     dtype: "auto"
     max_model_len: 8192
     gpu_memory_utilization: 0.92
     fallback:
-      use_fallback: false
+      use_fallback: true
       name: "Qwen/Qwen2.5-32B-Instruct-AWQ"
 
 agent:
