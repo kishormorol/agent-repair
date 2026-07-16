@@ -22,7 +22,8 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from ..env.hotpot_env import HotpotEnv, score_answer
+from ..env.base_env import BaseEnv, score_answer
+from ..env.hotpot_env import HotpotEnv
 from ..llm.vllm_client import VLLMClient
 from .react_agent import (
     Step, Trajectory, parse_action, build_messages, STOP,
@@ -32,7 +33,7 @@ from .react_agent import (
 @dataclass
 class Episode:
     """One in-flight ReAct rollout."""
-    env: HotpotEnv
+    env: BaseEnv
     steps: List[Step]
     max_steps: int
     temperature: float
@@ -77,8 +78,10 @@ class Episode:
 def _make_episode(record: Dict[str, Any], max_steps: int, temperature: float,
                   seed: Optional[int], prefix_steps: Optional[List[Step]] = None,
                   nudge: Optional[str] = None, token_budget: Optional[int] = None,
-                  meta: Optional[Dict[str, Any]] = None) -> Episode:
-    env = HotpotEnv(record=record)
+                  meta: Optional[Dict[str, Any]] = None,
+                  env_cls=None) -> Episode:
+    env_cls = env_cls or HotpotEnv
+    env = env_cls(record=record)
     steps = list(prefix_steps or [])
     ep = Episode(env=env, steps=steps, max_steps=max_steps, temperature=temperature,
                  seed=seed, nudge=nudge, token_budget=token_budget, meta=meta or {})
@@ -156,9 +159,11 @@ def _drive(client: VLLMClient, episodes: List[Episode], max_tokens_per_step: int
 def run_generation_batch(client: VLLMClient, records: List[Dict[str, Any]],
                          max_steps: int, max_tokens_per_step: int,
                          temperature: float = 0.0, seed: Optional[int] = None,
-                         progress: bool = False) -> List[Trajectory]:
+                         progress: bool = False,
+                         env_cls=None) -> List[Trajectory]:
     """Generate fresh trajectories for a batch of questions, concurrently."""
-    eps = [_make_episode(r, max_steps, temperature, seed) for r in records]
+    eps = [_make_episode(r, max_steps, temperature, seed, env_cls=env_cls)
+           for r in records]
     _drive(client, eps, max_tokens_per_step, progress)
     return [e.to_trajectory() for e in eps]
 
@@ -166,7 +171,8 @@ def run_generation_batch(client: VLLMClient, records: List[Dict[str, Any]],
 def run_repair_batch(client: VLLMClient, jobs: List[Dict[str, Any]],
                      max_steps: int, max_tokens_per_step: int,
                      temperature: float, seed: Optional[int],
-                     progress: bool = False) -> List[Trajectory]:
+                     progress: bool = False,
+                     env_cls=None) -> List[Trajectory]:
     """Run a batch of repair episodes concurrently.
 
     Each job: {record, prefix_steps (List[Step]), nudge, token_budget, meta}
@@ -176,7 +182,8 @@ def run_repair_batch(client: VLLMClient, jobs: List[Dict[str, Any]],
                          prefix_steps=j.get("prefix_steps"),
                          nudge=j.get("nudge"),
                          token_budget=j.get("token_budget"),
-                         meta=j.get("meta"))
+                         meta=j.get("meta"),
+                         env_cls=env_cls)
            for j in jobs]
     _drive(client, eps, max_tokens_per_step, progress)
     return [e.to_trajectory() for e in eps]

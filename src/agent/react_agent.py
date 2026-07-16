@@ -16,7 +16,8 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from ..env.hotpot_env import HotpotEnv, score_answer
+from ..env.base_env import BaseEnv, score_answer
+from ..env.hotpot_env import HotpotEnv
 from ..llm.vllm_client import VLLMClient, GenerationResult
 
 

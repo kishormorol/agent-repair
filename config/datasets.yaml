@@ -1,0 +1,44 @@
+# ============================================================================
+# Dataset catalog for multi-dataset experiments.
+# Each dataset defines its download source, pool size, and stratification.
+# ============================================================================
+
+hotpotqa:
+  display_name: "HotpotQA"
+  raw_filename: "hotpot_dev_distractor_v1.json"
+  url: "http://curtis.ml.cmu.edu/datasets/hotpot/hotpot_dev_distractor_v1.json"
+  full_size: 7405
+  pool_size: 500
+  stratify_by: ["level", "type"]
+  task_type: "multi_hop_qa"
+  scorer: "default"          # EM + F1
+
+fever:
+  display_name: "FEVER"
+  raw_filename: "fever_dev.json"
+  url: null                  # downloaded from HuggingFace
+  full_size: 19998
+  pool_size: 500
+  stratify_by: ["answer"]    # balance SUPPORTS / REFUTES / NEI
+  task_type: "fact_verification"
+  scorer: "fever"            # label accuracy
+
+2wikimultihopqa:
+  display_name: "2WikiMultiHopQA"
+  raw_filename: "2wikimultihop_dev.json"
+  url: null                  # downloaded from HuggingFace
+  full_size: 12576
+  pool_size: 500
+  stratify_by: ["type"]      # bridge, comparison, etc.
+  task_type: "multi_hop_qa"
+  scorer: "default"
+
+musique:
+  display_name: "MuSiQue"
+  raw_filename: "musique_dev.json"
+  url: null                  # downloaded from HuggingFace
+  full_size: 2417
+  pool_size: 500
+  stratify_by: ["type"]      # 2hop, 3hop, 4hop
+  task_type: "multi_hop_qa"
+  scorer: "default"

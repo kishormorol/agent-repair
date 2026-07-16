@@ -1,0 +1,70 @@
+# ============================================================================
+# Model catalog for multi-model experiments.
+# Each model defines its HuggingFace name, preferred dtype, and AWQ variant.
+# The experiment runner selects models by tier (small/medium/large).
+# ============================================================================
+
+small:
+  qwen2.5-7b:
+    name: "Qwen/Qwen2.5-7B-Instruct"
+    awq: "Qwen/Qwen2.5-7B-Instruct-AWQ"
+    dtype: "float16"
+    gpu_memory_utilization: 0.85
+    family: "qwen"
+
+  llama-3.1-8b:
+    name: "meta-llama/Llama-3.1-8B-Instruct"
+    awq: "casperhansen/llama-3.1-8b-instruct-awq"
+    dtype: "float16"
+    gpu_memory_utilization: 0.85
+    family: "llama"
+
+  gemma-2-9b:
+    name: "google/gemma-2-9b-it"
+    awq: "casperhansen/gemma-2-9b-it-awq"
+    dtype: "bfloat16"
+    gpu_memory_utilization: 0.85
+    family: "gemma"
+
+medium:
+  qwen2.5-14b:
+    name: "Qwen/Qwen2.5-14B-Instruct"
+    awq: "Qwen/Qwen2.5-14B-Instruct-AWQ"
+    dtype: "float16"
+    gpu_memory_utilization: 0.85
+    family: "qwen"
+
+  mistral-nemo-12b:
+    name: "mistralai/Mistral-Nemo-Instruct-2407"
+    awq: "casperhansen/mistral-nemo-instruct-2407-awq"
+    dtype: "bfloat16"
+    gpu_memory_utilization: 0.85
+    family: "mistral"
+
+  gemma-2-27b:
+    name: "google/gemma-2-27b-it"
+    awq: "casperhansen/gemma-2-27b-it-awq"
+    dtype: "bfloat16"
+    gpu_memory_utilization: 0.88
+    family: "gemma"
+
+large:
+  llama-3.3-70b:
+    name: "meta-llama/Llama-3.3-70B-Instruct"
+    awq: "casperhansen/llama-3.3-70b-instruct-awq"
+    dtype: "float16"
+    gpu_memory_utilization: 0.92
+    family: "llama"
+
+  qwen2.5-72b:
+    name: "Qwen/Qwen2.5-72B-Instruct"
+    awq: "Qwen/Qwen2.5-72B-Instruct-AWQ"
+    dtype: "float16"
+    gpu_memory_utilization: 0.92
+    family: "qwen"
+
+# Judge model — always AWQ to fit alongside agent model loading
+judge:
+  name: "Qwen/Qwen2.5-72B-Instruct-AWQ"
+  dtype: "auto"
+  gpu_memory_utilization: 0.92
