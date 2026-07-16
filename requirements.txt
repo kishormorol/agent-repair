@@ -1,0 +1,30 @@
+# Core LLM serving + logprob access
+# These versions are a matched set for vLLM 0.6.3.post1 (torch 2.4.0, numpy<2).
+# transformers MUST be pinned: newer versions break vLLM 0.6.3's tokenizer access
+# ("Qwen2Tokenizer has no attribute all_special_tokens_extended").
+vllm==0.6.3.post1
+transformers==4.45.2
+tokenizers==0.20.1
+accelerate>=0.34.0,<1.2
+huggingface_hub>=0.25.0,<0.27
+
+# Data / numerics
+# numpy pinned <2 because vLLM requires it; pyarrow/pandas pinned to versions
+# built against numpy 1.x to avoid the "dtype size changed" ABI clash on Colab.
+numpy>=1.26,<2
+pyarrow>=14,<16
+pandas>=2.0,<2.3
+datasets>=2.20,<3
+scipy>=1.11.0
+scikit-learn>=1.3.0
+
+# Config / IO
+pyyaml>=6.0
+
+# Progress / plotting
+tqdm>=4.66.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# Stats (mcnemar, bootstrap live in scipy/statsmodels)
+statsmodels>=0.14.0
