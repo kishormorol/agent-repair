@@ -1,6 +1,7 @@
 """Stage 1 — batched ReAct trajectory generation.
 
     python scripts/run_generate.py --config config/config_local.yaml
+    python scripts/run_generate.py --config config/config_colab.yaml --dataset fever
 
 Resumable: re-run after an interruption and it skips finished questions.
 """
@@ -9,9 +10,8 @@ from __future__ import annotations
 import os
 import time
 
-from _common import parse_args, boot, load_agent  # type: ignore
+from _common import parse_args, boot, load_agent, resolve_dataset  # type: ignore
 
-from src.env import load_dataset, sample_pool
 from src.agent import run_generation_batch
 from src.utils import (Checkpoint, save_item, save_json, load_json,
                        load_all_items)
@@ -21,13 +21,20 @@ def main() -> None:
     args = parse_args("Generate ReAct trajectories (batched)")
     cfg, log = boot("stage1", args)
 
+    ds_info = resolve_dataset(cfg, args)
+    load_dataset = ds_info["load"]
+    sample_pool = ds_info["sample"]
+    env_cls = ds_info["env_cls"]
+    log.info(f"Dataset: {ds_info['name']} (env: {env_cls.__name__})")
+
     # ---- pool (sampled once, then fixed) ---------------------------------- #
     pool_path = os.path.join(cfg.path("data_processed"), "pool.json")
     if os.path.exists(pool_path):
         pool = load_json(pool_path)
     else:
-        raw = load_dataset(os.path.join(cfg.path("data_raw"), cfg.dataset.raw_filename))
-        pool = sample_pool(raw, cfg.dataset.pool_size, cfg.dataset.stratify_by,
+        raw_filename = ds_info["raw_filename"]
+        raw = load_dataset(os.path.join(cfg.path("data_raw"), raw_filename))
+        pool = sample_pool(raw, ds_info["pool_size"], ds_info["stratify_by"],
                            cfg.project.seed)
         save_json(pool, pool_path)
     log.info(f"Pool: {len(pool)} questions")
@@ -55,6 +62,8 @@ def main() -> None:
                 max_tokens_per_step=cfg.agent.max_tokens_per_step,
                 temperature=cfg.agent.temperature,
                 seed=cfg.project.seed,
+                env_cls=env_cls,
+                score_fn=ds_info["score"],
             )
             for t in trajs:
                 save_item(traj_dir, t.qid, t.to_dict())

@@ -1,6 +1,7 @@
-"""Stage 0 — download HotpotQA dev (distractor) and create output folders.
+"""Stage 0 — download dataset and create output folders.
 
     python scripts/run_setup.py --config config/config_local.yaml
+    python scripts/run_setup.py --config config/config_colab.yaml --dataset fever
 """
 from __future__ import annotations
 
@@ -8,7 +9,7 @@ import json
 import os
 import urllib.request
 
-from _common import parse_args, boot  # type: ignore
+from _common import parse_args, boot, resolve_dataset  # type: ignore
 
 
 def _try_direct(urls, dst, timeout=20) -> bool:
@@ -50,22 +51,39 @@ def _from_huggingface(dst: str) -> int:
 
 
 def main() -> None:
-    args = parse_args("Download HotpotQA + create folders")
+    args = parse_args("Download dataset + create folders")
     cfg, log = boot("setup", args)
+
+    ds_info = resolve_dataset(cfg, args)
+    ds_name = ds_info["name"]
+    raw_filename = ds_info["raw_filename"]
+    download_fn = ds_info["download"]
 
     raw_dir = cfg.path("data_raw")
     os.makedirs(raw_dir, exist_ok=True)
-    dst = os.path.join(raw_dir, cfg.dataset.raw_filename)
+    dst = os.path.join(raw_dir, raw_filename)
 
     if os.path.exists(dst):
         log.info(f"Dataset already present: {dst}")
     else:
-        ok = _try_direct([cfg.dataset.url,
-                          cfg.dataset.url.replace("http://", "https://")], dst)
-        if not ok:
-            log.info("Direct download unavailable -> Hugging Face fallback")
-            n = _from_huggingface(dst)
-            log.info(f"Converted {n} questions from Hugging Face.")
+        # Try dataset-specific download function first (FEVER, 2Wiki, MuSiQue)
+        if download_fn is not None:
+            log.info(f"Downloading {ds_name} via registry download function...")
+            n = download_fn(dst)
+            log.info(f"Downloaded {n} records for {ds_name}.")
+        else:
+            # HotpotQA path: try direct URL, then HuggingFace fallback
+            url = cfg.raw["dataset"].get("url")
+            if url:
+                ok = _try_direct([url, url.replace("http://", "https://")], dst)
+                if not ok:
+                    log.info("Direct download unavailable -> Hugging Face fallback")
+                    n = _from_huggingface(dst)
+                    log.info(f"Converted {n} questions from Hugging Face.")
+            else:
+                log.info("No URL and no download function — trying HuggingFace fallback")
+                n = _from_huggingface(dst)
+                log.info(f"Converted {n} questions from Hugging Face.")
 
     size_mb = os.path.getsize(dst) / 1e6
     with open(dst, "r", encoding="utf-8") as f:

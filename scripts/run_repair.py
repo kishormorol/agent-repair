@@ -14,7 +14,7 @@ from __future__ import annotations
 import os
 import time
 
-from _common import parse_args, boot, load_agent  # type: ignore
+from _common import parse_args, boot, load_agent, resolve_dataset  # type: ignore
 
 from src.agent import Step, run_repair_batch
 from src.repair import (build_strategies, select_target_step, repair_record,
@@ -25,6 +25,11 @@ from src.utils import Checkpoint, load_item, load_json, append_jsonl
 def main() -> None:
     args = parse_args("Repair experiments (batched + dedup)")
     cfg, log = boot("stage5", args)
+
+    ds_info = resolve_dataset(cfg, args)
+    env_cls = ds_info["env_cls"]
+    score_fn = ds_info["score"]
+    log.info(f"Dataset: {ds_info['name']} (env: {env_cls.__name__})")
 
     failed_ids = load_json(os.path.join(cfg.path("data_processed"), "failed_ids.json"))
     if args.limit:
@@ -113,7 +118,8 @@ def main() -> None:
                     client, sub,
                     max_steps=cfg.agent.max_steps,
                     max_tokens_per_step=cfg.agent.max_tokens_per_step,
-                    temperature=temperature, seed=seed)
+                    temperature=temperature, seed=seed,
+                    env_cls=env_cls, score_fn=score_fn)
                 for j, t in zip(sub, trajs):
                     key = (j["meta"]["qid"], j["meta"]["target_step"],
                            j["meta"]["nudge_text"])

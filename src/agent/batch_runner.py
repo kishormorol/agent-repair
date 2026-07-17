@@ -54,6 +54,7 @@ class Episode:
     done: bool = False
     terminated_reason: str = "unknown"
     final_answer: Optional[str] = None
+    score_fn: Any = None                 # custom scorer (default: base score_answer)
 
     def to_trajectory(self) -> Trajectory:
         t = Trajectory(
@@ -70,7 +71,8 @@ class Episode:
         t.meta["recovery_tool_calls"] = self.tool_calls_run
         t.meta["recovery_latency_s"] = self.latency_run_s
         t.meta["n_prefix_steps"] = self.n_prefix
-        sc = score_answer(t.final_answer, t.gold_answer)
+        scorer = self.score_fn or score_answer
+        sc = scorer(t.final_answer, t.gold_answer)
         t.em, t.f1, t.success = sc["em"], sc["f1"], sc["correct"]
         return t
 
@@ -79,12 +81,13 @@ def _make_episode(record: Dict[str, Any], max_steps: int, temperature: float,
                   seed: Optional[int], prefix_steps: Optional[List[Step]] = None,
                   nudge: Optional[str] = None, token_budget: Optional[int] = None,
                   meta: Optional[Dict[str, Any]] = None,
-                  env_cls=None) -> Episode:
+                  env_cls=None, score_fn=None) -> Episode:
     env_cls = env_cls or HotpotEnv
     env = env_cls(record=record)
     steps = list(prefix_steps or [])
     ep = Episode(env=env, steps=steps, max_steps=max_steps, temperature=temperature,
-                 seed=seed, nudge=nudge, token_budget=token_budget, meta=meta or {})
+                 seed=seed, nudge=nudge, token_budget=token_budget, meta=meta or {},
+                 score_fn=score_fn)
     # Replay kept steps so tool state (current page, retrieved titles) is correct,
     # and carry their already-paid cost into the totals.
     for s in steps:
@@ -160,9 +163,10 @@ def run_generation_batch(client: VLLMClient, records: List[Dict[str, Any]],
                          max_steps: int, max_tokens_per_step: int,
                          temperature: float = 0.0, seed: Optional[int] = None,
                          progress: bool = False,
-                         env_cls=None) -> List[Trajectory]:
+                         env_cls=None, score_fn=None) -> List[Trajectory]:
     """Generate fresh trajectories for a batch of questions, concurrently."""
-    eps = [_make_episode(r, max_steps, temperature, seed, env_cls=env_cls)
+    eps = [_make_episode(r, max_steps, temperature, seed,
+                         env_cls=env_cls, score_fn=score_fn)
            for r in records]
     _drive(client, eps, max_tokens_per_step, progress)
     return [e.to_trajectory() for e in eps]
@@ -172,7 +176,7 @@ def run_repair_batch(client: VLLMClient, jobs: List[Dict[str, Any]],
                      max_steps: int, max_tokens_per_step: int,
                      temperature: float, seed: Optional[int],
                      progress: bool = False,
-                     env_cls=None) -> List[Trajectory]:
+                     env_cls=None, score_fn=None) -> List[Trajectory]:
     """Run a batch of repair episodes concurrently.
 
     Each job: {record, prefix_steps (List[Step]), nudge, token_budget, meta}
@@ -183,7 +187,7 @@ def run_repair_batch(client: VLLMClient, jobs: List[Dict[str, Any]],
                          nudge=j.get("nudge"),
                          token_budget=j.get("token_budget"),
                          meta=j.get("meta"),
-                         env_cls=env_cls)
+                         env_cls=env_cls, score_fn=score_fn)
            for j in jobs]
     _drive(client, eps, max_tokens_per_step, progress)
     return [e.to_trajectory() for e in eps]
