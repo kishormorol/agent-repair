@@ -39,32 +39,36 @@ def download_fever(dst: str) -> int:
 
     Each record gets: _id, question (=claim), answer (=label), context
     (list of [title, [sentences]]), supporting_facts, type, level.
+
+    Uses ``EleutherAI/fever`` (Parquet-native, no loading script).
     """
     from datasets import load_dataset as hf_load
 
-    ds = hf_load("fever/fever", "v1.0", split="labelled_dev",
-                 trust_remote_code=True)
+    ds = hf_load("EleutherAI/fever", split="validation")
 
     # Group evidence by claim id
     recs = []
     for ex in ds:
         claim_id = str(ex["id"])
-        label = ex["label"]
+        label = ex.get("label", "NOT ENOUGH INFO")
         claim = ex["claim"]
 
-        # FEVER evidence is minimal — we store what's available
-        # In practice, evidence_wiki / evidence_sentence_id may be used
-        evidence_wiki = ex.get("evidence_wiki", "") or ""
-        evidence_id = ex.get("evidence_sentence_id", -1)
-
-        # Build a context entry if we have evidence
+        # Parse evidence annotations
         context = []
         sf = []
-        if evidence_wiki:
-            title = evidence_wiki.replace("_", " ")
-            # We store the evidence as a single-sentence paragraph
-            context.append([title, [claim]])  # placeholder
-            sf.append([title, 0])
+        evidence = ex.get("evidence", None)
+        if evidence and isinstance(evidence, list):
+            titles_seen = set()
+            for ev_group in evidence:
+                if isinstance(ev_group, list):
+                    for ev in ev_group:
+                        if isinstance(ev, list) and len(ev) >= 3:
+                            title = str(ev[2]).replace("_", " ") if ev[2] else ""
+                            sent_id = ev[3] if len(ev) > 3 and isinstance(ev[3], int) else 0
+                            if title and title not in titles_seen:
+                                titles_seen.add(title)
+                                context.append([title, [claim]])
+                                sf.append([title, sent_id])
 
         recs.append({
             "_id": claim_id,
@@ -81,31 +85,25 @@ def download_fever(dst: str) -> int:
 
 
 def download_fever_with_evidence(dst: str) -> int:
-    """Download FEVER from HuggingFace with pre-retrieved evidence paragraphs.
+    """Download FEVER from HuggingFace with evidence paragraphs.
 
-    Uses the ``fever/fever`` dataset with the wiki_pages config for evidence.
-    Falls back to a simpler version if wiki pages aren't available.
+    Uses ``copenlu/fever_gold_evidence`` for gold evidence context when
+    available, and falls back to ``EleutherAI/fever`` for full label coverage.
     """
     from datasets import load_dataset as hf_load
 
-    # Load labelled dev claims
-    ds = hf_load("fever/fever", "v1.0", split="labelled_dev",
-                 trust_remote_code=True)
-
-    # Try to load wiki pages for evidence context
-    wiki_pages = {}
+    # Try gold-evidence dataset first (has actual evidence sentences)
+    gold_evidence = {}
     try:
-        wiki_ds = hf_load("fever/fever", "wiki_pages", split="wikipedia_pages",
-                          trust_remote_code=True)
-        for page in wiki_ds:
-            pid = page.get("id", "")
-            title = pid.replace("_", " ") if pid else ""
-            lines = page.get("lines", "") or ""
-            sentences = [s.strip() for s in lines.split("\n") if s.strip()]
-            if title and sentences:
-                wiki_pages[title] = sentences
+        gold_ds = hf_load("copenlu/fever_gold_evidence", split="valid")
+        for ex in gold_ds:
+            cid = str(ex["id"])
+            gold_evidence[cid] = ex.get("evidence", [])
     except Exception:
         pass
+
+    # Load full dev set (all 3 labels)
+    ds = hf_load("EleutherAI/fever", split="validation")
 
     recs = []
     seen_ids = set()
@@ -115,35 +113,48 @@ def download_fever_with_evidence(dst: str) -> int:
             continue
         seen_ids.add(claim_id)
 
-        label = ex["label"]
+        label = ex.get("label", "NOT ENOUGH INFO")
         claim = ex["claim"]
 
         # Build context from evidence annotations
-        evidence_titles = set()
-        sf = []
-        ev_wiki = ex.get("evidence_wiki", "") or ""
-        ev_sid = ex.get("evidence_sentence_id", -1)
-        if ev_wiki:
-            title = ev_wiki.replace("_", " ")
-            evidence_titles.add(title)
-            if ev_sid >= 0:
-                sf.append([title, ev_sid])
-
-        # Add distractor pages (sample from wiki_pages if available)
         context = []
-        for title in evidence_titles:
-            sents = wiki_pages.get(title, [f"Evidence for: {title}"])
-            context.append([title, sents[:10]])
+        sf = []
+        evidence = ex.get("evidence", None)
+        evidence_titles = set()
+        if evidence and isinstance(evidence, list):
+            for ev_group in evidence:
+                if isinstance(ev_group, list):
+                    for ev in ev_group:
+                        if isinstance(ev, list) and len(ev) >= 3:
+                            title = str(ev[2]).replace("_", " ") if ev[2] else ""
+                            sent_id = ev[3] if len(ev) > 3 and isinstance(ev[3], int) else 0
+                            if title and title not in evidence_titles:
+                                evidence_titles.add(title)
+                                sf.append([title, sent_id])
 
-        # Add some distractor paragraphs if we have wiki pages
-        if wiki_pages:
-            rng = random.Random(int(claim_id) if claim_id.isdigit() else hash(claim_id))
-            distractor_titles = [t for t in wiki_pages if t not in evidence_titles]
-            if distractor_titles:
-                chosen = rng.sample(distractor_titles,
-                                    min(8, len(distractor_titles)))
-                for dt in chosen:
-                    context.append([dt, wiki_pages[dt][:10]])
+        # Use gold evidence sentences if available
+        if claim_id in gold_evidence:
+            for ge in gold_evidence[claim_id]:
+                if isinstance(ge, dict):
+                    title = ge.get("title", "").replace("_", " ")
+                    sent = ge.get("sentence", "")
+                    if title and title not in evidence_titles:
+                        evidence_titles.add(title)
+                    # Find or create context entry
+                    found = False
+                    for c in context:
+                        if c[0] == title:
+                            if sent and sent not in c[1]:
+                                c[1].append(sent)
+                            found = True
+                            break
+                    if not found and title:
+                        context.append([title, [sent] if sent else [claim]])
+
+        # Add basic context for evidence titles not yet in context
+        for title in evidence_titles:
+            if not any(c[0] == title for c in context):
+                context.append([title, [claim]])
 
         recs.append({
             "_id": claim_id,
