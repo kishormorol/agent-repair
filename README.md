@@ -1,4 +1,4 @@
-# Multi-Step Agent Repair: Which Restart Strategy Wins??
+# Multi-Step Agent Repair: Which Restart Strategy Wins?
 
 When a multi-step AI agent fails, is it better to **redo just the one broken step**,
 or **restart the whole trajectory**? And can the agent's own **uncertainty** tell us
