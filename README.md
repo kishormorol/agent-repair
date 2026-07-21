@@ -48,6 +48,15 @@ which step to fix — even when the real error happened *upstream* of the uncert
 | **Google Colab A100** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kishormorol/agent-repair/blob/main/run_colab.ipynb) |
 | **Multi-model matrix** | `python scripts/run_experiment.py --config config/config_experiment.yaml` |
 
+### Per-dataset Colab notebooks (run in parallel)
+
+| Dataset | Colab |
+|---|---|
+| **HotpotQA** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kishormorol/agent-repair/blob/main/run_colab_hotpotqa.ipynb) |
+| **FEVER** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kishormorol/agent-repair/blob/main/run_colab_fever.ipynb) |
+| **2WikiMultiHopQA** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kishormorol/agent-repair/blob/main/run_colab_2wikimultihopqa.ipynb) |
+| **MuSiQue** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kishormorol/agent-repair/blob/main/run_colab_musique.ipynb) |
+
 ## The pipeline
 
 | Stage | Script | What it does | ~Time (A100, 500 Qs) |

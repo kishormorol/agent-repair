@@ -1,0 +1,117 @@
+# ============================================================================
+# COLAB A100-80GB — HotpotQA (500 questions), Qwen2.5-32B-AWQ agent.
+# Use with:  python scripts/<stage>.py --config config/config_colab_hotpotqa.yaml
+# ============================================================================
+
+project:
+  name: "agent-repair"
+  seed: 42
+
+paths:
+  drive_base: "/content/drive/MyDrive/agent-repair-hotpotqa"
+  local_base: "/content/agent-repair"
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  outputs: "outputs"
+  trajectories: "outputs/trajectories"
+  uncertainty: "outputs/uncertainty"
+  annotations: "outputs/annotations"
+  localization: "outputs/localization"
+  repairs: "outputs/repairs"
+  tables: "outputs/tables"
+  figures: "outputs/figures"
+  logs: "outputs/logs"
+
+dataset:
+  name: "hotpotqa"
+  url: "http://curtis.ml.cmu.edu/datasets/hotpot/hotpot_dev_distractor_v1.json"
+  raw_filename: "hotpot_dev_distractor_v1.json"
+  pool_size: 500
+  process_limit: null
+  human_val_size: 50
+  stratify_by: ["level", "type"]
+
+runtime:
+  gen_batch_size: 32
+  repair_batch_size: 32
+  uncertainty_batch_size: 16
+  judge_batch_size: 16
+
+models:
+  agent:
+    name: "Qwen/Qwen2.5-32B-Instruct-AWQ"
+    dtype: "auto"
+    max_model_len: 8192
+    gpu_memory_utilization: 0.90
+  judge:
+    name: "Qwen/Qwen2.5-72B-Instruct-AWQ"
+    dtype: "auto"
+    max_model_len: 8192
+    gpu_memory_utilization: 0.92
+    fallback:
+      use_fallback: false
+      name: "Qwen/Qwen2.5-32B-Instruct-AWQ"
+
+agent:
+  max_steps: 8
+  temperature: 0.0
+  max_tokens_per_step: 512
+  logprobs_topk: 20
+  tools: ["search", "lookup", "finish"]
+  stop_on_answer: true
+
+uncertainty:
+  metrics: ["token_entropy", "perplexity", "max_token_prob",
+            "self_consistency", "verbalized_confidence"]
+  agg: ["mean", "max"]
+  entropy_topk_ablation: [5, 20, 50]
+  self_consistency:
+    n_samples: 5
+    temperature: 0.7
+  verbalized_confidence:
+    scale: 100
+
+annotation:
+  error_types: ["wrong_search_query", "wrong_fact_extraction",
+                "faulty_reasoning", "premature_or_wrong_answer",
+                "formatting_tool_error"]
+  use_programmatic_signal: true
+  use_llm_judge: true
+  judge_temperature: 0.0
+
+localization:
+  rules: ["argmax", "topk", "earliest_above_threshold",
+          "cascade_upstream", "cascade_gradient", "cascade_weighted"]
+  topk: [2, 3]
+  threshold_percentile: 75
+
+repair:
+  baselines: ["full_restart", "random_step", "oracle_targeted"]
+  uncertainty_metrics: ["token_entropy_max", "perplexity", "max_token_prob_max",
+                        "self_consistency", "verbalized_confidence"]
+  uncertainty_rules: ["argmax", "topk", "earliest_above_threshold",
+                      "cascade_upstream", "cascade_gradient", "cascade_weighted"]
+  topk_for_repair: 3
+  threshold_percentile: 75
+  backtrack_offsets: [0, 2]
+  nudge_types: ["generic", "informed"]
+  seeds: [0, 1, 2]
+  nudge:
+    enabled: true
+    temperature: 0.7
+    retry_hint: "Your previous attempt at this step may have been wrong. Reconsider carefully."
+  budget:
+    match_to: "full_restart"
+    multipliers: [0.5, 1.0, 2.0]
+
+evaluation:
+  scorer: ["em", "f1"]
+  semantic_equivalence_check: true
+  bootstrap_iters: 10000
+  ci: 0.95
+  paired_test: "mcnemar"
+  multiple_comparison_correction: "holm"
+
+ablations:
+  model_size: false
+  model_size_small: "Qwen/Qwen2.5-3B-Instruct"

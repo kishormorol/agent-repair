@@ -2,6 +2,8 @@
 
     python scripts/run_setup.py --config config/config_local.yaml
     python scripts/run_setup.py --config config/config_colab.yaml --dataset fever
+
+Supports: HotpotQA, FEVER, 2WikiMultiHopQA, MuSiQue.
 """
 from __future__ import annotations
 
@@ -58,6 +60,8 @@ def main() -> None:
     ds_name = ds_info["name"]
     raw_filename = ds_info["raw_filename"]
     download_fn = ds_info["download"]
+
+    log.info(f"Dataset: {ds_name} (file: {raw_filename})")
 
     raw_dir = cfg.path("data_raw")
     os.makedirs(raw_dir, exist_ok=True)
