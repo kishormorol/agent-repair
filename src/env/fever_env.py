@@ -34,127 +34,64 @@ def load_dataset(path: str) -> List[Dict[str, Any]]:
     return load_json(path)
 
 
-def download_fever(dst: str) -> int:
-    """Download FEVER dev set from HuggingFace and reshape to our format.
-
-    Each record gets: _id, question (=claim), answer (=label), context
-    (list of [title, [sentences]]), supporting_facts, type, level.
-
-    Uses ``EleutherAI/fever`` (Parquet-native, no loading script).
-    """
-    from datasets import load_dataset as hf_load
-
-    ds = hf_load("EleutherAI/fever", split="validation")
-
-    # Group evidence by claim id
-    recs = []
-    for ex in ds:
-        claim_id = str(ex["id"])
-        label = ex.get("label", "NOT ENOUGH INFO")
-        claim = ex["claim"]
-
-        # Parse evidence annotations
-        context = []
-        sf = []
-        evidence = ex.get("evidence", None)
-        if evidence and isinstance(evidence, list):
-            titles_seen = set()
-            for ev_group in evidence:
-                if isinstance(ev_group, list):
-                    for ev in ev_group:
-                        if isinstance(ev, list) and len(ev) >= 3:
-                            title = str(ev[2]).replace("_", " ") if ev[2] else ""
-                            sent_id = ev[3] if len(ev) > 3 and isinstance(ev[3], int) else 0
-                            if title and title not in titles_seen:
-                                titles_seen.add(title)
-                                context.append([title, [claim]])
-                                sf.append([title, sent_id])
-
-        recs.append({
-            "_id": claim_id,
-            "question": claim,
-            "answer": label if label in FEVER_LABELS else "NOT ENOUGH INFO",
-            "type": "verification",
-            "level": "claim",
-            "context": context,
-            "supporting_facts": sf,
-        })
-
-    save_json(recs, dst)
-    return len(recs)
+_FEVER_URLS = [
+    "https://s3-eu-west-1.amazonaws.com/fever.public/shared_task_dev.jsonl",
+    "https://fever.ai/download/fever/shared_task_dev.jsonl",
+]
 
 
-def download_fever_with_evidence(dst: str) -> int:
-    """Download FEVER from HuggingFace with evidence paragraphs.
+def _download_fever_jsonl(dst_jsonl: str) -> list:
+    """Download FEVER shared_task_dev.jsonl from fever.ai / S3."""
+    for url in _FEVER_URLS:
+        try:
+            print(f"  Trying: {url}")
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                raw = r.read().decode("utf-8")
+            records = [json.loads(line) for line in raw.strip().split("\n") if line.strip()]
+            # Cache the raw jsonl
+            with open(dst_jsonl, "w", encoding="utf-8") as f:
+                f.write(raw)
+            return records
+        except Exception as e:
+            print(f"    failed: {e}")
+    raise RuntimeError("Could not download FEVER dev set from any source.")
 
-    Uses ``copenlu/fever_gold_evidence`` for gold evidence context when
-    available, and falls back to ``EleutherAI/fever`` for full label coverage.
-    """
-    from datasets import load_dataset as hf_load
 
-    # Try gold-evidence dataset first (has actual evidence sentences)
-    gold_evidence = {}
-    try:
-        gold_ds = hf_load("copenlu/fever_gold_evidence", split="valid")
-        for ex in gold_ds:
-            cid = str(ex["id"])
-            gold_evidence[cid] = ex.get("evidence", [])
-    except Exception:
-        pass
-
-    # Load full dev set (all 3 labels)
-    ds = hf_load("EleutherAI/fever", split="validation")
-
+def _fever_jsonl_to_records(raw_records: list) -> list:
+    """Convert FEVER shared_task_dev.jsonl rows to our standard format."""
     recs = []
     seen_ids = set()
-    for ex in ds:
+    for ex in raw_records:
         claim_id = str(ex["id"])
         if claim_id in seen_ids:
             continue
         seen_ids.add(claim_id)
 
         label = ex.get("label", "NOT ENOUGH INFO")
-        claim = ex["claim"]
+        claim = ex.get("claim", "")
 
-        # Build context from evidence annotations
+        # Parse evidence: list of annotation sets, each a list of
+        # [annotation_id, evidence_id, wiki_title, sentence_id]
         context = []
         sf = []
-        evidence = ex.get("evidence", None)
         evidence_titles = set()
-        if evidence and isinstance(evidence, list):
-            for ev_group in evidence:
-                if isinstance(ev_group, list):
-                    for ev in ev_group:
-                        if isinstance(ev, list) and len(ev) >= 3:
-                            title = str(ev[2]).replace("_", " ") if ev[2] else ""
-                            sent_id = ev[3] if len(ev) > 3 and isinstance(ev[3], int) else 0
-                            if title and title not in evidence_titles:
-                                evidence_titles.add(title)
-                                sf.append([title, sent_id])
-
-        # Use gold evidence sentences if available
-        if claim_id in gold_evidence:
-            for ge in gold_evidence[claim_id]:
-                if isinstance(ge, dict):
-                    title = ge.get("title", "").replace("_", " ")
-                    sent = ge.get("sentence", "")
-                    if title and title not in evidence_titles:
-                        evidence_titles.add(title)
-                    # Find or create context entry
-                    found = False
-                    for c in context:
-                        if c[0] == title:
-                            if sent and sent not in c[1]:
-                                c[1].append(sent)
-                            found = True
-                            break
-                    if not found and title:
-                        context.append([title, [sent] if sent else [claim]])
-
-        # Add basic context for evidence titles not yet in context
-        for title in evidence_titles:
-            if not any(c[0] == title for c in context):
-                context.append([title, [claim]])
+        for ev_set in (ex.get("evidence") or []):
+            if not isinstance(ev_set, list):
+                continue
+            for ev in ev_set:
+                if not isinstance(ev, list) or len(ev) < 4:
+                    continue
+                title_raw = ev[2]
+                sent_id = ev[3]
+                if title_raw is None:
+                    continue
+                title = str(title_raw).replace("_", " ")
+                if title and title not in evidence_titles:
+                    evidence_titles.add(title)
+                    context.append([title, [claim]])
+                    if isinstance(sent_id, int) and sent_id >= 0:
+                        sf.append([title, sent_id])
 
         recs.append({
             "_id": claim_id,
@@ -165,9 +102,34 @@ def download_fever_with_evidence(dst: str) -> int:
             "context": context,
             "supporting_facts": sf,
         })
+    return recs
 
-    save_json(recs, dst)
-    return len(recs)
+
+def download_fever(dst: str) -> int:
+    """Download FEVER dev set from fever.ai and reshape to our format.
+
+    Each record gets: _id, question (=claim), answer (=label), context
+    (list of [title, [sentences]]), supporting_facts, type, level.
+    """
+    import tempfile
+    tmp = tempfile.NamedTemporaryFile(suffix=".jsonl", delete=False)
+    tmp.close()
+    try:
+        raw = _download_fever_jsonl(tmp.name)
+        recs = _fever_jsonl_to_records(raw)
+        save_json(recs, dst)
+        return len(recs)
+    finally:
+        if os.path.exists(tmp.name):
+            os.unlink(tmp.name)
+
+
+def download_fever_with_evidence(dst: str) -> int:
+    """Download FEVER dev set with evidence — same as download_fever.
+
+    The shared_task_dev.jsonl already contains evidence annotations.
+    """
+    return download_fever(dst)
 
 
 def sample_pool(data: List[Dict[str, Any]], size: int,
