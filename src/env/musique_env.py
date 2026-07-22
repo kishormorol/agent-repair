@@ -36,7 +36,17 @@ def download_musique(dst: str) -> int:
     """
     from datasets import load_dataset as hf_load
 
-    ds = hf_load("drt/musique", split="validation", trust_remote_code=True)
+    # Try bdsaglam/musique first (Parquet, no loading script), then drt/musique
+    ds = None
+    for repo in ["bdsaglam/musique", "drt/musique"]:
+        try:
+            ds = hf_load(repo, split="validation")
+            print(f"  Loaded MuSiQue from {repo}")
+            break
+        except Exception as e:
+            print(f"  {repo} failed: {e}")
+    if ds is None:
+        raise RuntimeError("Could not load MuSiQue from any HuggingFace source.")
 
     recs = []
     for ex in ds:
