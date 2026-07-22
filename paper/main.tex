@@ -10,17 +10,11 @@
 \urlstyle{rm}
 \def\UrlFont{\rm}
 \usepackage{natbib}
-\usepackage{caption}
 
 % Additional packages
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{booktabs}
-\usepackage{multirow}
-\usepackage{algorithm}
-\usepackage{algorithmic}
 \usepackage{xcolor}
-\usepackage{enumitem}
-\usepackage{subcaption}
 \usepackage{hyperref}
 
 \newcommand{\ours}{\textsc{UncRepair}}
@@ -54,7 +48,7 @@ Large language model (LLM) agents that decompose complex tasks into multi-step r
 
 When failure occurs, a natural question arises: \emph{how should we repair the trajectory?} Two extremes define the design space:
 
-\begin{itemize}[nosep,leftmargin=*]
+\begin{itemize}
   \item \textbf{Full restart}: Discard the entire trajectory and regenerate from scratch. Simple but wasteful---correct early steps are thrown away.
   \item \textbf{Targeted repair}: Identify the specific broken step and regenerate only from that point onward. Efficient but requires accurate error localization.
 \end{itemize}
@@ -63,13 +57,13 @@ Prior work has largely assumed that targeted repair is preferable when the broke
 
 Our contributions are:
 
-\begin{enumerate}[nosep,leftmargin=*]
+\begin{enumerate}
   \item \textbf{A systematic repair framework} comprising 33 strategies (3 baselines + 5 uncertainty metrics $\times$ 6 localization rules), evaluated with backtrack offsets and two nudge types, totaling 126 configurations under matched compute budgets.
 
   \item \textbf{Three cascade-aware localization rules} that account for error propagation in sequential reasoning: cascade-upstream, cascade-gradient, and cascade-weighted. These address the finding that $\sim$70\% of localization misses occur because the true error is \emph{upstream} of the uncertainty peak.
 
   \item \textbf{Three key empirical findings} across three benchmarks (HotpotQA, FEVER, MuSiQue), challenging conventional assumptions about repair:
-  \begin{itemize}[nosep]
+  \begin{itemize}
     \item Full restart outperforms oracle-targeted repair on multi-hop QA (14.2\% vs.\ 10.9\% on HotpotQA), suggesting context contamination limits surgical repair.
     \item Backtracking upstream consistently improves repair across all tasks, confirming error cascade propagation.
     \item Uncertainty-guided strategies consistently outperform random baselines, validating internal model signals for error localization.
@@ -155,7 +149,7 @@ where $c_i$ is the extracted numerical confidence.
 Given per-step uncertainty scores $\{U_1, \ldots, U_T\}$ for a chosen metric, we apply six rules to predict the broken step $\hat{k}$.
 
 \paragraph{Standard Rules.}
-\begin{itemize}[nosep,leftmargin=*]
+\begin{itemize}
   \item \textbf{Argmax}: $\hat{k} = \arg\max_i U_i$. The most uncertain step.
   \item \textbf{Top-$k$}: Select the $k$ highest-uncertainty steps; return the \emph{earliest} index. Hedges against single-step noise.
   \item \textbf{Earliest-above-threshold}: Return the earliest step with $U_i \geq Q_{75}(\{U_j\})$, where $Q_{75}$ is the 75th percentile within the trajectory.
@@ -163,7 +157,7 @@ Given per-step uncertainty scores $\{U_1, \ldots, U_T\}$ for a chosen metric, we
 
 \paragraph{Cascade-Aware Rules.} In our pilot study, approximately 70\% of localization misses occurred because the true error was \emph{upstream} of the uncertainty peak---errors propagate forward, inflating uncertainty in later steps. We propose three rules to address this:
 
-\begin{itemize}[nosep,leftmargin=*]
+\begin{itemize}
   \item \textbf{Cascade-upstream}: From the uncertainty peak, look back $L$ steps: $\hat{k} = \max(0, \arg\max_i U_i - L)$, with $L=2$.
   \item \textbf{Cascade-gradient}: Select the step with the largest uncertainty \emph{increase}: $\hat{k} = \arg\max_{i>0} (U_i - U_{i-1})$. Sudden jumps mark where reasoning first diverged.
   \item \textbf{Cascade-weighted}: A composite score blending uncertainty magnitude with positional bias toward earlier steps:
@@ -178,7 +172,7 @@ Given per-step uncertainty scores $\{U_1, \ldots, U_T\}$ for a chosen metric, we
 \paragraph{Strategy Selection.} Given a failed trajectory, each repair strategy selects a target step $k$, optionally applies a \emph{backtrack offset} $b \in \{0, 1, 2, 3\}$ to start from $k' = \max(0, k - b)$, and regenerates from $k'$ onward.
 
 \paragraph{Nudge Types.} Before the first regenerated step, a nudge is injected into the prompt:
-\begin{itemize}[nosep,leftmargin=*]
+\begin{itemize}
   \item \textbf{Generic}: ``Your previous attempt at this step may have been wrong. Reconsider carefully.''
   \item \textbf{Informed}: Error-type-specific hint (\eg, ``Your search query was likely wrong. Try different search terms'' for \texttt{wrong\_search\_query} errors).
 \end{itemize}
@@ -196,7 +190,7 @@ Given per-step uncertainty scores $\{U_1, \ldots, U_T\}$ for a chosen metric, we
 
 We evaluate on three benchmarks spanning distinct reasoning types:
 
-\begin{itemize}[nosep,leftmargin=*]
+\begin{itemize}
   \item \textbf{HotpotQA} \citep{yang2018hotpotqa}: 2-hop multi-hop QA over Wikipedia. Distractor setting with 10 paragraphs per question. 500 stratified questions (by level and type). 7,405 total dev questions.
   \item \textbf{FEVER} \citep{thorne2018fever}: Fact verification---classify claims as SUPPORTS, REFUTES, or NOT ENOUGH INFO. 500 stratified questions (by label). 19,998 total dev claims.
   \item \textbf{MuSiQue} \citep{trivedi2022musique}: 2--4 hop compositional QA designed to defeat shortcut reasoning. 500 stratified questions (by hop count). 2,417 total dev questions.
@@ -208,7 +202,7 @@ All datasets use offline document collections (no live retrieval), ensuring repr
 
 We use eight open-weight models across three capacity tiers, all with AWQ 4-bit quantization for A100-80GB inference:
 
-\begin{itemize}[nosep,leftmargin=*]
+\begin{itemize}
   \item \textbf{Small (7--9B)}: Qwen2.5-7B, Llama-3.1-8B, Gemma-2-9B
   \item \textbf{Medium (12--27B)}: Qwen2.5-14B, Mistral-Nemo-12B, Gemma-2-27B
   \item \textbf{Large (70--72B)}: Llama-3.3-70B, Qwen2.5-72B
@@ -223,7 +217,7 @@ We evaluate \textbf{33 base strategies}: 3 baselines (full restart, random step,
 
 For each failed trajectory, we obtain ground-truth error labels via a hybrid approach:
 
-\begin{enumerate}[nosep,leftmargin=*]
+\begin{enumerate}
   \item \textbf{Programmatic signal}: Check whether all gold supporting documents were retrieved. The last search step before a retrieval gap is a candidate broken step.
   \item \textbf{72B judge}: Qwen2.5-72B-Instruct examines the full trajectory and identifies the earliest broken step along with one of five error types: \texttt{wrong\_search\_query}, \texttt{wrong\_fact\_extraction}, \texttt{faulty\_reasoning}, \texttt{premature\_or\_wrong\_answer}, or \texttt{formatting\_tool\_error}.
 \end{enumerate}
@@ -402,7 +396,7 @@ Our cascade-aware rules explicitly model this phenomenon. Cascade-gradient, whic
 
 We identify two dominant failure modes in localization:
 
-\begin{enumerate}[nosep,leftmargin=*]
+\begin{enumerate}
   \item \textbf{Error upstream of peak} ($\sim$70\% of misses): The true broken step precedes the uncertainty peak, as described above. Cascade-aware rules partially address this.
   \item \textbf{Uncertain but correct exploration} ($\sim$20\% of misses): The highest-uncertainty step is actually a valid exploratory action (\eg, searching for an entity that turns out to be irrelevant). High uncertainty on exploration steps is appropriate behavior, not a signal of error.
 \end{enumerate}
@@ -415,7 +409,7 @@ We identify two dominant failure modes in localization:
 \paragraph{Implications for Agent Design.} Our results challenge the assumption that more precise error localization always leads to better repair. The context contamination effect suggests that agent architectures should consider mechanisms for context isolation---\eg, generating repair suffixes in a separate context window that excludes the failed prefix, or using summarized rather than verbatim history.
 
 \paragraph{When to Target vs.\ Restart.} Based on our findings, we recommend:
-\begin{itemize}[nosep,leftmargin=*]
+\begin{itemize}
   \item \textbf{Short trajectories} ($\leq$ 4 steps): Use targeted repair with 2-step backtracking. Context contamination is minimal, and targeted repair saves compute.
   \item \textbf{Long trajectories} ($>$ 4 steps): Use full restart. The benefit of a clean context outweighs the cost of redoing early steps.
   \item \textbf{High-stakes applications}: Use ensemble strategies when compute allows, as they achieve 2--4$\times$ higher fix rates.
@@ -434,6 +428,5 @@ We presented a systematic study of repair strategies for multi-step LLM agents, 
 % REFERENCES
 % =========================================================================== %
 \bibliography{references}
-\bibliographystyle{aaai25}
 
 \end{document}
