@@ -9,8 +9,8 @@ The same driver serves:
   * generation  -> episodes start empty (greedy)
   * repair      -> episodes start with a kept prefix + a nudge (sampled)
 
-A batch is homogeneous in (temperature, seed) — the callers loop over seeds — so
-one SamplingParams applies to the whole batch.
+A batch is homogeneous in (temperature, seed). Per-prompt token limits enforce
+each episode's remaining recovery budget.
 
 Note: under batching, per-episode wall-clock latency is not meaningful (many run
 concurrently). Token counts and tool-call counts remain exact, and those are the
@@ -26,7 +26,7 @@ from ..env.base_env import BaseEnv, score_answer
 from ..env.hotpot_env import HotpotEnv
 from ..llm.vllm_client import VLLMClient
 from .react_agent import (
-    Step, Trajectory, parse_action, build_messages, STOP,
+    Step, Trajectory, parse_action, build_messages, resolve_step_limit, replay_prefix, STOP,
 )
 
 
@@ -49,6 +49,8 @@ class Episode:
     gen_tokens_run: int = 0              # this run only (excludes replayed prefix)
     tool_calls_run: int = 0
     latency_run_s: float = 0.0
+    prompt_tokens_run: Optional[int] = 0
+    model_requests_run: int = 0
     n_prefix: int = 0
 
     done: bool = False
@@ -71,7 +73,9 @@ class Episode:
         t.meta["recovery_tool_calls"] = self.tool_calls_run
         t.meta["recovery_latency_s"] = self.latency_run_s
         t.meta["n_prefix_steps"] = self.n_prefix
-        scorer = self.score_fn or score_answer
+        t.meta["recovery_prompt_tokens"] = self.prompt_tokens_run
+        t.meta["recovery_model_requests"] = self.model_requests_run
+        scorer = self.score_fn or getattr(self.env, "score_answer", score_answer)
         sc = scorer(t.final_answer, t.gold_answer)
         t.em, t.f1, t.success = sc["em"], sc["f1"], sc["correct"]
         return t
@@ -81,18 +85,20 @@ def _make_episode(record: Dict[str, Any], max_steps: int, temperature: float,
                   seed: Optional[int], prefix_steps: Optional[List[Step]] = None,
                   nudge: Optional[str] = None, token_budget: Optional[int] = None,
                   meta: Optional[Dict[str, Any]] = None,
-                  env_cls=None, score_fn=None) -> Episode:
+                  env_cls=None, score_fn=None, step_budget_mode="total") -> Episode:
     env_cls = env_cls or HotpotEnv
     env = env_cls(record=record)
     steps = list(prefix_steps or [])
-    ep = Episode(env=env, steps=steps, max_steps=max_steps, temperature=temperature,
-                 seed=seed, nudge=nudge, token_budget=token_budget, meta=meta or {},
+    step_limit = resolve_step_limit(max_steps, len(steps), step_budget_mode)
+    run_meta = dict(meta or {}, step_budget_mode=step_budget_mode,
+                    new_step_allowance=max(0, step_limit - len(steps)))
+    ep = Episode(env=env, steps=steps, max_steps=step_limit, temperature=temperature,
+                 seed=seed, nudge=nudge, token_budget=token_budget, meta=run_meta,
                  score_fn=score_fn)
     # Replay kept steps so tool state (current page, retrieved titles) is correct,
     # and carry their already-paid cost into the totals.
+    replay_prefix(env, steps)
     for s in steps:
-        if s.is_tool_call:
-            env.step(s.action, s.action_input)
         ep.total_gen_tokens += s.n_gen_tokens
         if s.action in ("search", "lookup"):
             ep.num_tool_calls += 1
@@ -120,14 +126,22 @@ def _drive(client: VLLMClient, episodes: List[Episode], max_tokens_per_step: int
         msgs = [build_messages(e.env.question, e.steps, e.nudge) for e in active]
         temp = active[0].temperature      # batches are homogeneous
         seed = active[0].seed
+        limits = [min(max_tokens_per_step, e.token_budget - e.gen_tokens_run)
+                  if e.token_budget is not None else max_tokens_per_step
+                  for e in active]
 
         t0 = time.time()
         gens = client.chat_batch(msgs, temperature=temp,
-                                 max_tokens=max_tokens_per_step,
+                                 max_tokens=limits,
                                  stop=STOP, seed=seed, progress=progress)
+        if len(gens) != len(active):
+            raise ValueError("Inference returned a different number of completions than prompts")
         dt = time.time() - t0
 
         for e, gen in zip(active, gens):
+            e.model_requests_run += 1
+            e.prompt_tokens_run = (None if e.prompt_tokens_run is None or gen.prompt_tokens is None
+                                    else e.prompt_tokens_run + gen.prompt_tokens)
             e.nudge = None                # nudge only affects the first regenerated step
             thought, action, action_input = parse_action(gen.text)
             idx = len(e.steps)
@@ -141,7 +155,10 @@ def _drive(client: VLLMClient, episodes: List[Episode], max_tokens_per_step: int
                 e.steps.append(Step(idx, thought, action or "invalid", action_input,
                                     "Invalid action. Use search, lookup, or finish.",
                                     False, None, gen.num_tokens, dt, gen))
-                e.done, e.terminated_reason = True, "error"
+                e.meta["invalid_action_step"] = idx
+                e.done = True
+                e.terminated_reason = ("budget" if e.token_budget is not None
+                                       and e.gen_tokens_run >= e.token_budget else "error")
                 continue
 
             res = e.env.step(action, action_input)
@@ -176,7 +193,8 @@ def run_repair_batch(client: VLLMClient, jobs: List[Dict[str, Any]],
                      max_steps: int, max_tokens_per_step: int,
                      temperature: float, seed: Optional[int],
                      progress: bool = False,
-                     env_cls=None, score_fn=None) -> List[Trajectory]:
+                     env_cls=None, score_fn=None,
+                     step_budget_mode="total") -> List[Trajectory]:
     """Run a batch of repair episodes concurrently.
 
     Each job: {record, prefix_steps (List[Step]), nudge, token_budget, meta}
@@ -187,7 +205,8 @@ def run_repair_batch(client: VLLMClient, jobs: List[Dict[str, Any]],
                          nudge=j.get("nudge"),
                          token_budget=j.get("token_budget"),
                          meta=j.get("meta"),
-                         env_cls=env_cls, score_fn=score_fn)
+                         env_cls=env_cls, score_fn=score_fn,
+                         step_budget_mode=step_budget_mode)
            for j in jobs]
     _drive(client, eps, max_tokens_per_step, progress)
     return [e.to_trajectory() for e in eps]

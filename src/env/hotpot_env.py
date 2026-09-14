@@ -77,10 +77,12 @@ def exact_match(prediction: str, ground_truth: str) -> int:
 
 
 def f1_score(prediction: str, ground_truth: str) -> float:
-    pred_tokens = normalize_answer(prediction).split()
-    gold_tokens = normalize_answer(ground_truth).split()
-    if len(pred_tokens) == 0 or len(gold_tokens) == 0:
-        return float(pred_tokens == gold_tokens)
+    prediction, ground_truth = normalize_answer(prediction), normalize_answer(ground_truth)
+    # HotpotQA's categorical answers require an exact normalized match.
+    categorical = {"yes", "no", "noanswer"}
+    if prediction != ground_truth and (prediction in categorical or ground_truth in categorical):
+        return 0.0
+    pred_tokens, gold_tokens = prediction.split(), ground_truth.split()
     common = collections.Counter(pred_tokens) & collections.Counter(gold_tokens)
     num_same = sum(common.values())
     if num_same == 0:
@@ -118,6 +120,7 @@ class HotpotEnv:
     """
     record: Dict[str, Any]
     max_sentences_return: int = 5
+    score_answer = staticmethod(score_answer)
 
     # internal state
     _titles: List[str] = field(default_factory=list)

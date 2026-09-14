@@ -65,9 +65,12 @@ def resolve_dataset(cfg, args):
             all_ds = yaml.safe_load(f) or {}
         ds_meta = all_ds.get(dataset_name, {})
 
-    raw_filename = ds_meta.get("raw_filename", cfg.raw["dataset"].get("raw_filename", ""))
-    pool_size = ds_meta.get("pool_size", cfg.raw["dataset"].get("pool_size", 500))
-    stratify_by = ds_meta.get("stratify_by", cfg.raw["dataset"].get("stratify_by", ["type"]))
+    # An explicit profile wins over catalog defaults for its own dataset.
+    profile = cfg.raw["dataset"] if dataset_name == cfg.raw["dataset"].get("name") else {}
+    metadata = {**ds_meta, **profile}
+    raw_filename = metadata.get("raw_filename", "")
+    pool_size = metadata.get("pool_size", 500)
+    stratify_by = metadata.get("stratify_by", ["type"])
 
     return {
         "name": dataset_name,
@@ -111,15 +114,14 @@ def resolve_model(cfg, args, log=None):
                             "dtype": m.get("dtype", "auto"),
                             "gpu_memory_utilization": m.get("gpu_memory_utilization", 0.90),
                             "reason": f"models.yaml: {model_key} ({'AWQ' if use_awq else 'fp16'})"}
-        if log:
-            log.warning(f"Model key '{model_key}' not found in models.yaml")
+        raise ValueError(f"Model key '{model_key}' not found in models.yaml")
 
     # Fall back to config's default or auto-resolution
     return None  # let the caller use resolve_agent_model()
 
 
 def load_agent(cfg, log, args=None):
-    """Load the agent model (auto fp16/AWQ by VRAM, or from --model flag)."""
+    """Load the explicitly configured agent, rejecting an incompatible model cache."""
     from src.llm import VLLMClient, resolve_agent_model, gpu_vram_gb
 
     model_override = resolve_model(cfg, args, log) if args else None

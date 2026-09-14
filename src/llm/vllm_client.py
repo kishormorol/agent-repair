@@ -18,40 +18,21 @@ from typing import Any, Dict, List, Optional
 
 
 def resolve_agent_model(cfg, save: bool = True) -> Dict[str, Any]:
-    """Pick the agent model to fit the current GPU, and persist the choice so
-    every stage uses the SAME model.
-
-    - GPU < 20 GB (e.g. T4 16 GB)  -> 4-bit AWQ (fits, still gives logprobs)
-    - GPU >= 20 GB (L4/A100)       -> fp16 (config default)
-
-    The decision is saved to data_processed/agent_model.json on first call and
-    reused thereafter (delete that file to re-decide, e.g. after switching GPU).
-    """
+    """Persist the configured model exactly; never silently substitute one."""
     from ..utils.io import save_json, load_json
     path = os.path.join(cfg.path("data_processed"), "agent_model.json")
-    if os.path.exists(path):
-        return load_json(path)
-
-    vram = None
-    try:
-        import torch
-        if torch.cuda.is_available():
-            vram = torch.cuda.get_device_properties(0).total_memory / 1e9
-    except Exception:
-        pass
-
     base = cfg.models.agent
-    if vram is not None and vram < 20:
-        # Small GPU: try AWQ quantized variant of the configured model
-        awq_name = base.name.rstrip("/") + "-AWQ"
-        choice = {"name": awq_name, "dtype": "auto",
-                  "gpu_memory_utilization": 0.90, "vram_gb": round(vram, 1),
-                  "reason": f"{vram:.0f} GB GPU -> 4-bit AWQ (fits small GPUs)"}
-    else:
-        choice = {"name": base.name, "dtype": base.dtype,
-                  "gpu_memory_utilization": base.gpu_memory_utilization,
-                  "vram_gb": round(vram, 1) if vram else None,
-                  "reason": f"{('%.0f GB' % vram) if vram else 'unknown GPU'} -> fp16"}
+    if os.path.exists(path):
+        cached = load_json(path)
+        if cached.get("name") != base.name or cached.get("dtype") != base.dtype:
+            raise ValueError("Cached agent model differs from configuration; use a new run directory")
+        return cached
+
+    vram = gpu_vram_gb()
+    choice = {"name": base.name, "dtype": base.dtype,
+              "gpu_memory_utilization": base.gpu_memory_utilization,
+              "vram_gb": round(vram, 1) if vram else None,
+              "reason": "exact configured model; no automatic model or quantization fallback"}
     if save:
         save_json(choice, path)
     return choice
@@ -84,6 +65,7 @@ class GenerationResult:
     text: str
     token_ids: List[int]
     tokens: List[TokenInfo]
+    prompt_tokens: Optional[int] = None
 
     @property
     def num_tokens(self) -> int:
@@ -91,13 +73,15 @@ class GenerationResult:
 
     def to_dict(self) -> Dict[str, Any]:
         return {"text": self.text, "token_ids": self.token_ids,
-                "tokens": [t.to_dict() for t in self.tokens]}
+                "tokens": [t.to_dict() for t in self.tokens],
+                "prompt_tokens": self.prompt_tokens}
 
     @staticmethod
     def from_dict(d: Dict[str, Any]) -> "GenerationResult":
         return GenerationResult(
             text=d["text"], token_ids=d.get("token_ids", []),
             tokens=[TokenInfo.from_dict(t) for t in d.get("tokens", [])],
+            prompt_tokens=d.get("prompt_tokens"),
         )
 
 
@@ -113,26 +97,15 @@ def gpu_vram_gb() -> Optional[float]:
 
 
 def resolve_judge_model(cfg) -> Dict[str, Any]:
-    """Pick the annotation judge to fit the GPU.
-
-    >= 60 GB (H100/A100-80)  -> 72B 4-bit AWQ  (best labels)
-    >= 34 GB (A100-40)       -> 72B 4-bit AWQ  (tight but fits)
-    <  34 GB                 -> 32B 4-bit AWQ  (fallback)
-    An explicit `models.judge.fallback.use_fallback: true` always wins.
-    """
+    """Use the configured judge; a smaller judge requires explicit opt-in."""
     jc = cfg.raw["models"]["judge"]
     if jc["fallback"]["use_fallback"]:
         return {"name": jc["fallback"]["name"], "dtype": "auto",
                 "gpu_memory_utilization": jc["gpu_memory_utilization"],
                 "reason": "forced fallback via config"}
-    vram = gpu_vram_gb()
-    if vram is None or vram >= 34:
-        return {"name": jc["name"], "dtype": jc["dtype"],
-                "gpu_memory_utilization": jc["gpu_memory_utilization"],
-                "reason": f"{('%.0f GB' % vram) if vram else 'unknown GPU'} -> 72B judge"}
-    return {"name": jc["fallback"]["name"], "dtype": "auto",
+    return {"name": jc["name"], "dtype": jc["dtype"],
             "gpu_memory_utilization": jc["gpu_memory_utilization"],
-            "reason": f"{vram:.0f} GB -> 72B will not fit, using 32B judge"}
+            "reason": "exact configured judge; no automatic fallback"}
 
 
 class VLLMClient:
@@ -141,7 +114,7 @@ class VLLMClient:
     def __init__(self, model_name: str, dtype: str = "float16",
                  max_model_len: int = 8192, gpu_memory_utilization: float = 0.90,
                  logprobs_topk: int = 20, trust_remote_code: bool = True,
-                 seed: int = 0):
+                 seed: int = 0, enable_prefix_caching: Optional[bool] = None):
         self.model_name = model_name
         self.dtype = dtype
         self.max_model_len = max_model_len
@@ -149,6 +122,7 @@ class VLLMClient:
         self.logprobs_topk = logprobs_topk
         self.trust_remote_code = trust_remote_code
         self.seed = seed
+        self.enable_prefix_caching = enable_prefix_caching
         self._llm = None
         self._tokenizer = None
 
@@ -160,6 +134,8 @@ class VLLMClient:
 
         self._tokenizer = AutoTokenizer.from_pretrained(
             self.model_name, trust_remote_code=self.trust_remote_code)
+        cache_options = ({} if self.enable_prefix_caching is None else
+                         {"enable_prefix_caching": self.enable_prefix_caching})
         self._llm = LLM(
             model=self.model_name,
             dtype=self.dtype,
@@ -167,6 +143,7 @@ class VLLMClient:
             gpu_memory_utilization=self.gpu_memory_utilization,
             trust_remote_code=self.trust_remote_code,
             seed=self.seed,
+            **cache_options,
         )
         return self
 
@@ -195,7 +172,7 @@ class VLLMClient:
             seed=seed,
         )
 
-    def _to_result(self, comp) -> GenerationResult:
+    def _to_result(self, comp, prompt_tokens=None) -> GenerationResult:
         """Convert one vLLM CompletionOutput to a GenerationResult."""
         tokens: List[TokenInfo] = []
         # comp.logprobs is a list (len = #generated tokens) of
@@ -214,7 +191,13 @@ class VLLMClient:
                 logprob=float(chosen_lp) if chosen_lp is not None else float("nan"),
                 top_logprobs={int(k): float(v) for k, v in top.items()},
             ))
-        return GenerationResult(text=comp.text, token_ids=list(comp.token_ids), tokens=tokens)
+        return GenerationResult(text=comp.text, token_ids=list(comp.token_ids), tokens=tokens,
+                                prompt_tokens=prompt_tokens)
+
+    @staticmethod
+    def _prompt_tokens(output):
+        ids = getattr(output, "prompt_token_ids", None)
+        return None if ids is None else len(ids)
 
     # --------------------------------------------------------------------- #
     def chat(self, messages: List[Dict[str, str]], temperature: float = 0.0,
@@ -230,10 +213,10 @@ class VLLMClient:
         params = self._sampling_params(temperature, max_tokens, n, stop,
                                        seed if seed is not None else self.seed)
         outputs = self._llm.generate([prompt], params, use_tqdm=False)
-        return [self._to_result(c) for c in outputs[0].outputs]
+        return [self._to_result(c, self._prompt_tokens(outputs[0])) for c in outputs[0].outputs]
 
     def chat_batch(self, batch_messages: List[List[Dict[str, str]]],
-                   temperature: float = 0.0, max_tokens: int = 512,
+                   temperature: float = 0.0, max_tokens: int | List[int] = 512,
                    stop: Optional[List[str]] = None,
                    seed: Optional[int] = None,
                    progress: bool = False) -> List[GenerationResult]:
@@ -241,15 +224,26 @@ class VLLMClient:
 
         Returns a list aligned with `batch_messages`. This is the workhorse for
         batched execution — vLLM runs all prompts concurrently.
+        `max_tokens` may be a shared limit or one positive limit per prompt.
         """
         assert self._llm is not None, "Call .load() first."
         if not batch_messages:
             return []
         prompts = [self._render(m) for m in batch_messages]
-        params = self._sampling_params(temperature, max_tokens, n=1, stop=stop,
-                                       seed=seed if seed is not None else self.seed)
+        if isinstance(max_tokens, list):
+            if len(max_tokens) != len(batch_messages):
+                raise ValueError("Token limits must match the number of prompts")
+            if any(not isinstance(limit, int) or limit <= 0 for limit in max_tokens):
+                raise ValueError("Token limits must be positive integers")
+            params = [self._sampling_params(
+                temperature, limit, n=1, stop=stop,
+                seed=seed if seed is not None else self.seed,
+            ) for limit in max_tokens]
+        else:
+            params = self._sampling_params(temperature, max_tokens, n=1, stop=stop,
+                                           seed=seed if seed is not None else self.seed)
         outputs = self._llm.generate(prompts, params, use_tqdm=progress)
-        return [self._to_result(o.outputs[0]) for o in outputs]
+        return [self._to_result(o.outputs[0], self._prompt_tokens(o)) for o in outputs]
 
     def chat_batch_n(self, batch_messages: List[List[Dict[str, str]]], n: int,
                      temperature: float = 0.7, max_tokens: int = 512,
@@ -268,7 +262,7 @@ class VLLMClient:
         params = self._sampling_params(temperature, max_tokens, n=n, stop=stop,
                                        seed=seed if seed is not None else self.seed)
         outputs = self._llm.generate(prompts, params, use_tqdm=progress)
-        return [[self._to_result(c) for c in o.outputs] for o in outputs]
+        return [[self._to_result(c, self._prompt_tokens(o)) for c in o.outputs] for o in outputs]
 
     def unload(self) -> None:
         """Release GPU memory (useful before switching agent<->judge model)."""

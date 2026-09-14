@@ -36,6 +36,7 @@ from .hotpot_env import (
     HotpotEnv,
     load_dataset as hotpot_load,
     sample_pool as hotpot_sample,
+    score_answer as hotpot_score,
 )
 register_dataset(
     "hotpotqa",
@@ -43,7 +44,7 @@ register_dataset(
     load_fn=hotpot_load,
     sample_fn=hotpot_sample,
     download_fn=None,  # handled in run_setup
-    score_fn=score_answer,
+    score_fn=hotpot_score,
 )
 
 # Register FEVER

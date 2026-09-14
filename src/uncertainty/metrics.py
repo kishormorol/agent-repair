@@ -30,11 +30,14 @@ def _entropy_from_logprobs(top_logprobs: Dict[int, float], topk: Optional[int] =
     """Entropy (nats) over the top-k next-token distribution, renormalized to
     sum to 1 over the available top-k entries."""
     if not top_logprobs:
-        return 0.0
+        return float("nan")
     items = sorted(top_logprobs.values(), reverse=True)
     if topk is not None:
         items = items[:topk]
-    probs = [math.exp(lp) for lp in items]
+    if not items or any(not math.isfinite(lp) or lp > 0 for lp in items):
+        return float("nan")
+    peak = max(items)
+    probs = [math.exp(lp - peak) for lp in items]
     z = sum(probs)
     if z <= 0:
         return 0.0
@@ -43,7 +46,7 @@ def _entropy_from_logprobs(top_logprobs: Dict[int, float], topk: Optional[int] =
 
 
 def _agg(values: List[float], how: str) -> float:
-    if not values:
+    if not values or any(not math.isfinite(value) for value in values):
         return float("nan")
     if how == "mean":
         return sum(values) / len(values)
@@ -75,10 +78,8 @@ def compute_math_metrics(tokens: List[Dict[str, Any]],
         top = {int(k): float(v) for k, v in t.get("top_logprobs", {}).items()}
         entropies.append(_entropy_from_logprobs(top, entropy_topk))
         lp = t.get("logprob")
-        if lp is None or (isinstance(lp, float) and math.isnan(lp)):
-            # sampled token missing from top-k: approximate with the smallest
-            # returned logprob (a lower bound on its probability).
-            lp = min(top.values()) if top else -20.0
+        if lp is None or not math.isfinite(lp) or lp > 0:
+            lp = float("nan")
         surprisals.append(-lp)
         one_minus_p.append(1.0 - math.exp(lp))
 

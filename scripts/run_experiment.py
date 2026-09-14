@@ -29,10 +29,13 @@ from __future__ import annotations
 
 import json
 import os
+import copy
+import re
 import shutil
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -92,14 +95,24 @@ def build_experiment_matrix(cfg, args) -> list:
     for model_key, model_info in models:
         for ds_name, ds_info in datasets:
             matrix.append((model_key, model_info, ds_name, ds_info))
-
+    if not matrix:
+        raise ValueError("No experiments match the requested model/dataset filters")
     return matrix
 
 
-def setup_experiment_dir(base: str, dataset: str, model_key: str) -> dict:
+def setup_experiment_dir(base: str, dataset: str, model_key: str,
+                         run_id: str | None = None) -> dict:
     """Create output directory structure for one experiment."""
-    exp_dir = os.path.join(base, "outputs", dataset, model_key)
+    if any(not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", part)
+           for part in (dataset, model_key, *([run_id] if run_id is not None else []))):
+        raise ValueError("Dataset, model key, and run ID must be simple directory names")
+    exp_dir = os.path.join(os.path.abspath(base), "outputs", dataset, model_key)
+    if run_id:
+        exp_dir = os.path.join(exp_dir, run_id)
     subdirs = {
+        "outputs": exp_dir,
+        "data_raw": os.path.join(exp_dir, "data", "raw"),
+        "data_processed": os.path.join(exp_dir, "data", "processed"),
         "trajectories": os.path.join(exp_dir, "trajectories"),
         "uncertainty": os.path.join(exp_dir, "uncertainty"),
         "annotations": os.path.join(exp_dir, "annotations"),
@@ -116,9 +129,11 @@ def setup_experiment_dir(base: str, dataset: str, model_key: str) -> dict:
 
 def write_experiment_config(base_cfg: dict, model_info: dict,
                             ds_info: dict, ds_name: str,
-                            exp_dirs: dict, out_path: str) -> None:
+                            exp_dirs: dict, out_path: str, run_id=None) -> None:
     """Write a temporary per-experiment config YAML."""
-    cfg = dict(base_cfg)  # shallow copy
+    cfg = copy.deepcopy(base_cfg)
+    if run_id is not None:
+        cfg["repair"]["run_id"] = run_id
 
     # Override model
     cfg["models"] = dict(cfg["models"])
@@ -133,7 +148,8 @@ def write_experiment_config(base_cfg: dict, model_info: dict,
     cfg["dataset"] = dict(cfg["dataset"])
     cfg["dataset"]["name"] = ds_name
     cfg["dataset"]["raw_filename"] = ds_info.get("raw_filename", "")
-    cfg["dataset"]["pool_size"] = ds_info.get("pool_size", 500)
+    cfg["dataset"]["pool_size"] = cfg.get("experiment", {}).get(
+        "pool_size", cfg["dataset"].get("pool_size", ds_info.get("pool_size", 500)))
     cfg["dataset"]["stratify_by"] = ds_info.get("stratify_by", ["type"])
     if ds_info.get("url"):
         cfg["dataset"]["url"] = ds_info["url"]
@@ -141,7 +157,13 @@ def write_experiment_config(base_cfg: dict, model_info: dict,
     # Override paths to point to experiment-specific dirs
     cfg["paths"] = dict(cfg["paths"])
     for key, path in exp_dirs.items():
-        cfg["paths"][key] = os.path.relpath(path, cfg["paths"].get("local_base", "./"))
+        cfg["paths"][key] = os.path.abspath(path)
+
+    if Path(out_path).exists():
+        previous = yaml.safe_load(Path(out_path).read_text())
+        if previous != cfg:
+            raise ValueError("Experiment configuration changed; use a new run ID")
+        return
 
     with open(out_path, "w") as f:
         yaml.dump(cfg, f, default_flow_style=False, sort_keys=False)
@@ -174,6 +196,7 @@ def main():
                    help="Comma-separated stages to run (default: all)")
     p.add_argument("--dry-run", action="store_true",
                    help="Print the experiment matrix without running")
+    p.add_argument("--run-id", help="Immutable run directory (required outside dry runs)")
     args = p.parse_args()
 
     cfg = load_config(args.config)
@@ -205,6 +228,8 @@ def main():
             print(f"  {i:3d}. {mk:20s} x {dn:20s}  ({mi['tier']}, {mi['family']})")
         print(f"\nTotal: {len(matrix)} runs")
         return
+    if not args.run_id:
+        p.error("--run-id is required; use a fresh name for changed settings")
 
     # Track results
     results = []
@@ -218,12 +243,12 @@ def main():
         print(f"{'=' * 70}")
 
         # Setup experiment directory
-        exp_dirs = setup_experiment_dir(cfg.base, ds_name, model_key)
+        exp_dirs = setup_experiment_dir(cfg.base, ds_name, model_key, args.run_id)
 
         # Write temporary config for this experiment
         tmp_config = os.path.join(exp_dirs["logs"], "experiment_config.yaml")
         write_experiment_config(cfg.raw, model_info, ds_info, ds_name,
-                                exp_dirs, tmp_config)
+                                exp_dirs, tmp_config, run_id=args.run_id)
 
         run_result = {"model": model_key, "dataset": ds_name,
                       "tier": model_info["tier"], "family": model_info["family"],

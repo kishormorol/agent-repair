@@ -177,6 +177,27 @@ def build_messages(question: str, steps: List[Step],
     ]
 
 
+def resolve_step_limit(max_steps: int, prefix_length: int, mode: str) -> int:
+    if mode not in ("total", "new"):
+        raise ValueError("step_budget_mode must be 'total' or 'new'")
+    if not isinstance(max_steps, int) or max_steps < 0:
+        raise ValueError("max_steps must be a nonnegative integer")
+    return max_steps + (prefix_length if mode == "new" else 0)
+
+
+def replay_prefix(env: BaseEnv, steps: List[Step]) -> None:
+    """Restore tool state and reject stale evidence before any new inference."""
+    for index, step in enumerate(steps):
+        if step.index != index or step.action not in ("search", "lookup"):
+            raise ValueError(f"Replay mismatch for {env.qid} at step {index}: invalid prefix step")
+        result = env.step(step.action, step.action_input)
+        mismatched = [key for key in ("observation", "is_tool_call", "retrieved_title")
+                      if getattr(result, key) != getattr(step, key)]
+        if mismatched:
+            raise ValueError(f"Replay mismatch for {env.qid} at step {index}: "
+                             + ", ".join(mismatched))
+
+
 # --------------------------------------------------------------------------- #
 # Agent
 # --------------------------------------------------------------------------- #
@@ -201,25 +222,30 @@ class ReActAgent:
             prefix_steps: Optional[List[Step]] = None,
             nudge: Optional[str] = None,
             token_budget: Optional[int] = None,
-            meta: Optional[Dict[str, Any]] = None) -> Trajectory:
+            meta: Optional[Dict[str, Any]] = None,
+            step_budget_mode: str = "total",
+            record_timing: bool = False) -> Trajectory:
         """Run/resume a ReAct episode.
 
         prefix_steps: steps to keep verbatim (repair). Generation continues from
             index len(prefix_steps). The env must be REPLAYED for these kept
             steps first so tool state (current page, retrieved_titles) is correct.
         nudge: hint text injected before the first re-generated step.
-        token_budget: stop early if generated tokens exceed this (matched budget).
+        token_budget: maximum newly generated tokens, excluding the kept prefix.
+        step_budget_mode: 'new' gives every origin max_steps new turns;
+            'total' preserves the historical total-trajectory cap.
         """
+        wall_started = time.monotonic() if record_timing else None
         traj = Trajectory(qid=env.qid, question=env.question,
                           gold_answer=env.gold_answer, gold_titles=env.gold_titles,
                           meta=meta or {})
         steps: List[Step] = list(prefix_steps or [])
+        step_limit = resolve_step_limit(self.max_steps, len(steps), step_budget_mode)
 
         # Replay kept steps against the env so tool state is consistent, and
         # carry their cost forward into the trajectory totals.
+        replay_prefix(env, steps)
         for s in steps:
-            if s.is_tool_call:
-                env.step(s.action, s.action_input)
             traj.total_gen_tokens += s.n_gen_tokens
             if s.action in ("search", "lookup"):
                 traj.num_tool_calls += 1
@@ -227,10 +253,12 @@ class ReActAgent:
         gen_tokens_this_run = 0
         tool_calls_this_run = 0
         latency_this_run = 0.0
+        prompt_tokens_this_run = 0
+        requests_this_run = 0
         step_idx = len(steps)
         apply_nudge = nudge  # nudge only affects the first re-generated step
 
-        while step_idx < self.max_steps:
+        while step_idx < step_limit:
             if token_budget is not None and gen_tokens_this_run >= token_budget:
                 traj.terminated_reason = "budget"
                 break
@@ -239,11 +267,16 @@ class ReActAgent:
             apply_nudge = None  # consume after first use
 
             t0 = time.time()
+            remaining = (self.max_tokens_per_step if token_budget is None else
+                         min(self.max_tokens_per_step, token_budget - gen_tokens_this_run))
             gens = self.client.chat(messages, temperature=temperature,
-                                    max_tokens=self.max_tokens_per_step,
+                                    max_tokens=remaining,
                                     n=1, stop=STOP, seed=seed)
             dt = time.time() - t0
             gen = gens[0]
+            requests_this_run += 1
+            prompt_tokens_this_run = (None if prompt_tokens_this_run is None or gen.prompt_tokens is None
+                                      else prompt_tokens_this_run + gen.prompt_tokens)
 
             thought, action, action_input = parse_action(gen.text)
 
@@ -256,7 +289,9 @@ class ReActAgent:
                 traj.total_latency_s += dt
                 gen_tokens_this_run += gen.num_tokens
                 latency_this_run += dt
-                traj.terminated_reason = "error"
+                traj.meta["invalid_action_step"] = step_idx
+                traj.terminated_reason = ("budget" if token_budget is not None
+                                          and gen_tokens_this_run >= token_budget else "error")
                 break
 
             res = env.step(action, action_input)
@@ -285,8 +320,17 @@ class ReActAgent:
         traj.meta["recovery_tool_calls"] = tool_calls_this_run
         traj.meta["recovery_latency_s"] = latency_this_run
         traj.meta["n_prefix_steps"] = len(prefix_steps or [])
+        traj.meta["step_budget_mode"] = step_budget_mode
+        traj.meta["new_step_allowance"] = max(0, step_limit - len(prefix_steps or []))
+        traj.meta["recovery_prompt_tokens"] = prompt_tokens_this_run
+        traj.meta["recovery_model_requests"] = requests_this_run
 
         traj.steps = steps
-        sc = score_answer(traj.final_answer, traj.gold_answer)
+        if record_timing:
+            # Include prompt construction and prefix/tool replay, excluding
+            # reference scoring, serialization, and initial model loading.
+            traj.meta["recovery_wall_latency_s"] = time.monotonic() - wall_started
+        scorer = getattr(env, "score_answer", score_answer)
+        sc = scorer(traj.final_answer, traj.gold_answer)
         traj.em, traj.f1, traj.success = sc["em"], sc["f1"], sc["correct"]
         return traj

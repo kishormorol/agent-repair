@@ -1,0 +1,91 @@
+# Development smoke test, NOT a frozen confirmatory study or completed run.
+# Run the stage commands in RUN_LOCAL.md. Do not use the unfiltered matrix.
+project:
+  name: agent-repair
+  seed: 42
+
+paths:
+  drive_base: /content/drive/MyDrive/agent-repair
+  local_base: ./
+  data_raw: runs/iclr2027/hotpotqa/qwen32b/pilot-v1/data/raw
+  data_processed: runs/iclr2027/hotpotqa/qwen32b/pilot-v1/data/processed
+  outputs: runs/iclr2027/hotpotqa/qwen32b/pilot-v1/outputs
+  trajectories: runs/iclr2027/hotpotqa/qwen32b/pilot-v1/outputs/trajectories
+  uncertainty: runs/iclr2027/hotpotqa/qwen32b/pilot-v1/outputs/uncertainty
+  annotations: runs/iclr2027/hotpotqa/qwen32b/pilot-v1/outputs/annotations
+  localization: runs/iclr2027/hotpotqa/qwen32b/pilot-v1/outputs/localization
+  repairs: runs/iclr2027/hotpotqa/qwen32b/pilot-v1/outputs/repairs
+  tables: runs/iclr2027/hotpotqa/qwen32b/pilot-v1/outputs/tables
+  figures: runs/iclr2027/hotpotqa/qwen32b/pilot-v1/outputs/figures
+  logs: runs/iclr2027/hotpotqa/qwen32b/pilot-v1/outputs/logs
+
+runtime:
+  gen_batch_size: 2
+  repair_batch_size: 2
+  uncertainty_batch_size: 2
+  judge_batch_size: 1
+
+models:
+  agent:
+    name: Qwen/Qwen2.5-32B-Instruct-AWQ
+    dtype: auto
+    max_model_len: 8192
+    gpu_memory_utilization: 0.90
+  judge:
+    name: Qwen/Qwen2.5-72B-Instruct-AWQ
+    dtype: auto
+    max_model_len: 8192
+    gpu_memory_utilization: 0.90
+    fallback:
+      use_fallback: false
+      name: Qwen/Qwen2.5-32B-Instruct-AWQ
+
+dataset:
+  name: hotpotqa
+  split: development
+  url: http://curtis.ml.cmu.edu/datasets/hotpot/hotpot_dev_distractor_v1.json
+  raw_filename: hotpot_dev_distractor_v1.json
+  pool_size: 30
+  process_limit: null
+  stratify_by: [level, type]
+
+agent:
+  max_steps: 8
+  temperature: 0.0
+  max_tokens_per_step: 512
+  logprobs_topk: 20
+  tools: [search, lookup, finish]
+  stop_on_answer: true
+
+uncertainty:
+  metrics: [token_entropy, perplexity, max_token_prob]
+  agg: [mean, max]
+  entropy_topk_ablation: [5, 20]
+
+repair:
+  run_id: pilot-v1
+  step_budget_mode: new
+  match_restart_hint: true
+  origin_sweep: true
+  # Perplexity/argmax is a pilot candidate, not a development-selected winner.
+  strategies:
+    - full_restart
+    - random_step
+    - random_step__bt2
+    - fixed_early
+    - unc__perplexity__argmax
+    - unc__perplexity__argmax__bt2
+  topk_for_repair: 3
+  threshold_percentile: 75
+  seeds: [0, 1, 2]
+  nudge:
+    enabled: true
+    temperature: 0.7
+    retry_hint: Your previous attempt at this step may have been wrong. Reconsider carefully.
+  budget:
+    match_to: original_generated_tokens
+    multipliers: [0.5, 1.0]
+
+evaluation:
+  bootstrap_iters: 10000
+  ci: 0.95

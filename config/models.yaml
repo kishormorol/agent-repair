@@ -49,6 +49,13 @@ medium:
     family: "gemma"
 
 large:
+  qwen2.5-32b:
+    name: "Qwen/Qwen2.5-32B-Instruct"
+    awq: "Qwen/Qwen2.5-32B-Instruct-AWQ"
+    dtype: "auto"
+    gpu_memory_utilization: 0.90
+    family: "qwen"
+
   llama-3.3-70b:
     name: "meta-llama/Llama-3.3-70B-Instruct"
     awq: "casperhansen/llama-3.3-70b-instruct-awq"

@@ -36,22 +36,37 @@ def bootstrap_ci(values: List[float], iters: int = 10000, ci: float = 0.95,
 # --------------------------------------------------------------------------- #
 def summarize_strategies(df: pd.DataFrame, iters: int = 10000,
                          ci: float = 0.95) -> pd.DataFrame:
-    """One row per strategy: success (+CI), recovery cost, cost-normalized success."""
+    """Mean seed success per question, with a question-level bootstrap CI.
+
+    Seeds on the same failed trajectory are repeated measurements, not
+    independent questions. Keep them together when estimating uncertainty.
+    Callers must select one dataset, model, and budget before summarizing.
+    """
+    for column in ("dataset", "model_key", "multiplier"):
+        if column in df and df[column].nunique(dropna=False) > 1:
+            raise ValueError("Select one dataset, model, and budget before summarizing")
+    if df.duplicated(["qid", "strategy", "seed"]).any():
+        raise ValueError("Found duplicate (qid, strategy, seed) repair trials")
     rows = []
     for strat, g in df.groupby("strategy"):
-        mean, lo, hi = bootstrap_ci(g["success"].tolist(), iters, ci)
-        tok = g["recovery_gen_tokens"].mean()
+        per_question = g.groupby("qid")[[
+            "success", "recovery_gen_tokens", "recovery_tool_calls",
+            "recovery_latency_s", "targeted_oracle_match",
+        ]].mean()
+        mean, lo, hi = bootstrap_ci(per_question["success"].tolist(), iters, ci)
+        tok = per_question["recovery_gen_tokens"].mean()
         rows.append({
             "strategy": strat,
             "n": len(g),
+            "n_questions": len(per_question),
             "success": round(mean, 4),
             "success_lo": round(lo, 4),
             "success_hi": round(hi, 4),
             "recovery_gen_tokens": round(tok, 1),
-            "recovery_tool_calls": round(g["recovery_tool_calls"].mean(), 3),
-            "recovery_latency_s": round(g["recovery_latency_s"].mean(), 3),
+            "recovery_tool_calls": round(per_question["recovery_tool_calls"].mean(), 3),
+            "recovery_latency_s": round(per_question["recovery_latency_s"].mean(), 3),
             "success_per_1k_tokens": round(1000 * mean / tok, 4) if tok > 0 else float("nan"),
-            "targeted_oracle_match": round(g["targeted_oracle_match"].mean(), 4),
+            "targeted_oracle_match": round(per_question["targeted_oracle_match"].mean(), 4),
         })
     # order: random, full_restart, then uncertainty strategies (sorted), oracle last
     def rank(s: str) -> tuple:
@@ -120,6 +135,93 @@ def holm_correction(pvals: List[float]) -> List[float]:
     return adj
 
 
+def _paired_question_values(df, a, b, outcome, expected_seeds=None):
+    required = {"qid", "strategy", "seed", outcome}
+    if not required <= set(df.columns) or a == b:
+        raise ValueError("Paired analysis requires two strategies and complete trial columns")
+    sub = df[df.strategy.isin([a, b])].copy()
+    if sub.empty or sub[list(required)].isna().any().any():
+        raise ValueError("Paired trials contain missing values")
+    for column in ("dataset", "model_key", "model_name", "multiplier", "run_id"):
+        if column in sub and sub[column].nunique(dropna=False) > 1:
+            raise ValueError("Select one dataset, model, run, and budget for paired analysis")
+    if sub.duplicated(["qid", "strategy", "seed"]).any():
+        raise ValueError("Duplicate paired trial")
+    values = pd.to_numeric(sub[outcome], errors="raise")
+    if not np.isfinite(values).all() or not values.between(0, 1).all():
+        raise ValueError("Outcomes must be finite values in [0, 1]")
+    if outcome in ("success", "em") and not values.isin([0, 1]).all():
+        raise ValueError("Success and exact match must be binary")
+    sub[outcome] = values
+    seeds = set(sub.seed) if expected_seeds is None else set(expected_seeds)
+    if not seeds or set(sub.seed) != seeds:
+        raise ValueError("Observed seeds differ from the prespecified seeds")
+    coverage = sub.groupby(["qid", "strategy"]).seed.agg(set)
+    if len(coverage) != 2 * sub.qid.nunique() or any(s != seeds for s in coverage):
+        raise ValueError("Incomplete paired question/strategy/seed coverage")
+    means = sub.groupby(["qid", "strategy"])[outcome].mean().unstack("strategy")
+    if not {a, b} <= set(means.columns) or means[[a, b]].isna().any().any():
+        raise ValueError("Incomplete strategy coverage")
+    return means[a].to_numpy(), means[b].to_numpy()
+
+
+def _paired_inference(groups, iters, ci, seed):
+    if not isinstance(iters, int) or iters < 1 or not 0 < ci < 1:
+        raise ValueError("Require positive bootstrap iterations and ci in (0, 1)")
+    deltas = [a - b for a, b in groups]
+    estimate = float(np.mean([d.mean() for d in deltas]))
+    rng = np.random.default_rng(seed)
+    boot, permuted = np.zeros(iters), np.zeros(iters)
+    # Resample paired questions within datasets, with equal dataset weight.
+    for d in deltas:
+        for start in range(0, iters, 256):
+            count = min(256, iters - start)
+            boot[start:start + count] += d[rng.integers(0, len(d), (count, len(d)))].mean(axis=1)
+            signs = rng.choice([-1, 1], size=(count, len(d)))
+            permuted[start:start + count] += (signs * d).mean(axis=1)
+    boot /= len(deltas)
+    permuted /= len(deltas)
+    lo, hi = np.quantile(boot, [(1 - ci) / 2, (1 + ci) / 2])
+    return {
+        "estimand": "equal_question_mean_seed_success" if len(groups) == 1 else
+                    "equal_dataset_macro_mean_of_question_seed_means",
+        "n_questions": sum(len(a) for a, _ in groups),
+        "mean_a": float(np.mean([a.mean() for a, _ in groups])),
+        "mean_b": float(np.mean([b.mean() for _, b in groups])),
+        "delta": estimate, "delta_lo": float(lo), "delta_hi": float(hi),
+        "ci": ci, "resamples": iters, "analysis_seed": seed,
+        "p_value": float((1 + (np.abs(permuted) >= abs(estimate) - 1e-12).sum()) / (iters + 1)),
+        "test": "paired_sign_flip_assuming_within_question_exchangeability",
+    }
+
+
+def paired_mean_comparison(df: pd.DataFrame, a: str, b: str, iters=10000,
+                           ci=0.95, seed=0, expected_seeds=None,
+                           outcome="success") -> Dict[str, Any]:
+    """Paired question bootstrap and sign-flip test, without seed-majority voting."""
+    groups = [_paired_question_values(df, a, b, outcome, expected_seeds)]
+    result = _paired_inference(groups, iters, ci, seed)
+    result.update(strategy_a=a, strategy_b=b, outcome=outcome)
+    return result
+
+
+def paired_macro_comparison(df: pd.DataFrame, a: str, b: str, iters=10000,
+                            ci=0.95, seed=0, expected_seeds=None,
+                            outcome="success") -> Dict[str, Any]:
+    """Equal-dataset macro comparison; preserve dataset and question clusters."""
+    if "dataset" not in df or df.dataset.isna().any() or df.empty:
+        raise ValueError("Macro comparison requires dataset labels")
+    for column in ("model_key", "model_name", "multiplier", "run_id"):
+        if column in df and df[column].nunique(dropna=False) > 1:
+            raise ValueError("Select one model, run, and budget for macro analysis")
+    groups = [_paired_question_values(g, a, b, outcome, expected_seeds)
+              for _, g in df.groupby("dataset", sort=True)]
+    result = _paired_inference(groups, iters, ci, seed)
+    result.update(strategy_a=a, strategy_b=b, outcome=outcome,
+                  datasets=sorted(df.dataset.unique()))
+    return result
+
+
 def rq_comparisons(df: pd.DataFrame) -> Dict[str, Any]:
     """Paired RQ comparisons with Holm-corrected p-values.
 
@@ -143,6 +245,7 @@ def rq_comparisons(df: pd.DataFrame) -> Dict[str, Any]:
     results, pvals, keys = {}, [], []
     for name, (a, b) in pairs.items():
         r = mcnemar(succ[a], succ[b])
+        r["estimand"] = "majority_over_seeds_repeatability_secondary"
         results[name] = r
         pvals.append(r["p_value"]); keys.append(name)
     adj = holm_correction(pvals)

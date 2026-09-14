@@ -1,0 +1,15 @@
+# CPU regression tests, analysis, and manuscript assets. No model serving.
+# These are compatible ranges, not an exact reproduction lock file.
+numpy>=1.26
+pandas>=2.0
+scipy>=1.11.0
+scikit-learn>=1.3.0
+statsmodels>=0.14.0
+pyyaml>=6.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+pytest>=7.0
+# Notebook construction and CPU-only execution validation.
+nbformat>=5.7
+nbclient>=0.5
+ipykernel>=6.0

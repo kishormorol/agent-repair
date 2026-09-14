@@ -55,11 +55,19 @@ def main() -> None:
         math_ckpt.mark_done(qid)
     log.info("Math metrics done.")
 
+    enabled = set(cfg.raw["uncertainty"].get("metrics", []))
+    use_sc = "self_consistency" in enabled
+    use_vc = "verbalized_confidence" in enabled
+    if not (use_sc or use_vc):
+        log.info("Sampling metrics disabled; no model calls required.")
+        return
+
     # ---- 2. sampling-based metrics on the FAILED set (batched) ------------- #
     failed_ids = load_json(os.path.join(cfg.path("data_processed"), "failed_ids.json"))
     if args.limit:
         failed_ids = failed_ids[:args.limit]
-    ckpt = Checkpoint(os.path.join(cfg.path("logs"), "stage2_sampling.jsonl"))
+    sampling_key = "_".join(sorted(enabled & {"self_consistency", "verbalized_confidence"}))
+    ckpt = Checkpoint(os.path.join(cfg.path("logs"), f"stage2_sampling_{sampling_key}.jsonl"))
     todo = [q for q in failed_ids if not ckpt.is_done(q)]
     log.info(f"Sampling metrics: {len(todo)} of {len(failed_ids)} failed trajectories")
     if not todo:
@@ -94,22 +102,40 @@ def main() -> None:
         # self-consistency: n samples for every step, in ONE call
         sc_out = client.chat_batch_n(
             sc_msgs, n=sc_cfg["n_samples"], temperature=sc_cfg["temperature"],
-            max_tokens=cfg.agent.max_tokens_per_step, stop=["Observation:"])
+            max_tokens=cfg.agent.max_tokens_per_step, stop=["Observation:"]) if use_sc else [[] for _ in index]
         # verbalized confidence: one short call per step, in ONE call
-        vc_out = client.chat_batch(vc_msgs, temperature=0.0, max_tokens=8)
+        vc_out = client.chat_batch(vc_msgs, temperature=0.0, max_tokens=8) if use_vc else [None] * len(index)
+        if len(sc_out) != len(index) or len(vc_out) != len(index):
+            raise ValueError("Uncertainty inference returned incomplete prompt coverage")
 
         scores = {}
+        costs = {}
         for (qid, si), samples, conf in zip(index, sc_out, vc_out):
+            if use_sc and len(samples) != sc_cfg["n_samples"]:
+                raise ValueError("Incomplete self-consistency samples")
             acts = [parse_action(g.text)[1:] for g in samples]   # (action, input)
             scores[(qid, si)] = (self_consistency_score(acts),
-                                 parse_confidence(conf.text, scale=vc_scale))
+                                 parse_confidence(conf.text, scale=vc_scale) if conf else None)
+            costs[(qid, si)] = {}
+            if use_sc:
+                costs[(qid, si)]["self_consistency"] = {
+                    "generated_tokens": sum(g.num_tokens for g in samples),
+                    "prompt_tokens": samples[0].prompt_tokens,
+                    "requests": 1, "completions": len(samples)}
+            if use_vc:
+                costs[(qid, si)]["verbalized_confidence"] = {
+                    "generated_tokens": conf.num_tokens, "prompt_tokens": conf.prompt_tokens,
+                    "requests": 1, "completions": 1}
 
         for qid in chunk:
             enriched = load_item(unc_dir, qid)
             for si in range(len(cache[qid])):
                 sc, vc = scores[(qid, si)]
-                enriched["steps"][si]["uncertainty"]["self_consistency"] = sc
-                enriched["steps"][si]["uncertainty"]["verbalized_confidence"] = vc
+                if use_sc:
+                    enriched["steps"][si]["uncertainty"]["self_consistency"] = sc
+                if use_vc:
+                    enriched["steps"][si]["uncertainty"]["verbalized_confidence"] = vc
+                enriched["steps"][si].setdefault("acquisition_cost", {}).update(costs[(qid, si)])
             save_item(unc_dir, qid, enriched)
             ckpt.mark_done(qid)
 

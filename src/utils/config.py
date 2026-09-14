@@ -85,7 +85,7 @@ def load_config(config_path: str | None = None, base_override: str | None = None
     Returns:
         Config namespace with `.raw` (dict), `.base` (absolute str), and helpers.
     """
-    cfg_file = _find_config_file(config_path)
+    cfg_file = _find_config_file(config_path).resolve()
     with open(cfg_file, "r", encoding="utf-8") as f:
         raw: Dict[str, Any] = yaml.safe_load(f)
 

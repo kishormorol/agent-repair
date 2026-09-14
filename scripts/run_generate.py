@@ -9,12 +9,15 @@ from __future__ import annotations
 
 import os
 import time
+from pathlib import Path
 
 from _common import parse_args, boot, load_agent, resolve_dataset  # type: ignore
 
 from src.agent import run_generation_batch
 from src.utils import (Checkpoint, save_item, save_json, load_json,
                        load_all_items)
+from src.utils.cohorts import select_cohort
+from src.repair.controlled import freeze_manifest, file_fingerprint
 
 
 def main() -> None:
@@ -29,21 +32,39 @@ def main() -> None:
 
     # ---- pool (sampled once, then fixed) ---------------------------------- #
     pool_path = os.path.join(cfg.path("data_processed"), "pool.json")
+    if cfg.raw["dataset"].get("split") == "test" and not cfg.raw["dataset"].get("id_manifest"):
+        raise ValueError("Test runs require a frozen question ID manifest")
     if os.path.exists(pool_path):
         pool = load_json(pool_path)
+        selected = select_cohort(pool, cfg.raw["dataset"], cfg.base)
+        if selected is not None and selected != pool:
+            raise ValueError("Saved pool differs from the frozen ID manifest; use a new run")
     else:
         raw_filename = ds_info["raw_filename"]
         raw = load_dataset(os.path.join(cfg.path("data_raw"), raw_filename))
-        pool = sample_pool(raw, ds_info["pool_size"], ds_info["stratify_by"],
-                           cfg.project.seed)
+        pool = select_cohort(raw, cfg.raw["dataset"], cfg.base)
+        if pool is None:
+            pool = sample_pool(raw, ds_info["pool_size"], ds_info["stratify_by"],
+                               cfg.project.seed)
         save_json(pool, pool_path)
     log.info(f"Pool: {len(pool)} questions")
 
     limit = args.limit or cfg.raw["dataset"].get("process_limit")
     run_pool = pool[:limit] if limit else pool
+    manifest_inputs = {"configuration": cfg.raw, "records": run_pool,
+                       "generation_code": file_fingerprint(__file__)}
+    source_root = Path(__file__).resolve().parents[1] / "src"
+    manifest_inputs["source_sha256"] = {str(p.relative_to(source_root)): file_fingerprint(p)
+                                        for p in sorted(source_root.rglob("*.py"))}
+    for key in ("id_manifest", "exclude_ids_manifest"):
+        if cfg.raw["dataset"].get(key):
+            manifest_inputs[key] = file_fingerprint(Path(cfg.base) / cfg.raw["dataset"][key])
+    freeze_manifest(Path(cfg.path("data_processed")) / "generation_manifest.json", manifest_inputs,
+                    list(Path(cfg.path("trajectories")).glob("*.json")))
 
     ckpt = Checkpoint(os.path.join(cfg.path("logs"), "stage1_generate.jsonl"))
-    todo = [r for r in run_pool if not ckpt.is_done(r["_id"])]
+    todo = [r for r in run_pool if not ckpt.is_done(r["_id"]) or not
+            (Path(cfg.path("trajectories")) / (r["_id"] + ".json")).exists()]
     log.info(f"To process: {len(todo)} of {len(run_pool)} "
              f"({len(run_pool) - len(todo)} already done)")
     if not todo:
@@ -66,6 +87,7 @@ def main() -> None:
                 score_fn=ds_info["score"],
             )
             for t in trajs:
+                t.meta["model_name"] = client.model_name
                 save_item(traj_dir, t.qid, t.to_dict())
                 ckpt.mark_done(t.qid, {"success": t.success, "steps": len(t.steps)})
             done = min(i + B, len(todo))
@@ -75,6 +97,8 @@ def main() -> None:
 
     # ---- summary + failed set --------------------------------------------- #
     trajs = load_all_items(cfg.path("trajectories"))
+    if {t["qid"] for t in trajs} != {r["_id"] for r in run_pool}:
+        raise ValueError("Saved trajectories do not match the complete frozen generation cohort")
     n = len(trajs)
     n_succ = sum(t["success"] for t in trajs)
     failed_ids = [t["qid"] for t in trajs if not t["success"]]

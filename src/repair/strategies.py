@@ -1,12 +1,13 @@
 """Repair strategies (Stage 5).
 
-Four ways to recover from a failed trajectory, all implemented as "resume the
+Five ways to recover from a failed trajectory, all implemented as "resume the
 ReAct loop from step k":
 
   full_restart          k = 0                      (re-execute everything)
-  random_step           k = seeded random index    (lower-bound targeting)
+  random_step           k = seeded random index    (position control)
+  fixed_early           k = min(1, T - 1)           (early-origin control)
   uncertainty_targeted  k = argmax uncertainty      (the practical method)
-  oracle_targeted       k = annotated broken step   (upper bound)
+  oracle_targeted       k = annotated broken step   (privileged reference)
 
 Backtrack offsets (btN): after selecting step k, back up N additional steps to
 k-N.  This tests the cascade hypothesis — if errors propagate forward, repairing
@@ -18,7 +19,7 @@ Nudge types:
               "Your search query was likely wrong. Try different search terms."
 
 Fairness controls (see design):
-  * matched compute budget: token cap = multiplier * original episode cost.
+  * generated-token cap = multiplier * original episode tokens, not total compute.
 """
 from __future__ import annotations
 
@@ -29,6 +30,7 @@ from ..agent.react_agent import ReActAgent, Step, Trajectory
 from ..env.hotpot_env import HotpotEnv
 from ..localize.rules import get_step_scores, localize_step
 from ..utils.seed import derive_seed
+from .position_matched import sample_position
 
 
 BASELINES = ["full_restart", "random_step", "oracle_targeted"]
@@ -119,15 +121,16 @@ def parse_uncertainty_strategy(name: str) -> tuple[str, str]:
 
 
 def get_nudge_text(strategy: str, error_type: Optional[str],
-                   generic_hint: str = GENERIC_NUDGE_DEFAULT) -> Optional[str]:
+                   generic_hint: str = GENERIC_NUDGE_DEFAULT,
+                   match_restart: bool = False) -> Optional[str]:
     """Return the appropriate nudge text for a strategy.
 
-    - full_restart: no nudge (fresh start)
+    - full_restart: no nudge unless match_restart is enabled
     - informed strategies: error-type-specific hint
     - all others: generic hint
     """
     p = parse_strategy(strategy)
-    if p["base"] == "full_restart":
+    if p["base"] == "full_restart" and not match_restart:
         return None
     if p["informed"] and error_type:
         return INFORMED_NUDGES.get(error_type, generic_hint)
@@ -136,7 +139,8 @@ def get_nudge_text(strategy: str, error_type: Optional[str],
 
 def build_strategies(metric_keys: List[str], rule_keys: List[str],
                      backtrack_offsets: Optional[List[int]] = None,
-                     nudge_types: Optional[List[str]] = None) -> List[str]:
+                     nudge_types: Optional[List[str]] = None,
+                     baselines: Optional[List[str]] = None) -> List[str]:
     """Baselines + (metrics x rules) uncertainty strategies, optionally with
     backtrack variants and nudge type variants.
 
@@ -145,9 +149,10 @@ def build_strategies(metric_keys: List[str], rule_keys: List[str],
     """
     offsets = backtrack_offsets or [0]
     ntypes = nudge_types or ["generic"]
-    strats = ["full_restart", "random_step"]
+    baselines = BASELINES if baselines is None else baselines
+    strats = [name for name in baselines if name != "oracle_targeted"]
     # oracle + backtrack × nudge variants
-    for bt in offsets:
+    for bt in offsets if "oracle_targeted" in baselines else []:
         for nt in ntypes:
             suffix = ""
             if bt > 0:
@@ -168,7 +173,8 @@ def build_strategies(metric_keys: List[str], rule_keys: List[str],
 def select_target_step(strategy: str, n_steps: int, oracle_step: int,
                        uncertainty_traj: Optional[Dict[str, Any]],
                        rng: random.Random,
-                       topk: int = 3, percentile: float = 75.0) -> int:
+                       topk: int = 3, percentile: float = 75.0,
+                       position_profile=None) -> int:
     """Return the step index k to resume FROM (keep steps[:k]).
 
     For an uncertainty strategy, the metric and rule are read from its name; a
@@ -186,8 +192,14 @@ def select_target_step(strategy: str, n_steps: int, oracle_step: int,
 
     if base == "full_restart":
         k = 0
+    elif base == "fixed_early":
+        k = 1
     elif base == "random_step":
         k = rng.randint(0, n_steps - 1)
+    elif base == "position_matched_random":
+        if backtrack or p["informed"]:
+            raise ValueError("Position profile already includes the policy's backtracking; use its generic control")
+        k = sample_position(position_profile, n_steps, rng)
     elif base == "oracle_targeted":
         k = oracle_step
     elif base == "uncertainty":
@@ -217,7 +229,7 @@ def run_repair(agent: ReActAgent, record: Dict[str, Any],
 
 
 def repair_record(traj: Trajectory, strategy: str, seed: int, target_step: int,
-                  oracle_step: int, original_gen_tokens: int,
+                  oracle_step: Optional[int], original_gen_tokens: int,
                   budget: Optional[int]) -> Dict[str, Any]:
     """Flatten one repair outcome into an analysis row."""
     m = traj.meta
@@ -233,20 +245,29 @@ def repair_record(traj: Trajectory, strategy: str, seed: int, target_step: int,
         "seed": seed,
         "target_step": target_step,
         "oracle_step": oracle_step,
-        "targeted_oracle_match": int(target_step == oracle_step),
+        "targeted_oracle_match": None if oracle_step is None else int(target_step == oracle_step),
         "success": int(traj.success),
         "em": traj.em,
         "f1": traj.f1,
         "final_answer": traj.final_answer,
         "terminated_reason": traj.terminated_reason,
-        # recovery-only cost (excludes reused prefix) — the fair cost of recovery
+        # Recovery generation excludes sunk prefix generation, not prompt processing.
         "recovery_gen_tokens": m.get("recovery_gen_tokens", traj.total_gen_tokens),
         "recovery_tool_calls": m.get("recovery_tool_calls", traj.num_tool_calls),
         "recovery_latency_s": m.get("recovery_latency_s", traj.total_latency_s),
+        "recovery_prompt_tokens": m.get("recovery_prompt_tokens"),
+        "recovery_model_requests": m.get("recovery_model_requests"),
         "n_prefix_steps": m.get("n_prefix_steps", target_step),
         "total_gen_tokens": traj.total_gen_tokens,
         "original_gen_tokens": original_gen_tokens,
         "budget": budget,
+        "step_budget_mode": m.get("step_budget_mode", "total"),
+        "new_step_allowance": m.get("new_step_allowance"),
+        "execution_id": m.get("execution_id"),
+        "prompt_sha256": m.get("prompt_sha256"),
+        "model_name": m.get("model_name"),
+        "dataset": m.get("dataset"),
+        "run_id": m.get("run_id"),
     }
 
 

@@ -67,9 +67,15 @@ def main() -> None:
             outs = judge.chat_batch(
                 prompts, temperature=cfg.raw["annotation"]["judge_temperature"],
                 max_tokens=128)
+            if len(outs) != len(batch_ids):
+                raise ValueError("Judge returned incomplete annotation coverage")
             for q, t, rc, o in zip(batch_ids, trajs, rcs, outs):
                 parsed = parse_judge_output(o.text, len(t["steps"]), etypes)
-                save_item(ann_dir, q, combine_annotation(q, parsed, rc))
+                annotation = combine_annotation(q, parsed, rc)
+                annotation["judge_model_name"] = jm["name"]
+                annotation["acquisition_cost"] = {"generated_tokens": o.num_tokens,
+                                                   "prompt_tokens": o.prompt_tokens, "requests": 1}
+                save_item(ann_dir, q, annotation)
                 ckpt.mark_done(q)
             done = min(i + B, len(todo))
             rate = done / max(1e-9, time.time() - t_start)

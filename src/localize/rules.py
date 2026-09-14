@@ -21,7 +21,7 @@ def get_step_scores(traj_unc: Dict[str, Any], metric_key: str) -> List[Tuple[int
         v = s.get("uncertainty", {}).get(metric_key)
         if v is None:
             continue
-        if isinstance(v, float) and math.isnan(v):
+        if not math.isfinite(float(v)):
             continue
         out.append((s["index"], float(v)))
     return out

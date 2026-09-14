@@ -340,11 +340,11 @@ def main() -> None:
 
     # ---- failure-mode figure ------------------------------------------------ #
     fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-    axes[0].bar(["Upstream of peak", "Uncertain-but-correct"],
+    axes[0].bar(["Reference before peak", "Search/lookup at missed peak"],
                 [fm["among_misses_upstream"], fm["among_misses_explore"]],
                 color=["#0072B2", "#E69F00"], edgecolor="white")
     axes[0].set_ylim(0, 1); axes[0].set_ylabel("Fraction of localization misses")
-    axes[0].set_title("Why uncertainty mislocalizes")
+    axes[0].set_title("Descriptive localization-miss flags")
     et = fdf.groupby("error_type")["argmax_top1"].mean().sort_values()
     axes[1].barh(et.index, et.values, color="#009E73", edgecolor="white")
     axes[1].set_xlabel("Top-1 localization accuracy")

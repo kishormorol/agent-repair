@@ -1,13 +1,7 @@
-"""Causal / explanatory analysis (Stage 6): when does uncertainty localize the
-true error, and when does it fail?
+"""Descriptive reference-label agreement, not causal attribution or repair utility.
 
-Two named failure modes from the research idea:
-  * error_upstream_of_peak     — the true error precedes the uncertainty peak.
-  * uncertain_but_correct_step — the argmax step is a (correct) exploratory
-                                 search step, not the actual error.
-
-We fit an interpretable model predicting localization-correctness from step/
-trajectory features to derive a practical "trust targeted repair when ..." rule.
+Exploratory action type does not establish correctness. The fitted models
+predict annotation agreement and cannot validate a repair-selection policy.
 """
 from __future__ import annotations
 
@@ -24,10 +18,8 @@ def add_failure_mode_flags(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     df["error_upstream_of_peak"] = (df["oracle_step"] < df["pred_argmax"]).astype(int)
     df["error_downstream_of_peak"] = (df["oracle_step"] > df["pred_argmax"]).astype(int)
-    # uncertain-but-correct exploratory: argmax missed AND the argmax step was a
-    # search/lookup (exploration), i.e. high uncertainty on a legitimate search.
-    explore = df.get("pred_step_action", pd.Series([""] * len(df))).isin(["search", "lookup"])
-    df["uncertain_but_correct_explore"] = ((df["argmax_top1"] == 0) & explore).astype(int)
+    explore = df.get("pred_step_action", pd.Series("", index=df.index)).isin(["search", "lookup"])
+    df["exploratory_action_at_missed_peak"] = ((df["argmax_top1"] == 0) & explore).astype(int)
     return df
 
 
@@ -40,15 +32,17 @@ def summarize_failure_modes(df: pd.DataFrame) -> Dict[str, Any]:
         "localization_top1": round(float(df["argmax_top1"].mean()), 4),
         "error_upstream_of_peak_rate": round(float(df["error_upstream_of_peak"].mean()), 4),
         "among_misses_upstream": round(float(miss["error_upstream_of_peak"].sum() / n_miss), 4),
-        "among_misses_explore": round(float(miss["uncertain_but_correct_explore"].sum() / n_miss), 4),
+        "n_misses": len(miss),
+        "among_misses_explore": round(float(miss["exploratory_action_at_missed_peak"].sum() / n_miss), 4),
+        "exploration_interpretation": "Action type only; correctness is not validated.",
     }
 
 
 def fit_localization_model(df: pd.DataFrame, feature_cols: List[str],
                            label_col: str = "argmax_top1",
                            seed: int = 0) -> Dict[str, Any]:
-    """Fit logistic regression + shallow decision tree predicting localization
-    correctness. Returns cross-validated accuracy, LR coefficients, and tree
+    """Fit logistic regression + shallow decision tree predicting reference
+    agreement. Returns cross-validated accuracy, LR coefficients, and tree
     feature importances (the interpretable 'rule')."""
     from sklearn.linear_model import LogisticRegression
     from sklearn.tree import DecisionTreeClassifier, export_text
