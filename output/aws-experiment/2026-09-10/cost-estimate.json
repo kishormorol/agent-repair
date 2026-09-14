@@ -1,0 +1,57 @@
+{
+  "estimate_as_of_utc": "2026-09-11T03:32:39.416478+00:00",
+  "rate_usd_per_hour": 5.84531,
+  "sessions": [
+    {
+      "purpose": "initial setup and failed preflight, including idle until the timer",
+      "start_utc": "2026-09-10T17:26:01Z",
+      "end_utc": "2026-09-10T18:21:07Z",
+      "end_basis": "guest shutdown log",
+      "elapsed_seconds": 3306.0,
+      "conservative_compute_seconds": 3306.0,
+      "estimated_compute_usd": 5.367943016666667
+    },
+    {
+      "purpose": "successful pilot and three-minute archive grace period",
+      "start_utc": "2026-09-10T22:19:04Z",
+      "end_utc": "2026-09-10T22:35:10Z",
+      "end_basis": "guest shutdown log",
+      "elapsed_seconds": 966.0,
+      "conservative_compute_seconds": 966.0,
+      "estimated_compute_usd": 1.5684915166666664
+    },
+    {
+      "purpose": "recovery boot stopped by expired persistent timer",
+      "start_utc": "2026-09-11T03:20:48Z",
+      "end_utc": "2026-09-11T03:21:09Z",
+      "end_basis": "guest shutdown log",
+      "elapsed_seconds": 21.0,
+      "conservative_compute_seconds": 60,
+      "estimated_compute_usd": 0.09742183333333332
+    },
+    {
+      "purpose": "archive download and integrity verification",
+      "start_utc": "2026-09-11T03:26:34Z",
+      "end_utc": "2026-09-11T03:28:10Z",
+      "end_basis": "EC2 StopInstances response entered stopping",
+      "elapsed_seconds": 96.0,
+      "conservative_compute_seconds": 96.0,
+      "estimated_compute_usd": 0.15587493333333333
+    }
+  ],
+  "conservative_compute_minutes": 73.8,
+  "estimated_compute_usd": 7.1897313,
+  "estimated_ebs_usd": 0.26063063650913576,
+  "public_ipv4_upper_bound_usd": 0.05055335621944445,
+  "subtotal_estimate_with_ipv4_upper_bound_usd": 7.50091529272858,
+  "retained_ebs_usd_per_30_day_month": 18.56,
+  "retained_ebs_usd_per_day": 0.6186666666666666,
+  "notes": [
+    "Gross usage estimate before credit offsets, not an AWS invoice.",
+    "Starts conservatively include pending time; one-minute minimum applied per start.",
+    "Compute is not charged while stopping or stopped.",
+    "IPv4 bound assumes an address allocated for the entire elapsed period, including downtime.",
+    "Storage remains billable; data transfer and tax are not included.",
+    "The original $10 pilot allowance includes failed setup and recovery; total allocation remains $119."
+  ]
+}

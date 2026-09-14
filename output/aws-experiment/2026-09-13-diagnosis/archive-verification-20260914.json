@@ -1,0 +1,13 @@
+{
+  "verified_utc": "2026-09-14T05:59:06.229690+00:00",
+  "prepared_input_files_verified": 33,
+  "archives": [
+    {
+      "path": "output/aws-experiment/2026-09-13-diagnosis/retrieved-20260914T0553Z/pilot-batch01-20260913T234450Z.tar.gz",
+      "bytes": 17282446,
+      "sha256": "c39a352021ef1111af3ed70c41373c8585e303d3ec3a4fa005cc6cafb7157126",
+      "matches_live_aws_sha256": true,
+      "extracted": "output/aws-experiment/2026-09-13-diagnosis/results/pilot-batch01-20260913T234450Z"
+    }
+  ]
+}

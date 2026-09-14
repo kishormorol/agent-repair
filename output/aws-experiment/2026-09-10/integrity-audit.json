@@ -1,0 +1,9 @@
+{
+  "trajectories_replayed": 35,
+  "observations_and_titles_verified": 175,
+  "retained_prefix_steps_verified": 20,
+  "scores_recomputed": 35,
+  "source_matches_uploaded_bundle": true,
+  "environment_sha256": "3e65958d4507ca51426bca3fb1110622db0f270a5aa143f70c60e9014eb1c5ef",
+  "mismatches": 0
+}

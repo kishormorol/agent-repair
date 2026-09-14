@@ -1,0 +1,30 @@
+{
+  "status": "reconstructed; original full Drive JSON has not been downloaded",
+  "historical_question_count": 500,
+  "sampler_git_commit": "7a73907",
+  "sampler_sha256": "7562148e95746e512b4b5daa621b068b5efc823e17e9dd59bfe5e03343db92e0",
+  "raw_dataset_sha256": "a9b4c5906587ac0d20eb83dcb29d0240e268e342c170f7f22988f59f13fa82c3",
+  "raw_dataset_count": 7405,
+  "seed": 42,
+  "stratify_by": [
+    "level",
+    "type"
+  ],
+  "historical_ids_sha256": "defa09ee7741ed6cf50d03310b896e38cf11c12234892d22029e9a432354af60",
+  "notebook_evidence_sha256": "6b8bd3eaec07a39bf5d6a326f0357f2a42c78e589337b4b9f4ae6d1af0f0f24e",
+  "drive_folder": "https://drive.google.com/drive/u/4/folders/1ifykwDuhDPAeOze4qdRkjSnfSgIgxFTP",
+  "drive_account": "mdkishor.morol@stonybrook.edu",
+  "drive_path": "My Drive/agent-repair-hotpotqa/data/processed/pool.json",
+  "drive_observed_file": {
+    "modified": "Jul 21",
+    "display_size": "3.4 MB"
+  },
+  "partial_preview_corroboration": {
+    "observed_question_id": "5a808c215542995d8a8ddf90",
+    "reconstructed_zero_based_index": 37
+  },
+  "aws_explored_count": 60,
+  "historical_aws_overlap": 11,
+  "combined_excluded_count": 549,
+  "limitation": "This reconstruction covers the documented July 21 500-question run. It does not certify that no undocumented historical run exists."
+}

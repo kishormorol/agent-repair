@@ -1,0 +1,221 @@
+{
+  "status": "complete",
+  "scope": "Author-requested mock ICLR review, review-stage diagnostic analyses, manuscript revisions, statistical supplement and PDF verification. Missing comparator/allowance/replication experiments remain unperformed.",
+  "validated_at_utc": "2026-09-13T05:25:06.055359+00:00",
+  "pdf": "output/pdf/agent-repair-iclr2027-draft.pdf",
+  "pages": 24,
+  "main_text_ends_on_page": 8,
+  "tables": 15,
+  "figures": 5,
+  "pdf_author_metadata": "",
+  "study_identities": {
+    "study": "e4ea08c8291b0f797d05b15110d762634ec48d57ae53e05aaf4373c805986308",
+    "source": "b418bca20be1674d65dc76dc14c42f2b6304eee6856d34a6f083c3d4e6ef4eb9",
+    "dataset": "a9b4c5906587ac0d20eb83dcb29d0240e268e342c170f7f22988f59f13fa82c3",
+    "position_profile": "3e4e834cca3857f409d0dae0baf710658825687883bc1ae5eeaf1ebb9c02bb8c"
+  },
+  "primary_estimates_and_four_comparison_family_unchanged": true,
+  "audited_source_files_hash_verified": 14,
+  "review_diagnostics": {
+    "status": "exploratory_review_stage",
+    "initial_questions": 250,
+    "failed_questions": 113,
+    "condition_seed_rows": 2034,
+    "input_to_archive_comparisons": 398,
+    "by_batch": {
+      "batch01": 77,
+      "batch02": 78,
+      "batch03": 82,
+      "batch04": 78,
+      "batch05": 83
+    },
+    "analysis_code_hashes_rechecked": 8,
+    "statistical_reproduction": {
+      "status": "passed",
+      "study_sha256": "e4ea08c8291b0f797d05b15110d762634ec48d57ae53e05aaf4373c805986308",
+      "initial_questions": 250,
+      "failed_questions": 113,
+      "trial_rows": 2034,
+      "primary_contrasts_reproduced": 4,
+      "secondary_contrasts_reproduced": 8,
+      "policy_costs_and_population_rates_reproduced": 6,
+      "tolerance": 1e-12,
+      "scope": "statistical reproduction from packaged CSVs"
+    }
+  },
+  "tests": [
+    {
+      "command": "python -m pytest tests/test_review_diagnostics.py tests/test_study_batches.py tests/test_paper_assets.py tests/test_paper_documentation.py tests/test_statistical_supplement.py -q",
+      "passed": 59,
+      "seconds": 7.3,
+      "stage": "After all analytical, supplement and main manuscript/documentation changes; before final typography refinements.",
+      "warnings": "One fontTools deprecation warning."
+    },
+    {
+      "command": "python -m pytest tests/test_paper_assets.py tests/test_paper_documentation.py -q",
+      "passed": 43,
+      "seconds": 3.81,
+      "stage": "After final title/case-layout and asset-generator changes; before adding the validation summary to the review report.",
+      "warnings": "One fontTools deprecation warning."
+    }
+  ],
+  "final_build": {
+    "command": "latexmk -silent -pdf -interaction=nonstopmode -halt-on-error -outdir=build/iclr2027 iclr2027.tex",
+    "exit_code": 0,
+    "overfull_boxes": 0,
+    "undefined_references_or_citations": 0,
+    "remaining_messages": [
+      "LaTeX Warning: `h' float specifier changed to `ht'.",
+      "LaTeX Warning: `h' float specifier changed to `ht'.",
+      "LaTeX Warning: `h' float specifier changed to `ht'.",
+      "LaTeX Warning: `h' float specifier changed to `ht'.",
+      "LaTeX Warning: `h' float specifier changed to `ht'.",
+      "LaTeX Warning: `h' float specifier changed to `ht'."
+    ]
+  },
+  "visual_review": {
+    "status": "passed",
+    "method": "Poppler renders at 110 dpi; all final pages inspected in contact sheets, with main results and audit/diagnostic pages inspected individually.",
+    "pages_reviewed": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "individually_reviewed_pages": [
+      1,
+      5,
+      6,
+      7,
+      8,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "findings": "Corrected title hyphenation and kept each illustrative case with its question identifier. No clipped text, table/figure overlap or unresolved visible references.",
+    "case_heading_and_identifier_pages": {
+      "Case 1:": [
+        22
+      ],
+      "Case 2:": [
+        23
+      ],
+      "Case 3:": [
+        23
+      ],
+      "5a7619765542992db9473728": [
+        22
+      ],
+      "5a7322a25542991f9a20c634": [
+        23
+      ],
+      "5a733b835542991f9a20c6b2": [
+        23
+      ]
+    }
+  },
+  "limitations_retained": [
+    "One perplexity selector, one model, one offline QA environment and one allowance; no clear advantage is not equivalence.",
+    "Historical exclusion IDs reconstructed; original full historical pool not compared.",
+    "Prompt/output counts do not establish matched total compute, latency or FLOPs.",
+    "No new diagnosis/replay comparator, allowance sweep, independent replication or human annotations were generated during this review.",
+    "The statistical supplement reproduces CSV-based statistics; it does not reproduce GPU generations or replace the raw audit.",
+    "Full runtime/raw-data release packaging and final author review remain separate."
+  ],
+  "artifact_sha256": {
+    "output/pdf/agent-repair-iclr2027-draft.pdf": "0ebbce1ccfb4da2f3488a9d3aa43cadb6904cc204f7e5c9d69cdc384e93422bd",
+    "paper/iclr2027.tex": "0c9439b2cfb38991f27c361ce5b4d4b0dcebf2b9607998f744812b5cf44a8372",
+    "paper_title_abstract.md": "38990b26ee1c59c10132ae49fa6bc8710056091d2f117c5faceb7544b78f674e",
+    "scripts/build_iclr_draft.py": "3a091b8cf4a7ee66889979c2661a097e947d54f6a80ab98081830acbc6288b5b",
+    "scripts/analyze_study_diagnostics.py": "a0e51453d08a2ab4dfc2061bf7fca9e6e47e507c61863a4068ec431290258820",
+    "src/analysis/review_diagnostics.py": "6faea69a64982d478942f26d0872e957a1d11e25fbfa5a5768066ad5aaaa5abc",
+    "scripts/build_statistical_supplement.py": "809b47f65d59dae49697563dfdcd2a385953a2a73edb3eb47c3adecb0de807af",
+    "README.md": "9e6c0c9dd1340751d20d0058ca2418845fbe539c10ed2f09ad1bfc64b1c0780f",
+    "START_HERE.md": "33448297c9d8efc85ac5807d85a27eaea6b65e7ec6531c7bf03a2d91c59b0321",
+    "docs/iclr_expert_review_2026-09-13.md": "dd84f8cec404c6c33fb7590e402d0e39cd9fbbb3b9db3a595b0467e30cf214e6",
+    "docs/reviewer_diagnostics_plan_2026-09-12.md": "bdbbf68a0c8811bb5188abee4c2a071aefe90c909b9c9196f7026adf93550421",
+    "docs/experiments_to_run.md": "b5c9ddd8b1d51317a52d4a1267c5d7840a5bd94552473e8121d993802c88fea5",
+    "docs/reviewer_report.md": "1adb413eec9a09a1170a40f9deab51e77ed60d8d42be3125d8bbdd618cf01ac0",
+    "docs/iclr2027_readiness.md": "5f6560110c1ab685fc14bf1a4d61773fc8dff513243340f6cba47fedca82e5a1",
+    "tests/test_review_diagnostics.py": "b57c0e1e9a13db86e23b581ff63685bebcc4c45e58db87b55c8a90b716f3ecd1",
+    "tests/test_statistical_supplement.py": "b2723fbab37aea12b188503b1a8eff5b3e2d9303654e7e5e25708f5ca7f8b306",
+    "tests/test_paper_assets.py": "bea6f90eafc095f1fe9cb9ad417f89326ba12fdcb59e12a6790287aafa74de75",
+    "tests/test_paper_documentation.py": "1420c1cdefa023bfd3abd35ee0705834f98ab527ab18847d2a0d99b5e2c85a8e",
+    "output/reviewer-2026-09-12/diagnostics.json": "53df87fda5c7b6975183a64f18846df495a99a42fab4ce0d7d71a479f544d94a",
+    "output/reviewer-2026-09-12/diagnostics.trials.csv": "875df4adde8a4dd58688f0a528dab16598d639746af63d8ebab803b9d651800d",
+    "output/reviewer-2026-09-12/diagnostics.initial.csv": "64dca7e1c617cc836b30d368e028972f82eb77c6d741f80f96bfaa47f9724b15",
+    "output/reviewer-2026-09-12/agent-repair-statistical-supplement.zip": "4bb7a095376b6a4d6a2cde62d87939e78ab69f0fa7643bbc275139dd3a86204f",
+    "output/reviewer-2026-09-12/statistical-supplement-verification.json": "9ff0c590d7eefc07ae327eb565dd48fb71dafa891064b55c59648352f70feb59",
+    "paper/generated/iclr2027_archived_summaries.json": "b8e6ccbebf4601c87ddabb40fef3b294f0d593343b11bfeb30332317de82ec27",
+    "paper/generated/iclr2027_cost_success.png": "2b54c9adbe6f0e35eba59b726a8fa398645b380172054f87e1d91221f32847b5",
+    "paper/generated/iclr2027_costs.tex": "e9a7c41d06178b0ce967ada6986e1f4aec1477416a187998f5797ea02bff02d2",
+    "paper/generated/iclr2027_localization.tex": "0db909be953f0921cc373880699f707d15c5b18cdaa6c1bec5108f54541d81f6",
+    "paper/generated/iclr2027_localization_heatmap.png": "444a26d527d896b1fc71188586c2e18824a5c29940047bceeccc0c34a39d04d0",
+    "paper/generated/iclr2027_main_audit.tex": "f6bdd0c1a4c39ab351cfb91a2ee0bf89120a030bd53bdf2bdf873ad928e4032b",
+    "paper/generated/iclr2027_main_contrasts.pdf": "738e9c6c0ee6a07382296ecda4ff2d638b2009581c2ad89c803d2167a0e1aaaa",
+    "paper/generated/iclr2027_main_contrasts.png": "e82e958c73f605cc8a3cd6abf45c453899634742bef07a2b60fa5f0640b3ffed",
+    "paper/generated/iclr2027_main_contrasts.tex": "1cf43de95f6ff630802b57b31526bb2710e3a1ea8baa4fe18022e0611fa4b7c3",
+    "paper/generated/iclr2027_main_cost.tex": "fe3b8157fcfda3b5699f2ade2a12195a341b73f614507a3b9e3cb7e126c76b8e",
+    "paper/generated/iclr2027_main_results.tex": "33ea943388340f058a07b981638436b1a745e245612a1bbd3e77a4d495cbbcb4",
+    "paper/generated/iclr2027_nudges.tex": "0a23b230a3cfc83b917da66c26a98b6a6386bd215fed008a549e900435558989",
+    "paper/generated/iclr2027_numbers.tex": "ad0f954fd7f0deed891ee146319d8ca45df31ebceb8d47047e5fcd71a903e51a",
+    "paper/generated/iclr2027_origin_hint_deltas.png": "d8ad476fab7f352f0b596cf33863e36bb4cecc294f203710c3f2a2944fb6ae31",
+    "paper/generated/iclr2027_provenance.json": "27f6e9ee847bb5e6bde9b01bcef18902288ce400913703d09e1c3e0600488730",
+    "paper/generated/iclr2027_repair_rates.png": "d1f2c687de59f6280a11fbd3e6dd39167c2902efcffa874985935a2fbd628dd5",
+    "paper/generated/iclr2027_results.tex": "159713f99f8cd55ef45e06b0d7de67e69b54e682fd440451da791c4f0f6a9310",
+    "paper/generated/iclr2027_review_cases.tex": "49190a469f163b37c506916200d79cf27375a3ba323c86e2ba005876a3d18768",
+    "paper/generated/iclr2027_review_costs.tex": "1b798623ac54e9f1556920a3cb87b772fae892ed42529499e4393db233c3cbdb",
+    "paper/generated/iclr2027_review_overlap.tex": "3b6e2aa018c024dd4c5304f61c6e6fccc607d30a42761681a29dad3ea1d454fd",
+    "paper/generated/iclr2027_review_population.tex": "dbdbf710e41d469e15eba6078e72e6bda1e54a216ae619d4c3edf660f7a6aa7c",
+    "paper/generated/iclr2027_review_sensitivity.tex": "90e6cea36ec0e08e81d68bd614b19dcc8ba14b646463912b6e7e77ba1dd8252c"
+  },
+  "render_sha256": {
+    "tmp/pdfs/expert-review-final/page-01.png": "4b965daa83cc2f3f782698c023e5f3e9d22e2778cb0acbd36a9c1507de78e999",
+    "tmp/pdfs/expert-review-final/page-02.png": "55839d579bcade77646e44cebe4951d2811dfc93ffd9909cf981c78a315dec20",
+    "tmp/pdfs/expert-review-final/page-03.png": "b968b2de6b890a9760dbe79922ba6f396a001ed1e2575f34316b257845ff2028",
+    "tmp/pdfs/expert-review-final/page-04.png": "8611be20cdfbd77b1836639e742460a7f673148bffd2a4fe55cfa403711d3259",
+    "tmp/pdfs/expert-review-final/page-05.png": "f502a2ac483876777736f5e32845801ac1fc7680a19e8a2b45d90364b5d774f1",
+    "tmp/pdfs/expert-review-final/page-06.png": "92ba781d215abaa126e5cd7bfc0a5fb462af5a8c58be85d5304f7349e5d0c412",
+    "tmp/pdfs/expert-review-final/page-07.png": "6ea87bf98817f5a972d38280fc7f5293631ac96b0d642ff8ad901522236f2388",
+    "tmp/pdfs/expert-review-final/page-08.png": "2b94eb567c9d21ae6dc2b40fb897497337fe3ee211d880a154493b4a2a119dcd",
+    "tmp/pdfs/expert-review-final/page-09.png": "8eec12401ee051307846b4223cc9e2d4584185a5549f44577db8050963590e34",
+    "tmp/pdfs/expert-review-final/page-10.png": "f954b9380dc75d30f1ccad847942833f8ff381c58e425f3a5ed1b66fb71f82ff",
+    "tmp/pdfs/expert-review-final/page-11.png": "058aa6b0474d52557ac4d3ce38e010d6aa3cc03521662abe5e3478ac311c8239",
+    "tmp/pdfs/expert-review-final/page-12.png": "b676aa45ae37726119a10183258f62dce61f0279a66fe7acd7a00a217d40b40a",
+    "tmp/pdfs/expert-review-final/page-13.png": "6c4abb88d6169c6a1e39337e75c98a85d5885dcc212636374b403e3bcd1edabf",
+    "tmp/pdfs/expert-review-final/page-14.png": "762a701ac62f011c480fe3d65c9e6b85e159c44fe626b4893eb4917c66c6f819",
+    "tmp/pdfs/expert-review-final/page-15.png": "ac2203c6483baa52c6c666ed2d57ec60bca3f51582ad117c3e8976a4755956af",
+    "tmp/pdfs/expert-review-final/page-16.png": "147043dd9046b7d59c6783f3974938cfce487b2e0409297d54a62b0cb0bf741f",
+    "tmp/pdfs/expert-review-final/page-17.png": "49da2a4095a193e25c9ceae10c67364f551fd650cdd0d29da1b291bd503df7d7",
+    "tmp/pdfs/expert-review-final/page-18.png": "aebb83e7a5aeed75cdc240e23b479d7aa4fe90164bcf17951a0c63a4a8cf73ef",
+    "tmp/pdfs/expert-review-final/page-19.png": "1435112e56bee41a331bf635e38e52e191379d570560c1adc3cbd316168f32d4",
+    "tmp/pdfs/expert-review-final/page-20.png": "95774b9e59a00d11e35ffffa419ab8a18a7245bfcf862c1dbfeeee4bda84b7bf",
+    "tmp/pdfs/expert-review-final/page-21.png": "2805ccf588dd0aafdbae583d9de63a4aee6035198e1cb0e51c7932cd39a45208",
+    "tmp/pdfs/expert-review-final/page-22.png": "8b72d0e53fbc4a0f5682b57f6700403255dd9906dfa182244eab28478af7a7cc",
+    "tmp/pdfs/expert-review-final/page-23.png": "967c369cdfc94325043c44527a9cd51ac463d368fd19ab9cf6683cce8bf99c0e",
+    "tmp/pdfs/expert-review-final/page-24.png": "04f7643864083d29e08a215ccd528a620ffd901387314409f663f9e9e0330076"
+  }
+}

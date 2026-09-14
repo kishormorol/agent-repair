@@ -1,0 +1,39 @@
+{
+  "status": "planning only; final held-out ID freeze pending historical exclusions",
+  "dataset": "hotpotqa",
+  "initial_question_count": 250,
+  "expected_failed_questions_from_development": 120.0,
+  "conditions": [
+    "full_restart",
+    "random_step__bt2",
+    "fixed_early",
+    "unc__perplexity__argmax__bt2"
+  ],
+  "policy_selection": "retain prespecified perplexity argmax backtrack two; no winner selected from outcomes",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "token_multiplier": 1.0,
+  "new_step_allowance": 8,
+  "initial_failure_gate": "EM or official HotpotQA answer F1 >= 0.5",
+  "batching": "five disjoint, prespecified 50-question batches; analyze every batch together",
+  "planning_runtime_minutes": 78.56136687596639,
+  "planning_stage_compute_usd": 7.653592390229251,
+  "proposed_gross_cap_usd": 25,
+  "proposed_per_batch_cap_usd": 5,
+  "reserve_usd": 20,
+  "remaining_main_allocation_before_new_execution_usd": 74,
+  "normal_approx_halfwidths_at_expected_failures": {
+    "full_restart": 0.030035763260001277,
+    "random_step__bt2": 0.02487197492914478
+  },
+  "limitations": [
+    "Variance estimate is based on 24 failed development questions, so precision is uncertain.",
+    "Historical Google Drive run IDs have not been recovered; the saved 60-ID union covers only the two AWS cohorts.",
+    "Position-matched random and no-backtrack controls remain necessary for a stronger claim that question-specific uncertainty adds information beyond origin position.",
+    "No other dataset throughput has been calibrated on this machine.",
+    "No main-study instances or experiments were launched."
+  ]
+}

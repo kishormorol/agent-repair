@@ -1,0 +1,240 @@
+2026-09-12T05:28:04.061868+00:00 ip-172-31-8-51 systemd[1]: Stopping getty@tty1.service - Getty on tty1...
+2026-09-12T05:28:04.062128+00:00 ip-172-31-8-51 systemd[1]: Stopping irqbalance.service - irqbalance daemon...
+2026-09-12T05:28:04.062303+00:00 ip-172-31-8-51 systemd[1]: Stopping networkd-dispatcher.service - Dispatcher daemon for systemd-networkd...
+2026-09-12T05:28:04.062766+00:00 ip-172-31-8-51 systemd[1]: Stopping nvidia-dcgm.service - NVIDIA DCGM service...
+2026-09-12T05:28:04.063104+00:00 ip-172-31-8-51 systemd[1]: Stopping nvidia_gpu_settings_service.service - nvidia_gpu_settings_service AWS Helper Service...
+2026-09-12T05:28:04.063293+00:00 ip-172-31-8-51 systemd[1]: plymouth-quit.service: Deactivated successfully.
+2026-09-12T05:28:04.063452+00:00 ip-172-31-8-51 systemd[1]: Stopped plymouth-quit.service - Terminate Plymouth Boot Screen.
+2026-09-12T05:28:04.063766+00:00 ip-172-31-8-51 dockerd[1241]: time="2026-09-12T05:28:04.063721358Z" level=info msg="stopping event stream following graceful shutdown" error="<nil>" module=libcontainerd namespace=moby
+2026-09-12T05:28:04.063921+00:00 ip-172-31-8-51 systemd[1]: Stopping rsyslog.service - System Logging Service...
+2026-09-12T05:28:04.064215+00:00 ip-172-31-8-51 rsyslogd[834]: [origin software="rsyslogd" swVersion="8.2312.0" x-pid="834" x-info="https://www.rsyslog.com"] exiting on signal 15.
+2026-09-12T05:28:04.064543+00:00 ip-172-31-8-51 systemd[1]: Stopping serial-getty@ttyS0.service - Serial Getty on ttyS0...
+2026-09-12T05:28:04.064690+00:00 ip-172-31-8-51 dockerd[1241]: time="2026-09-12T05:28:04.064359233Z" level=info msg="Daemon shutdown complete"
+2026-09-12T05:28:04.064759+00:00 ip-172-31-8-51 systemd[1]: Stopping snap.amazon-ssm-agent.amazon-ssm-agent.service - Service for snap application amazon-ssm-agent.amazon-ssm-agent...
+2026-09-12T05:28:04.064959+00:00 ip-172-31-8-51 systemd[1]: snapd.seeded.service: Deactivated successfully.
+2026-09-12T05:28:04.065014+00:00 ip-172-31-8-51 amazon-ssm-agent.amazon-ssm-agent[728]: 2026-09-12 05:28:04.0649 INFO [amazon-ssm-agent] amazon-ssm-agent got signal:terminated value:0x7018c12e80c0
+2026-09-12T05:28:04.065181+00:00 ip-172-31-8-51 amazon-ssm-agent.amazon-ssm-agent[728]: 2026-09-12 05:28:04.0649 INFO [amazon-ssm-agent] Received stop/termination signal from main routine
+2026-09-12T05:28:04.065181+00:00 ip-172-31-8-51 amazon-ssm-agent.amazon-ssm-agent[728]: 2026-09-12 05:28:04.0650 INFO [amazon-ssm-agent] Stopping Core Agent
+2026-09-12T05:28:04.065284+00:00 ip-172-31-8-51 systemd[1]: Stopped snapd.seeded.service - Wait until snapd is fully seeded.
+2026-09-12T05:28:04.066995+00:00 ip-172-31-8-51 ModemManager[955]: <msg> ModemManager is shut down
+2026-09-12T05:28:04.068134+00:00 ip-172-31-8-51 blkdeactivate[5256]: Deactivating block devices:
+2026-09-12T05:28:04.068440+00:00 ip-172-31-8-51 snapd[730]: main.go:197: Exiting on terminated signal.
+2026-09-12T05:28:04.068876+00:00 ip-172-31-8-51 systemd[1]: Stopping snapd.service - Snap Daemon...
+2026-09-12T05:28:04.070616+00:00 ip-172-31-8-51 systemd[1]: snapd.system-shutdown.service - Ubuntu core (all-snaps) system shutdown helper setup service was skipped because of an unmet condition check (ConditionPathExists=!/usr/bin/finalrd).
+2026-09-12T05:28:04.070803+00:00 ip-172-31-8-51 systemd[1]: Stopping ssh.service - OpenBSD Secure Shell server...
+2026-09-12T05:28:04.070885+00:00 ip-172-31-8-51 sshd[1553]: Received signal 15; terminating.
+2026-09-12T05:28:04.071437+00:00 ip-172-31-8-51 nvidia-persistenced[1195]: Shutdown (1195)
+2026-09-12T05:28:04.071872+00:00 ip-172-31-8-51 systemd[1]: sysstat.service: Deactivated successfully.
+2026-09-12T05:28:04.071983+00:00 ip-172-31-8-51 systemd[1]: Stopped sysstat.service - Resets System Activity Logs.
+2026-09-12T05:28:04.074910+00:00 ip-172-31-8-51 systemd[1]: Stopping systemd-logind.service - User Login Management...
+2026-09-12T05:28:04.076608+00:00 ip-172-31-8-51 systemd[1]: Stopping systemd-random-seed.service - Load/Save OS Random Seed...
+2026-09-12T05:28:04.078051+00:00 ip-172-31-8-51 systemd[1]: Stopping udisks2.service - Disk Manager...
+2026-09-12T05:28:04.079969+00:00 ip-172-31-8-51 udisksd[735]: udisks daemon version 2.10.1 exiting
+2026-09-12T05:28:04.082967+00:00 ip-172-31-8-51 systemd[1]: opt-dlami-nvme.mount: Deactivated successfully.
+2026-09-12T05:28:04.083004+00:00 ip-172-31-8-51 systemd[1]: Unmounted opt-dlami-nvme.mount - /opt/dlami/nvme.
+2026-09-12T05:28:04.085015+00:00 ip-172-31-8-51 systemd[1]: acpid.service: Deactivated successfully.
+2026-09-12T05:28:04.085146+00:00 ip-172-31-8-51 systemd[1]: Stopped acpid.service - ACPI event daemon.
+2026-09-12T05:28:04.085671+00:00 ip-172-31-8-51 kernel: EXT4-fs (dm-0): unmounting filesystem 544f3382-8934-4d10-86c7-6452f3ceb0c0.
+2026-09-12T05:28:04.090338+00:00 ip-172-31-8-51 systemd[1]: cron.service: Deactivated successfully.
+2026-09-12T05:28:04.090450+00:00 ip-172-31-8-51 systemd[1]: Stopped cron.service - Regular background program processing daemon.
+2026-09-12T05:28:04.092239+00:00 ip-172-31-8-51 systemd[1]: irqbalance.service: Deactivated successfully.
+2026-09-12T05:28:04.092357+00:00 ip-172-31-8-51 systemd[1]: Stopped irqbalance.service - irqbalance daemon.
+2026-09-12T05:28:04.093735+00:00 ip-172-31-8-51 systemd[1]: networkd-dispatcher.service: Deactivated successfully.
+2026-09-12T05:28:04.093843+00:00 ip-172-31-8-51 systemd[1]: Stopped networkd-dispatcher.service - Dispatcher daemon for systemd-networkd.
+2026-09-12T05:28:04.095611+00:00 ip-172-31-8-51 blkdeactivate[5256]:   [UMOUNT]: unmounting vg.01-lv_ephemeral (dm-0) mounted on /opt/dlami/nvme... done
+2026-09-12T05:28:04.095609+00:00 ip-172-31-8-51 systemd[1]: systemd-logind.service: Deactivated successfully.
+2026-09-12T05:28:04.095757+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-logind.service - User Login Management.
+2026-09-12T05:28:04.097705+00:00 ip-172-31-8-51 systemd[1]: udisks2.service: Deactivated successfully.
+2026-09-12T05:28:04.097854+00:00 ip-172-31-8-51 systemd[1]: Stopped udisks2.service - Disk Manager.
+2026-09-12T05:28:04.101106+00:00 ip-172-31-8-51 systemd[1]: serial-getty@ttyS0.service: Deactivated successfully.
+2026-09-12T05:28:04.101248+00:00 ip-172-31-8-51 systemd[1]: Stopped serial-getty@ttyS0.service - Serial Getty on ttyS0.
+2026-09-12T05:28:04.103016+00:00 ip-172-31-8-51 systemd[1]: getty@tty1.service: Deactivated successfully.
+2026-09-12T05:28:04.103131+00:00 ip-172-31-8-51 systemd[1]: Stopped getty@tty1.service - Getty on tty1.
+2026-09-12T05:28:04.105544+00:00 ip-172-31-8-51 systemd[1]: rsyslog.service: Deactivated successfully.
+2026-09-12T05:28:04.105706+00:00 ip-172-31-8-51 systemd[1]: Stopped rsyslog.service - System Logging Service.
+2026-09-12T05:28:04.107198+00:00 ip-172-31-8-51 systemd[1]: chrony.service: Deactivated successfully.
+2026-09-12T05:28:04.107332+00:00 ip-172-31-8-51 systemd[1]: Stopped chrony.service - chrony, an NTP client/server.
+2026-09-12T05:28:04.109545+00:00 ip-172-31-8-51 systemd[1]: ModemManager.service: Deactivated successfully.
+2026-09-12T05:28:04.109853+00:00 ip-172-31-8-51 systemd[1]: Stopped ModemManager.service - Modem Manager.
+2026-09-12T05:28:04.113517+00:00 ip-172-31-8-51 systemd[1]: docker.service: Deactivated successfully.
+2026-09-12T05:28:04.113763+00:00 ip-172-31-8-51 systemd[1]: Stopped docker.service - Docker Application Container Engine.
+2026-09-12T05:28:04.117194+00:00 ip-172-31-8-51 systemd[1]: ssh.service: Deactivated successfully.
+2026-09-12T05:28:04.117312+00:00 ip-172-31-8-51 systemd[1]: Stopped ssh.service - OpenBSD Secure Shell server.
+2026-09-12T05:28:04.118894+00:00 ip-172-31-8-51 systemd[1]: systemd-random-seed.service: Deactivated successfully.
+2026-09-12T05:28:04.118971+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-random-seed.service - Load/Save OS Random Seed.
+2026-09-12T05:28:04.120594+00:00 ip-172-31-8-51 systemd[1]: nvidia_gpu_settings_service.service: Deactivated successfully.
+2026-09-12T05:28:04.120816+00:00 ip-172-31-8-51 systemd[1]: Stopped nvidia_gpu_settings_service.service - nvidia_gpu_settings_service AWS Helper Service.
+2026-09-12T05:28:04.126780+00:00 ip-172-31-8-51 systemd[1]: Removed slice system-getty.slice - Slice /system/getty.
+2026-09-12T05:28:04.128206+00:00 ip-172-31-8-51 systemd[1]: Removed slice system-serial\x2dgetty.slice - Slice /system/serial-getty.
+2026-09-12T05:28:04.129754+00:00 ip-172-31-8-51 systemd[1]: Stopped target getty-pre.target - Preparation for Logins.
+2026-09-12T05:28:04.132673+00:00 ip-172-31-8-51 kernel: gdrdrv:gdrdrv_cleanup:unregistering major number 510
+2026-09-12T05:28:04.133747+00:00 ip-172-31-8-51 systemd[1]: Stopped target network-online.target - Network is Online.
+2026-09-12T05:28:04.134993+00:00 ip-172-31-8-51 systemd[1]: Stopped target nss-lookup.target - Host and Network Name Lookups.
+2026-09-12T05:28:04.136442+00:00 ip-172-31-8-51 systemd[1]: Stopping containerd.service - containerd container runtime...
+2026-09-12T05:28:04.137628+00:00 ip-172-31-8-51 systemd[1]: plymouth-poweroff.service - Show Plymouth Power Off Screen was skipped because of an unmet condition check (ConditionKernelCommandLine=splash).
+2026-09-12T05:28:04.137645+00:00 ip-172-31-8-51 systemd[1]: plymouth-quit-wait.service: Deactivated successfully.
+2026-09-12T05:28:04.137806+00:00 ip-172-31-8-51 systemd[1]: Stopped plymouth-quit-wait.service - Hold until boot process finishes up.
+2026-09-12T05:28:04.139261+00:00 ip-172-31-8-51 systemd[1]: plymouth-switch-root-initramfs.service - Tell Plymouth To Jump To initramfs was skipped because no trigger condition checks were met.
+2026-09-12T05:28:04.139356+00:00 ip-172-31-8-51 systemd[1]: Stopping polkit.service - Authorization Manager...
+2026-09-12T05:28:04.140632+00:00 ip-172-31-8-51 systemd-tmpfiles[5404]: /run/finalrd-libs.conf:47: Duplicate line for path "/run/initramfs/lib64", ignoring.
+2026-09-12T05:28:04.144032+00:00 ip-172-31-8-51 gdrdrv[5262]: Unloading gdrdrv kernel module:  *
+2026-09-12T05:28:04.144836+00:00 ip-172-31-8-51 gdrdrv[5262]: Removing GDRcopy /dev entries:  *
+2026-09-12T05:28:04.147758+00:00 ip-172-31-8-51 systemd[1]: Stopping systemd-user-sessions.service - Permit User Sessions...
+2026-09-12T05:28:04.149400+00:00 ip-172-31-8-51 systemd[1]: polkit.service: Deactivated successfully.
+2026-09-12T05:28:04.149504+00:00 ip-172-31-8-51 systemd[1]: Stopped polkit.service - Authorization Manager.
+2026-09-12T05:28:04.151196+00:00 ip-172-31-8-51 systemd[1]: containerd.service: Deactivated successfully.
+2026-09-12T05:28:04.151325+00:00 ip-172-31-8-51 systemd[1]: Stopped containerd.service - containerd container runtime.
+2026-09-12T05:28:04.152613+00:00 ip-172-31-8-51 systemd[1]: containerd.service: Consumed 1.123s CPU time, 50.2M memory peak, 0B memory swap peak.
+2026-09-12T05:28:04.152706+00:00 ip-172-31-8-51 systemd[1]: gdrdrv.service: Deactivated successfully.
+2026-09-12T05:28:04.152799+00:00 ip-172-31-8-51 systemd[1]: Stopped gdrdrv.service - LSB: Startup/shutdown script for GDRcopy kernel-mode driver.
+2026-09-12T05:28:04.154314+00:00 ip-172-31-8-51 systemd[1]: systemd-user-sessions.service: Deactivated successfully.
+2026-09-12T05:28:04.154388+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-user-sessions.service - Permit User Sessions.
+2026-09-12T05:28:04.157739+00:00 ip-172-31-8-51 systemd[1]: Stopping soci-snapshotter.service - soci snapshotter containerd plugin...
+2026-09-12T05:28:04.157797+00:00 ip-172-31-8-51 soci-snapshotter-grpc[731]: {"level":"info","msg":"Got terminated","time":"2026-09-12T05:28:04.157755768Z"}
+2026-09-12T05:28:04.157969+00:00 ip-172-31-8-51 soci-snapshotter-grpc[731]: {"level":"info","msg":"Exiting","time":"2026-09-12T05:28:04.157933702Z"}
+2026-09-12T05:28:04.159822+00:00 ip-172-31-8-51 systemd[1]: apport.service: Deactivated successfully.
+2026-09-12T05:28:04.159943+00:00 ip-172-31-8-51 systemd[1]: Stopped apport.service - automatic crash report generation.
+2026-09-12T05:28:04.161424+00:00 ip-172-31-8-51 systemd[1]: soci-snapshotter.service: Deactivated successfully.
+2026-09-12T05:28:04.161527+00:00 ip-172-31-8-51 systemd[1]: Stopped soci-snapshotter.service - soci snapshotter containerd plugin.
+2026-09-12T05:28:04.163185+00:00 ip-172-31-8-51 systemd[1]: Stopped target remote-fs.target - Remote File Systems.
+2026-09-12T05:28:04.164431+00:00 ip-172-31-8-51 systemd[1]: Stopped target remote-fs-pre.target - Preparation for Remote File Systems.
+2026-09-12T05:28:04.171207+00:00 ip-172-31-8-51 finalrd[5418]: run-parts: executing /usr/share/finalrd/mdadm.finalrd setup
+2026-09-12T05:28:04.204385+00:00 ip-172-31-8-51 finalrd[5418]: run-parts: executing /usr/share/finalrd/open-iscsi.finalrd setup
+2026-09-12T05:28:04.224635+00:00 ip-172-31-8-51 blkdeactivate[5256]:   [LVM]: deactivating Volume Group vg.01... done
+2026-09-12T05:28:04.225317+00:00 ip-172-31-8-51 systemd[1]: blk-availability.service: Deactivated successfully.
+2026-09-12T05:28:04.225436+00:00 ip-172-31-8-51 systemd[1]: Stopped blk-availability.service - Availability of block devices.
+2026-09-12T05:28:04.358036+00:00 ip-172-31-8-51 systemd[1]: finalrd.service: Deactivated successfully.
+2026-09-12T05:28:04.358164+00:00 ip-172-31-8-51 systemd[1]: Stopped finalrd.service - Create final runtime dir for shutdown pivot root.
+2026-09-12T05:28:06.304348+00:00 ip-172-31-8-51 systemd[1]: nvidia-dcgm.service: Deactivated successfully.
+2026-09-12T05:28:06.304494+00:00 ip-172-31-8-51 systemd[1]: Stopped nvidia-dcgm.service - NVIDIA DCGM service.
+2026-09-12T05:28:06.305670+00:00 ip-172-31-8-51 systemd[1]: nvidia-dcgm.service: Consumed 15.515s CPU time, 85.2M memory peak, 0B memory swap peak.
+2026-09-12T05:28:07.070836+00:00 ip-172-31-8-51 snapd[730]: standby.go:121: standby monitoring stop requested
+2026-09-12T05:28:07.070984+00:00 ip-172-31-8-51 snapd[730]: overlord.go:568: Released state lock file
+2026-09-12T05:28:07.070984+00:00 ip-172-31-8-51 snapd[730]: seclog.go:189: security logger disabled
+2026-09-12T05:28:07.072793+00:00 ip-172-31-8-51 systemd[1]: snapd.service: Deactivated successfully.
+2026-09-12T05:28:07.072937+00:00 ip-172-31-8-51 systemd[1]: Stopped snapd.service - Snap Daemon.
+2026-09-12T05:28:07.074063+00:00 ip-172-31-8-51 systemd[1]: Stopped target time-set.target - System Time Set.
+2026-09-12T05:28:11.066774+00:00 ip-172-31-8-51 amazon-ssm-agent.amazon-ssm-agent[728]: 2026-09-12 05:28:11.0666 INFO [CredentialRefresher] Sending credential refresher stop signal
+2026-09-12T05:28:11.066774+00:00 ip-172-31-8-51 amazon-ssm-agent.amazon-ssm-agent[728]: 2026-09-12 05:28:11.0667 INFO [Registrar] Registrar is already stopped
+2026-09-12T05:28:11.066988+00:00 ip-172-31-8-51 amazon-ssm-agent.amazon-ssm-agent[728]: 2026-09-12 05:28:11.0667 INFO [amazon-ssm-agent] Bye.
+2026-09-12T05:28:11.066988+00:00 ip-172-31-8-51 amazon-ssm-agent.amazon-ssm-agent[728]: 2026-09-12 05:28:11.0667 INFO [CredentialRefresher] Stopping credentials refresher
+2026-09-12T05:28:11.074031+00:00 ip-172-31-8-51 systemd[1]: snap.amazon-ssm-agent.amazon-ssm-agent.service: Deactivated successfully.
+2026-09-12T05:28:11.074208+00:00 ip-172-31-8-51 systemd[1]: Stopped snap.amazon-ssm-agent.amazon-ssm-agent.service - Service for snap application amazon-ssm-agent.amazon-ssm-agent.
+2026-09-12T05:28:11.076019+00:00 ip-172-31-8-51 systemd[1]: Stopped target basic.target - Basic System.
+2026-09-12T05:28:11.079694+00:00 ip-172-31-8-51 systemd[1]: Stopped target network.target - Network.
+2026-09-12T05:28:11.080696+00:00 ip-172-31-8-51 systemd[1]: Stopped target paths.target - Path Units.
+2026-09-12T05:28:11.081688+00:00 ip-172-31-8-51 systemd[1]: acpid.path: Deactivated successfully.
+2026-09-12T05:28:11.081694+00:00 ip-172-31-8-51 systemd[1]: Stopped acpid.path - ACPI Events Check.
+2026-09-12T05:28:11.082670+00:00 ip-172-31-8-51 systemd[1]: nvidia-cdi-refresh.path: Deactivated successfully.
+2026-09-12T05:28:11.094677+00:00 ip-172-31-8-51 systemd[1]: Stopped nvidia-cdi-refresh.path - Trigger CDI refresh on NVIDIA driver or toolkit install / upgrade events.
+2026-09-12T05:28:11.096043+00:00 ip-172-31-8-51 systemd[1]: Stopped target slices.target - Slice Units.
+2026-09-12T05:28:11.097334+00:00 ip-172-31-8-51 systemd[1]: Removed slice user.slice - User and Session Slice.
+2026-09-12T05:28:11.098619+00:00 ip-172-31-8-51 systemd[1]: user.slice: Consumed 2.569s CPU time, 346.6M memory peak, 0B memory swap peak.
+2026-09-12T05:28:11.098630+00:00 ip-172-31-8-51 systemd[1]: Stopped target sockets.target - Socket Units.
+2026-09-12T05:28:11.100709+00:00 ip-172-31-8-51 systemd[1]: acpid.socket: Deactivated successfully.
+2026-09-12T05:28:11.100738+00:00 ip-172-31-8-51 systemd[1]: Closed acpid.socket - ACPID Listen Socket.
+2026-09-12T05:28:11.101801+00:00 ip-172-31-8-51 systemd[1]: docker.socket: Deactivated successfully.
+2026-09-12T05:28:11.101899+00:00 ip-172-31-8-51 systemd[1]: Closed docker.socket - Docker Socket for the API.
+2026-09-12T05:28:11.103052+00:00 ip-172-31-8-51 systemd[1]: iscsid.socket: Deactivated successfully.
+2026-09-12T05:28:11.103078+00:00 ip-172-31-8-51 systemd[1]: Closed iscsid.socket - Open-iSCSI iscsid Socket.
+2026-09-12T05:28:11.104317+00:00 ip-172-31-8-51 systemd[1]: lxd-installer.socket: Deactivated successfully.
+2026-09-12T05:28:11.104406+00:00 ip-172-31-8-51 systemd[1]: Closed lxd-installer.socket - Helper to install lxd snap on demand.
+2026-09-12T05:28:11.105886+00:00 ip-172-31-8-51 systemd[1]: snapd.socket: Deactivated successfully.
+2026-09-12T05:28:11.105978+00:00 ip-172-31-8-51 systemd[1]: Closed snapd.socket - Socket activation for snappy daemon.
+2026-09-12T05:28:11.107361+00:00 ip-172-31-8-51 systemd[1]: ssh.socket: Deactivated successfully.
+2026-09-12T05:28:11.107455+00:00 ip-172-31-8-51 systemd[1]: Closed ssh.socket - OpenBSD Secure Shell server socket.
+2026-09-12T05:28:11.108646+00:00 ip-172-31-8-51 systemd[1]: syslog.socket: Deactivated successfully.
+2026-09-12T05:28:11.108691+00:00 ip-172-31-8-51 systemd[1]: Closed syslog.socket - Syslog Socket.
+2026-09-12T05:28:11.109647+00:00 ip-172-31-8-51 systemd[1]: uuidd.socket: Deactivated successfully.
+2026-09-12T05:28:11.109682+00:00 ip-172-31-8-51 systemd[1]: Closed uuidd.socket - UUID daemon activation socket.
+2026-09-12T05:28:11.111066+00:00 ip-172-31-8-51 systemd[1]: Stopped target sysinit.target - System Initialization.
+2026-09-12T05:28:11.112314+00:00 ip-172-31-8-51 systemd[1]: Stopped target cryptsetup.target - Local Encrypted Volumes.
+2026-09-12T05:28:11.115683+00:00 ip-172-31-8-51 systemd[1]: systemd-ask-password-console.path: Deactivated successfully.
+2026-09-12T05:28:11.115710+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-ask-password-console.path - Dispatch Password Requests to Console Directory Watch.
+2026-09-12T05:28:11.117172+00:00 ip-172-31-8-51 systemd[1]: systemd-ask-password-wall.path: Deactivated successfully.
+2026-09-12T05:28:11.120678+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-ask-password-wall.path - Forward Password Requests to Wall Directory Watch.
+2026-09-12T05:28:11.122306+00:00 ip-172-31-8-51 systemd[1]: Stopped target integritysetup.target - Local Integrity Protected Volumes.
+2026-09-12T05:28:11.123710+00:00 ip-172-31-8-51 systemd[1]: Stopped target swap.target - Swaps.
+2026-09-12T05:28:11.124575+00:00 ip-172-31-8-51 systemd[1]: Stopped target veritysetup.target - Local Verity Protected Volumes.
+2026-09-12T05:28:11.126048+00:00 ip-172-31-8-51 systemd[1]: cloud-init.service: Deactivated successfully.
+2026-09-12T05:28:11.126147+00:00 ip-172-31-8-51 systemd[1]: Stopped cloud-init.service - Cloud-init: Network Stage.
+2026-09-12T05:28:11.137713+00:00 ip-172-31-8-51 systemd[1]: Stopping systemd-binfmt.service - Set Up Additional Binary Formats...
+2026-09-12T05:28:11.139162+00:00 ip-172-31-8-51 systemd[1]: Stopping systemd-networkd.service - Network Configuration...
+2026-09-12T05:28:11.139243+00:00 ip-172-31-8-51 systemd-networkd[650]: enp39s0: DHCP lease lost
+2026-09-12T05:28:11.139900+00:00 ip-172-31-8-51 systemd-networkd[650]: enp39s0: DHCPv6 lease lost
+2026-09-12T05:28:11.140415+00:00 ip-172-31-8-51 systemd[1]: Stopping systemd-resolved.service - Network Name Resolution...
+2026-09-12T05:28:11.142303+00:00 ip-172-31-8-51 systemd[1]: Stopping systemd-update-utmp.service - Record System Boot/Shutdown in UTMP...
+2026-09-12T05:28:11.143995+00:00 ip-172-31-8-51 systemd[1]: systemd-binfmt.service: Deactivated successfully.
+2026-09-12T05:28:11.144081+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-binfmt.service - Set Up Additional Binary Formats.
+2026-09-12T05:28:11.147109+00:00 ip-172-31-8-51 systemd[1]: proc-sys-fs-binfmt_misc.automount: Deactivated successfully.
+2026-09-12T05:28:11.147181+00:00 ip-172-31-8-51 systemd[1]: Unset automount proc-sys-fs-binfmt_misc.automount - Arbitrary Executable File Formats File System Automount Point.
+2026-09-12T05:28:11.154231+00:00 ip-172-31-8-51 systemd[1]: proc-sys-fs-binfmt_misc.mount: Deactivated successfully.
+2026-09-12T05:28:11.154567+00:00 ip-172-31-8-51 systemd[1]: systemd-resolved.service: Deactivated successfully.
+2026-09-12T05:28:11.154667+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-resolved.service - Network Name Resolution.
+2026-09-12T05:28:11.156474+00:00 ip-172-31-8-51 systemd[1]: systemd-update-utmp.service: Deactivated successfully.
+2026-09-12T05:28:11.156583+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-update-utmp.service - Record System Boot/Shutdown in UTMP.
+2026-09-12T05:28:11.159311+00:00 ip-172-31-8-51 systemd[1]: systemd-tmpfiles-setup.service: Deactivated successfully.
+2026-09-12T05:28:11.159355+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-tmpfiles-setup.service - Create Volatile Files and Directories.
+2026-09-12T05:28:11.160872+00:00 ip-172-31-8-51 systemd[1]: Stopped target local-fs.target - Local File Systems.
+2026-09-12T05:28:11.162046+00:00 ip-172-31-8-51 systemd[1]: Stopped target snapd.mounts.target - Mounted snaps.
+2026-09-12T05:28:11.168708+00:00 ip-172-31-8-51 systemd[1]: Unmounting boot-efi.mount - /boot/efi...
+2026-09-12T05:28:11.169836+00:00 ip-172-31-8-51 systemd[1]: Unmounting snap-amazon\x2dssm\x2dagent-13349.mount - Mount unit for amazon-ssm-agent, revision 13349...
+2026-09-12T05:28:11.171314+00:00 ip-172-31-8-51 systemd[1]: Unmounting snap-core22-2411.mount - Mount unit for core22, revision 2411...
+2026-09-12T05:28:11.173041+00:00 ip-172-31-8-51 systemd[1]: Unmounting snap-snapd-27406.mount - Mount unit for snapd, revision 27406...
+2026-09-12T05:28:11.175695+00:00 ip-172-31-8-51 systemd[1]: systemd-networkd.service: Deactivated successfully.
+2026-09-12T05:28:11.175799+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-networkd.service - Network Configuration.
+2026-09-12T05:28:11.177949+00:00 ip-172-31-8-51 systemd[1]: boot-efi.mount: Deactivated successfully.
+2026-09-12T05:28:11.178065+00:00 ip-172-31-8-51 systemd[1]: Unmounted boot-efi.mount - /boot/efi.
+2026-09-12T05:28:11.179182+00:00 ip-172-31-8-51 systemd[1]: snap-amazon\x2dssm\x2dagent-13349.mount: Deactivated successfully.
+2026-09-12T05:28:11.179275+00:00 ip-172-31-8-51 systemd[1]: Unmounted snap-amazon\x2dssm\x2dagent-13349.mount - Mount unit for amazon-ssm-agent, revision 13349.
+2026-09-12T05:28:11.180762+00:00 ip-172-31-8-51 systemd[1]: snap-core22-2411.mount: Deactivated successfully.
+2026-09-12T05:28:11.180855+00:00 ip-172-31-8-51 systemd[1]: Unmounted snap-core22-2411.mount - Mount unit for core22, revision 2411.
+2026-09-12T05:28:11.182407+00:00 ip-172-31-8-51 systemd[1]: snap-snapd-27406.mount: Deactivated successfully.
+2026-09-12T05:28:11.182503+00:00 ip-172-31-8-51 systemd[1]: Unmounted snap-snapd-27406.mount - Mount unit for snapd, revision 27406.
+2026-09-12T05:28:11.185514+00:00 ip-172-31-8-51 systemd[1]: Stopped target network-pre.target - Preparation for Network.
+2026-09-12T05:28:11.186976+00:00 ip-172-31-8-51 systemd[1]: Stopped target snapd.mounts-pre.target - Mounting snaps.
+2026-09-12T05:28:11.190744+00:00 ip-172-31-8-51 systemd[1]: systemd-networkd.socket: Deactivated successfully.
+2026-09-12T05:28:11.190769+00:00 ip-172-31-8-51 systemd[1]: Closed systemd-networkd.socket - Network Service Netlink Socket.
+2026-09-12T05:28:11.199703+00:00 ip-172-31-8-51 systemd[1]: Unmounting boot.mount - /boot...
+2026-09-12T05:28:11.200609+00:00 ip-172-31-8-51 systemd[1]: cloud-init-local.service: Deactivated successfully.
+2026-09-12T05:28:11.200746+00:00 ip-172-31-8-51 systemd[1]: Stopped cloud-init-local.service - Cloud-init: Local Stage (pre-network).
+2026-09-12T05:28:11.202298+00:00 ip-172-31-8-51 systemd[1]: cloud-init-local.service: Consumed 1.043s CPU time, 81.5M memory peak, 0B memory swap peak.
+2026-09-12T05:28:11.202366+00:00 ip-172-31-8-51 systemd[1]: systemd-fsck@dev-disk-by\x2dlabel-UEFI.service: Deactivated successfully.
+2026-09-12T05:28:11.202395+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-fsck@dev-disk-by\x2dlabel-UEFI.service - File System Check on /dev/disk/by-label/UEFI.
+2026-09-12T05:28:11.202667+00:00 ip-172-31-8-51 kernel: EXT4-fs (nvme0n1p16): unmounting filesystem 64375848-128e-49ad-bdc3-fbe594aa399d.
+2026-09-12T05:28:11.203913+00:00 ip-172-31-8-51 systemd[1]: systemd-sysctl.service: Deactivated successfully.
+2026-09-12T05:28:11.203937+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-sysctl.service - Apply Kernel Variables.
+2026-09-12T05:28:11.205229+00:00 ip-172-31-8-51 systemd[1]: systemd-modules-load.service: Deactivated successfully.
+2026-09-12T05:28:11.205247+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-modules-load.service - Load Kernel Modules.
+2026-09-12T05:28:11.207025+00:00 ip-172-31-8-51 systemd[1]: boot.mount: Deactivated successfully.
+2026-09-12T05:28:11.207128+00:00 ip-172-31-8-51 systemd[1]: Unmounted boot.mount - /boot.
+2026-09-12T05:28:11.208976+00:00 ip-172-31-8-51 systemd[1]: Reached target umount.target - Unmount All Filesystems.
+2026-09-12T05:28:11.210298+00:00 ip-172-31-8-51 systemd[1]: systemd-fsck@dev-disk-by\x2dlabel-BOOT.service: Deactivated successfully.
+2026-09-12T05:28:11.210329+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-fsck@dev-disk-by\x2dlabel-BOOT.service - File System Check on /dev/disk/by-label/BOOT.
+2026-09-12T05:28:11.211837+00:00 ip-172-31-8-51 systemd[1]: Removed slice system-systemd\x2dfsck.slice - Slice /system/systemd-fsck.
+2026-09-12T05:28:11.213320+00:00 ip-172-31-8-51 systemd[1]: Stopped target local-fs-pre.target - Preparation for Local File Systems.
+2026-09-12T05:28:11.215173+00:00 ip-172-31-8-51 systemd[1]: Stopping lvm2-monitor.service - Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling...
+2026-09-12T05:28:11.218754+00:00 ip-172-31-8-51 systemd[1]: Stopping multipathd.service - Device-Mapper Multipath Device Controller...
+2026-09-12T05:28:11.218781+00:00 ip-172-31-8-51 multipathd[295]: multipathd: shut down
+2026-09-12T05:28:11.222690+00:00 ip-172-31-8-51 systemd[1]: systemd-tmpfiles-setup-dev.service: Deactivated successfully.
+2026-09-12T05:28:11.222720+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-tmpfiles-setup-dev.service - Create Static Device Nodes in /dev.
+2026-09-12T05:28:11.224139+00:00 ip-172-31-8-51 systemd[1]: systemd-tmpfiles-setup-dev-early.service: Deactivated successfully.
+2026-09-12T05:28:11.224164+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-tmpfiles-setup-dev-early.service - Create Static Device Nodes in /dev gracefully.
+2026-09-12T05:28:11.244484+00:00 ip-172-31-8-51 systemd[1]: multipathd.service: Deactivated successfully.
+2026-09-12T05:28:11.244594+00:00 ip-172-31-8-51 systemd[1]: Stopped multipathd.service - Device-Mapper Multipath Device Controller.
+2026-09-12T05:28:11.246512+00:00 ip-172-31-8-51 systemd[1]: lvm2-monitor.service: Deactivated successfully.
+2026-09-12T05:28:11.246606+00:00 ip-172-31-8-51 systemd[1]: Stopped lvm2-monitor.service - Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling.
+2026-09-12T05:28:11.248198+00:00 ip-172-31-8-51 systemd[1]: systemd-remount-fs.service: Deactivated successfully.
+2026-09-12T05:28:11.248223+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-remount-fs.service - Remount Root and Kernel File Systems.
+2026-09-12T05:28:11.249713+00:00 ip-172-31-8-51 systemd[1]: systemd-fsck-root.service: Deactivated successfully.
+2026-09-12T05:28:11.249731+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-fsck-root.service - File System Check on Root Device.
+2026-09-12T05:28:11.251098+00:00 ip-172-31-8-51 systemd[1]: Reached target shutdown.target - System Shutdown.
+2026-09-12T05:28:11.252119+00:00 ip-172-31-8-51 systemd[1]: Reached target final.target - Late Shutdown Services.
+2026-09-12T05:28:11.253311+00:00 ip-172-31-8-51 systemd[1]: systemd-poweroff.service: Deactivated successfully.
+2026-09-12T05:28:11.253322+00:00 ip-172-31-8-51 systemd[1]: Finished systemd-poweroff.service - System Power Off.
+2026-09-12T05:28:11.254510+00:00 ip-172-31-8-51 systemd[1]: Reached target poweroff.target - System Power Off.
+2026-09-12T05:28:11.255605+00:00 ip-172-31-8-51 systemd[1]: Shutting down.
+2026-09-12T05:28:11.284667+00:00 ip-172-31-8-51 systemd-shutdown[1]: Syncing filesystems and block devices.
+2026-09-12T05:28:11.306538+00:00 ip-172-31-8-51 systemd-shutdown[1]: Sending SIGTERM to remaining processes...
+2026-09-12T05:28:11.306566+00:00 ip-172-31-8-51 systemd-journald[214]: Received SIGTERM from PID 1 (systemd-shutdow).
+2026-09-12T05:28:11.306593+00:00 ip-172-31-8-51 systemd-journald[214]: Journal stopped

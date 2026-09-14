@@ -1,0 +1,312 @@
+{
+  "phase": "development, not held out",
+  "dataset": "hotpotqa",
+  "initial_questions": 50,
+  "excluded_known_questions": 10,
+  "historical_exclusions_complete": false,
+  "initial_successes": 26,
+  "failed_questions": 24,
+  "success_definition": "Exact match or official HotpotQA answer token F1 >= 0.5",
+  "initial_exact_matches": 18.0,
+  "initial_mean_f1": 0.5067317460317461,
+  "unique_repair_executions": 186,
+  "complete_strategy_seed_rows": 288,
+  "strategies": {
+    "full_restart": {
+      "successful_seed_trials": 4,
+      "seed_trials": 72,
+      "success_rate": 0.05555555555555555,
+      "exact_match_rate": 0.027777777777777776,
+      "mean_f1": 0.06535594035594036,
+      "target_step_counts": {
+        "0": 72
+      },
+      "restart_origin_fraction": 1
+    },
+    "random_step__bt2": {
+      "successful_seed_trials": 6,
+      "seed_trials": 72,
+      "success_rate": 0.08333333333333333,
+      "exact_match_rate": 0.05555555555555555,
+      "mean_f1": 0.09313371813371814,
+      "target_step_counts": {
+        "3": 7,
+        "0": 43,
+        "4": 5,
+        "1": 7,
+        "5": 5,
+        "2": 5
+      },
+      "restart_origin_fraction": 0.5972222222222222
+    },
+    "fixed_early": {
+      "successful_seed_trials": 7,
+      "seed_trials": 72,
+      "success_rate": 0.09722222222222222,
+      "exact_match_rate": 0.06944444444444445,
+      "mean_f1": 0.13531351565771857,
+      "target_step_counts": {
+        "1": 72
+      },
+      "restart_origin_fraction": 0
+    },
+    "unc__perplexity__argmax__bt2": {
+      "successful_seed_trials": 6,
+      "seed_trials": 72,
+      "success_rate": 0.08333333333333333,
+      "exact_match_rate": 0.041666666666666664,
+      "mean_f1": 0.09035594035594036,
+      "target_step_counts": {
+        "0": 42,
+        "3": 15,
+        "5": 6,
+        "1": 6,
+        "4": 3
+      },
+      "restart_origin_fraction": 0.5833333333333334
+    }
+  },
+  "token_budget_violations": 0,
+  "new_step_budget_violations": 0,
+  "initial_generated_tokens": 11718,
+  "unique_repair_generated_tokens": 56082,
+  "unique_repair_prompt_tokens": 836852,
+  "initial_termination_reasons": {
+    "max_steps": 15,
+    "finished": 35
+  },
+  "repair_termination_reasons": {
+    "budget": 75,
+    "finished": 72,
+    "max_steps": 39
+  },
+  "invalid_action_at_exact_token_budget": 66,
+  "verified_input_hashes": 51,
+  "trajectories_replayed_and_reference_scored": 236,
+  "observations_verified": 1521,
+  "retained_prefix_steps_verified": 222,
+  "official_scorer_sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0",
+  "mismatches": 0,
+  "model": {
+    "repo_id": "Qwen/Qwen2.5-32B-Instruct-AWQ",
+    "revision": "5c7cb76a268fc6cfbb9c4777eb24ba6e27f9ee6c",
+    "snapshot_path": "/workspace/agent-repair-iclr2027/huggingface/hub/models--Qwen--Qwen2.5-32B-Instruct-AWQ/snapshots/5c7cb76a268fc6cfbb9c4777eb24ba6e27f9ee6c"
+  },
+  "paired_analysis": {
+    "primary_macro_contrasts": {
+      "full_restart": {
+        "estimand": "equal_question_mean_seed_success",
+        "n_questions": 24,
+        "mean_a": 0.08333333333333333,
+        "mean_b": 0.05555555555555555,
+        "delta": 0.027777777777777776,
+        "delta_lo": -0.027777777777777776,
+        "delta_hi": 0.09722222222222221,
+        "ci": 0.95,
+        "resamples": 10000,
+        "analysis_seed": 0,
+        "p_value": 0.7516248375162484,
+        "test": "paired_sign_flip_assuming_within_question_exchangeability",
+        "strategy_a": "unc__perplexity__argmax__bt2",
+        "strategy_b": "full_restart",
+        "outcome": "success",
+        "datasets": [
+          "hotpotqa"
+        ],
+        "p_value_holm": 1.0
+      },
+      "random_step__bt2": {
+        "estimand": "equal_question_mean_seed_success",
+        "n_questions": 24,
+        "mean_a": 0.08333333333333333,
+        "mean_b": 0.08333333333333333,
+        "delta": 0.0,
+        "delta_lo": -0.05555555555555555,
+        "delta_hi": 0.05555555555555555,
+        "ci": 0.95,
+        "resamples": 10000,
+        "analysis_seed": 0,
+        "p_value": 1.0,
+        "test": "paired_sign_flip_assuming_within_question_exchangeability",
+        "strategy_a": "unc__perplexity__argmax__bt2",
+        "strategy_b": "random_step__bt2",
+        "outcome": "success",
+        "datasets": [
+          "hotpotqa"
+        ],
+        "p_value_holm": 1.0
+      }
+    },
+    "exploratory_dataset_sensitivities": {
+      "full_restart": {
+        "hotpotqa": {
+          "success": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 24,
+            "mean_a": 0.08333333333333333,
+            "mean_b": 0.05555555555555555,
+            "delta": 0.027777777777777776,
+            "delta_lo": -0.027777777777777776,
+            "delta_hi": 0.09722222222222221,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 0.7516248375162484,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "full_restart",
+            "outcome": "success"
+          },
+          "em": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 24,
+            "mean_a": 0.041666666666666664,
+            "mean_b": 0.027777777777777776,
+            "delta": 0.013888888888888888,
+            "delta_lo": -0.041666666666666664,
+            "delta_hi": 0.08333333333333333,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 1.0,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "full_restart",
+            "outcome": "em"
+          },
+          "f1": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 24,
+            "mean_a": 0.09035594035594036,
+            "mean_b": 0.06535594035594035,
+            "delta": 0.024999999999999998,
+            "delta_lo": -0.027777777777777776,
+            "delta_hi": 0.09444444444444444,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 0.7516248375162484,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "full_restart",
+            "outcome": "f1"
+          }
+        }
+      },
+      "random_step__bt2": {
+        "hotpotqa": {
+          "success": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 24,
+            "mean_a": 0.08333333333333333,
+            "mean_b": 0.08333333333333333,
+            "delta": 0.0,
+            "delta_lo": -0.05555555555555555,
+            "delta_hi": 0.05555555555555555,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 1.0,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "random_step__bt2",
+            "outcome": "success"
+          },
+          "em": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 24,
+            "mean_a": 0.041666666666666664,
+            "mean_b": 0.05555555555555555,
+            "delta": -0.013888888888888888,
+            "delta_lo": -0.05555555555555555,
+            "delta_hi": 0.027777777777777776,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 1.0,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "random_step__bt2",
+            "outcome": "em"
+          },
+          "f1": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 24,
+            "mean_a": 0.09035594035594036,
+            "mean_b": 0.09313371813371814,
+            "delta": -0.002777777777777777,
+            "delta_lo": -0.05555555555555555,
+            "delta_hi": 0.049999999999999996,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 1.0,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "random_step__bt2",
+            "outcome": "f1"
+          }
+        }
+      }
+    },
+    "note": "Expected question/seed coverage verified against repair manifests. Policy selection must still be frozen externally before test outcomes are inspected."
+  },
+  "development_variance": {
+    "full_restart": {
+      "n_failed_questions": 24,
+      "paired_question_sd": 0.16787005172844496,
+      "normal_approx_failed_n_for_95pct_halfwidth_0_05": 44,
+      "note": "Exploratory plug-in precision calculation; small-sample or zero variance is not a reliable sample-size guarantee."
+    },
+    "random_step__bt2": {
+      "n_failed_questions": 24,
+      "paired_question_sd": 0.13900960937138318,
+      "normal_approx_failed_n_for_95pct_halfwidth_0_05": 30,
+      "note": "Exploratory plug-in precision calculation; small-sample or zero variance is not a reliable sample-size guarantee."
+    }
+  },
+  "stage_attempts": [
+    {
+      "script": "run_setup.py",
+      "extra": [],
+      "status": "complete",
+      "started_unix": 1789132933.5988493,
+      "elapsed_seconds": 0.25044941902160645,
+      "new_execution_files": 0
+    },
+    {
+      "script": "run_generate.py",
+      "extra": [],
+      "status": "complete",
+      "started_unix": 1789132933.920017,
+      "elapsed_seconds": 319.2753083705902,
+      "new_execution_files": 0
+    },
+    {
+      "script": "run_uncertainty.py",
+      "extra": [],
+      "status": "complete",
+      "started_unix": 1789133253.2669575,
+      "elapsed_seconds": 0.39472150802612305,
+      "new_execution_files": 0
+    },
+    {
+      "script": "run_repair.py",
+      "extra": [
+        "--dry-run"
+      ],
+      "status": "complete",
+      "started_unix": 1789133253.741037,
+      "elapsed_seconds": 0.26224255561828613,
+      "new_execution_files": 0
+    },
+    {
+      "script": "run_repair.py",
+      "extra": [],
+      "status": "complete",
+      "started_unix": 1789133254.2235823,
+      "elapsed_seconds": 622.5536806583405,
+      "new_execution_files": 186
+    }
+  ]
+}

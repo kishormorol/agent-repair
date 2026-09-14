@@ -1,0 +1,284 @@
+{
+  "phase": "exploratory pilot",
+  "dataset": "hotpotqa",
+  "initial_questions": 10,
+  "initial_successes": 6,
+  "failed_questions": 4,
+  "success_definition": "Exact match or token F1 >= 0.5",
+  "initial_exact_matches": 3.0,
+  "initial_mean_f1": 0.49428571428571433,
+  "unique_repair_executions": 25,
+  "complete_strategy_seed_rows": 48,
+  "strategies": {
+    "full_restart": {
+      "successful_seed_trials": 1,
+      "seed_trials": 12,
+      "success_rate": 0.08333333333333333,
+      "exact_match_rate": 0.08333333333333333,
+      "mean_f1": 0.10416666666666667,
+      "target_step_counts": {
+        "0": 12
+      }
+    },
+    "random_step__bt2": {
+      "successful_seed_trials": 1,
+      "seed_trials": 12,
+      "success_rate": 0.08333333333333333,
+      "exact_match_rate": 0.08333333333333333,
+      "mean_f1": 0.10416666666666667,
+      "target_step_counts": {
+        "0": 9,
+        "1": 2,
+        "5": 1
+      }
+    },
+    "fixed_early": {
+      "successful_seed_trials": 0,
+      "seed_trials": 12,
+      "success_rate": 0.0,
+      "exact_match_rate": 0.0,
+      "mean_f1": 0.032512626262626264,
+      "target_step_counts": {
+        "1": 9,
+        "0": 3
+      }
+    },
+    "unc__perplexity__argmax__bt2": {
+      "successful_seed_trials": 1,
+      "seed_trials": 12,
+      "success_rate": 0.08333333333333333,
+      "exact_match_rate": 0.08333333333333333,
+      "mean_f1": 0.10416666666666667,
+      "target_step_counts": {
+        "2": 3,
+        "0": 6,
+        "1": 3
+      }
+    }
+  },
+  "token_budget_violations": 0,
+  "new_step_budget_violations": 0,
+  "initial_generated_tokens": 1848,
+  "unique_repair_generated_tokens": 6147,
+  "unique_repair_prompt_tokens": 106201,
+  "initial_termination_reasons": {
+    "max_steps": 1,
+    "finished": 9
+  },
+  "repair_termination_reasons": {
+    "finished": 12,
+    "error": 10,
+    "budget": 1,
+    "max_steps": 2
+  },
+  "invalid_action_at_exact_token_budget": 10,
+  "verified_input_hashes": 11,
+  "model": {
+    "repo_id": "Qwen/Qwen2.5-32B-Instruct-AWQ",
+    "revision": "5c7cb76a268fc6cfbb9c4777eb24ba6e27f9ee6c",
+    "snapshot_path": "/workspace/agent-repair-iclr2027/huggingface/hub/models--Qwen--Qwen2.5-32B-Instruct-AWQ/snapshots/5c7cb76a268fc6cfbb9c4777eb24ba6e27f9ee6c"
+  },
+  "paired_analysis": {
+    "primary_macro_contrasts": {
+      "full_restart": {
+        "estimand": "equal_question_mean_seed_success",
+        "n_questions": 4,
+        "mean_a": 0.08333333333333333,
+        "mean_b": 0.08333333333333333,
+        "delta": 0.0,
+        "delta_lo": 0.0,
+        "delta_hi": 0.0,
+        "ci": 0.95,
+        "resamples": 10000,
+        "analysis_seed": 0,
+        "p_value": 1.0,
+        "test": "paired_sign_flip_assuming_within_question_exchangeability",
+        "strategy_a": "unc__perplexity__argmax__bt2",
+        "strategy_b": "full_restart",
+        "outcome": "success",
+        "datasets": [
+          "hotpotqa"
+        ],
+        "p_value_holm": 1.0
+      },
+      "random_step__bt2": {
+        "estimand": "equal_question_mean_seed_success",
+        "n_questions": 4,
+        "mean_a": 0.08333333333333333,
+        "mean_b": 0.08333333333333333,
+        "delta": 0.0,
+        "delta_lo": 0.0,
+        "delta_hi": 0.0,
+        "ci": 0.95,
+        "resamples": 10000,
+        "analysis_seed": 0,
+        "p_value": 1.0,
+        "test": "paired_sign_flip_assuming_within_question_exchangeability",
+        "strategy_a": "unc__perplexity__argmax__bt2",
+        "strategy_b": "random_step__bt2",
+        "outcome": "success",
+        "datasets": [
+          "hotpotqa"
+        ],
+        "p_value_holm": 1.0
+      }
+    },
+    "exploratory_dataset_sensitivities": {
+      "full_restart": {
+        "hotpotqa": {
+          "success": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 4,
+            "mean_a": 0.08333333333333333,
+            "mean_b": 0.08333333333333333,
+            "delta": 0.0,
+            "delta_lo": 0.0,
+            "delta_hi": 0.0,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 1.0,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "full_restart",
+            "outcome": "success"
+          },
+          "em": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 4,
+            "mean_a": 0.08333333333333333,
+            "mean_b": 0.08333333333333333,
+            "delta": 0.0,
+            "delta_lo": 0.0,
+            "delta_hi": 0.0,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 1.0,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "full_restart",
+            "outcome": "em"
+          },
+          "f1": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 4,
+            "mean_a": 0.10416666666666667,
+            "mean_b": 0.10416666666666667,
+            "delta": 0.0,
+            "delta_lo": 0.0,
+            "delta_hi": 0.0,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 1.0,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "full_restart",
+            "outcome": "f1"
+          }
+        }
+      },
+      "random_step__bt2": {
+        "hotpotqa": {
+          "success": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 4,
+            "mean_a": 0.08333333333333333,
+            "mean_b": 0.08333333333333333,
+            "delta": 0.0,
+            "delta_lo": 0.0,
+            "delta_hi": 0.0,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 1.0,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "random_step__bt2",
+            "outcome": "success"
+          },
+          "em": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 4,
+            "mean_a": 0.08333333333333333,
+            "mean_b": 0.08333333333333333,
+            "delta": 0.0,
+            "delta_lo": 0.0,
+            "delta_hi": 0.0,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 1.0,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "random_step__bt2",
+            "outcome": "em"
+          },
+          "f1": {
+            "estimand": "equal_question_mean_seed_success",
+            "n_questions": 4,
+            "mean_a": 0.10416666666666667,
+            "mean_b": 0.10416666666666667,
+            "delta": 0.0,
+            "delta_lo": 0.0,
+            "delta_hi": 0.0,
+            "ci": 0.95,
+            "resamples": 10000,
+            "analysis_seed": 0,
+            "p_value": 1.0,
+            "test": "paired_sign_flip_assuming_within_question_exchangeability",
+            "strategy_a": "unc__perplexity__argmax__bt2",
+            "strategy_b": "random_step__bt2",
+            "outcome": "f1"
+          }
+        }
+      }
+    },
+    "note": "Expected question/seed coverage verified against repair manifests. Policy selection must still be frozen externally before test outcomes are inspected."
+  },
+  "stage_attempts": [
+    {
+      "script": "run_setup.py",
+      "extra": [],
+      "status": "complete",
+      "started_unix": 1789079131.6287925,
+      "elapsed_seconds": 64.33974742889404,
+      "new_execution_files": 0
+    },
+    {
+      "script": "run_generate.py",
+      "extra": [],
+      "status": "complete",
+      "started_unix": 1789079196.040252,
+      "elapsed_seconds": 205.69396781921387,
+      "new_execution_files": 0
+    },
+    {
+      "script": "run_uncertainty.py",
+      "extra": [],
+      "status": "complete",
+      "started_unix": 1789079401.8055184,
+      "elapsed_seconds": 0.12596392631530762,
+      "new_execution_files": 0
+    },
+    {
+      "script": "run_repair.py",
+      "extra": [
+        "--dry-run"
+      ],
+      "status": "complete",
+      "started_unix": 1789079402.011294,
+      "elapsed_seconds": 0.10393095016479492,
+      "new_execution_files": 0
+    },
+    {
+      "script": "run_repair.py",
+      "extra": [],
+      "status": "complete",
+      "started_unix": 1789079402.2689233,
+      "elapsed_seconds": 114.3736310005188,
+      "new_execution_files": 25
+    }
+  ]
+}

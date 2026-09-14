@@ -1,0 +1,23 @@
+{
+  "hotpotqa": {
+    "official_scorer_checks": 51835,
+    "mismatches": 0,
+    "dataset_records": 7405,
+    "excluded_ids": 1049,
+    "selected_records": 120
+  },
+  "musique": {
+    "official_scorer_checks": 17811,
+    "mismatches": 0,
+    "dataset_records": 2417,
+    "excluded_ids": 500,
+    "selected_records": 120
+  },
+  "2wikimultihopqa": {
+    "official_scorer_checks": 104545,
+    "mismatches": 0,
+    "dataset_records": 12576,
+    "excluded_ids": 500,
+    "selected_records": 120
+  }
+}

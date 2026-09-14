@@ -1,0 +1,39 @@
+{
+  "estimated_at_utc": "2026-09-11T19:17:52.310822+00:00",
+  "session_cap_usd": 5,
+  "gpu_hourly_usd": 5.84531,
+  "sessions": [
+    {
+      "purpose": "expired-timer recovery boot",
+      "start_utc": "2026-09-11T13:14:27.941611Z",
+      "end_utc": "2026-09-11T13:14:47Z",
+      "conservative_billed_seconds": 60,
+      "compute_usd": 0.09742183333333332
+    },
+    {
+      "purpose": "development notebook, archive, and shutdown grace",
+      "start_utc": "2026-09-11T13:20:18.464312Z",
+      "end_utc": "2026-09-11T13:41:11Z",
+      "conservative_billed_seconds": 1252.535688,
+      "compute_usd": 2.0337387173397996
+    },
+    {
+      "purpose": "archive retrieval, bounded by external stop",
+      "start_utc": "2026-09-11T15:10:12.139117Z",
+      "end_utc": "2026-09-11T15:20:14Z",
+      "conservative_billed_seconds": 601.860883,
+      "compute_usd": 0.9772398438913138
+    }
+  ],
+  "compute_usd": 3.1084003945644465,
+  "ebs_since_development_start_usd": 0.1561300511404938,
+  "ebs_includes_stopped_time": true,
+  "ipv4_bound_usd": 0.03028384612638889,
+  "retained_ebs_usd_per_day": 0.6186666666666666,
+  "excluded": "Tax, transfer, and storage after estimate timestamp; estimate is not an AWS invoice. Storage before this development start belongs to prior usage.",
+  "pre_session_aws_estimated_credit_balance_usd": 112.14,
+  "pre_session_aws_estimated_credit_used_usd": 7.86,
+  "pre_session_notebook_conservative_spent_usd": 8.5,
+  "estimated_gross_session_usd": 3.294814291831329,
+  "ipv4_bound_note": "Conservative full-wall-time bound from development start through estimate, including periods with no public IP; actual usage is lower."
+}

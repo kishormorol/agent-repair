@@ -1,0 +1,35 @@
+{
+  "validated_utc": "2026-09-13T18:01:45.261438+00:00",
+  "scope": "Local implementation, frozen inputs and upload package; no GPU inference or AWS launch",
+  "code_sha256": "b75d0b7c22bf78f889f7d652c217f2dd7663685bcba3835f9132f94a1d5a464b",
+  "main_protocol_sha256": "c46d5db05a22d1f8566112e56973e73489c33c0a71ac9894688deba51812df8c",
+  "pilot_protocol_sha256": "ce26597bceb8e4718d98a2c0378f1c580149ea8bbe839a876ed2750216239454",
+  "package_manifest_sha256": "366a47e865d20954480e74b2a7a8bc878bc3467f8d145e29d96004128ebddbcb",
+  "package_files_verified": 33,
+  "repeatable_preparation": true,
+  "isolated_stdlib_plan_only": {
+    "gpu_executed": false,
+    "main_questions": 250,
+    "pilot_questions": 5,
+    "main_batches": 5,
+    "primary_family_size": 6,
+    "maximum_repair_executions": 6885,
+    "gross_cap_usd": 25.0,
+    "live_checks_required": true
+  },
+  "upload_archive": "agent-repair-diagnosis-followup.zip",
+  "upload_archive_sha256": "1317c36add3a8df7279dc9e8c07033361aa04ba6856573f51a6b166396e51559",
+  "upload_archive_bytes": 17255691,
+  "gpu_executed": false,
+  "aws_launched": false,
+  "tests": {
+    "status": "passed",
+    "command": "python -m pytest -q",
+    "passed": 255,
+    "warnings": 3,
+    "duration_seconds": 25.69,
+    "log": "validation-tests.log",
+    "log_sha256": "fb612f6a936270c339d8a470bec49908c521522919ebcc3fc413aaa13f256fc0"
+  },
+  "git_diff_check_passed": true
+}

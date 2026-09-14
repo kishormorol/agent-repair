@@ -1,0 +1,18 @@
+{
+  "run_id": "aws119-diagnosis250-20260914-v2-b05",
+  "initial_questions": 50,
+  "failed_questions": 22,
+  "strategy_seed_allowance_rows": 594,
+  "unique_repairs": 387,
+  "unique_diagnoses": 22,
+  "diagnosis_fallbacks": 0,
+  "diagnosis_generated_tokens": 819,
+  "diagnosis_prompt_tokens": 28106,
+  "trajectories_replayed_and_scored": 437,
+  "observations_checked": 2445,
+  "prefix_steps_checked": 477,
+  "source_files_hash_verified": 98,
+  "input_hashes_verified": 76,
+  "official_scorer_sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0",
+  "mismatches": 0
+}

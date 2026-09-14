@@ -1,0 +1,19 @@
+{
+  "EXECUTE_GPU": true,
+  "PLATFORM": "aws",
+  "PHASE": "development",
+  "RUN_ID": "aws119-development50-20260911-v1",
+  "POOL_SIZE": 50,
+  "BATCH_SIZE": 2,
+  "MAX_REPAIR_EXECUTIONS": 600,
+  "MODEL_REVISION": "5c7cb76a268fc6cfbb9c4777eb24ba6e27f9ee6c",
+  "DEVELOPMENT_IDS": "/workspace/aws119-session/development-20260911/development-ids.json",
+  "EXPLORED_IDS": "/workspace/aws119-session/development-20260911/explored-ids.json",
+  "GPU_HOURLY_USD": 5.84531,
+  "SPENT_SO_FAR_USD": 8.5,
+  "SESSION_ALLOWANCE_USD": 5.0,
+  "PERSISTENT_STORAGE_CONFIRMED": true,
+  "BILLING_RATE_CONFIRMED": true,
+  "AWS_CREDITS_CONFIRMED": true,
+  "PROVIDER_BUDGET_CONTROLS_CONFIRMED": true
+}

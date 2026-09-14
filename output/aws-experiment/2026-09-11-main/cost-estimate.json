@@ -1,0 +1,43 @@
+{
+  "as_of_utc": "2026-09-12T19:03:19.437178+00:00",
+  "kind": "estimated infrastructure usage before credits; not an AWS invoice",
+  "session_gross_allowance_usd": 25.0,
+  "original_allocation_usd": 119.0,
+  "gpu_hourly_usd": 5.84531,
+  "gpu_rate_evidence": "aws-preflight.json",
+  "main_start_requested_utc": "2026-09-12T04:06:56.345319+00:00",
+  "main_guest_shutdown_journal_utc": "2026-09-12T05:28:11.306593+00:00",
+  "main_seconds_through_guest_powerdown": 4874.961274,
+  "main_provider_transition_note": "Exact provider transition time was not captured. A separate 60-second contingency is an assumption, not a verified upper bound.",
+  "retrieval_start_requested_utc": "2026-09-12T08:48:58.750137+00:00",
+  "retrieval_observed_stopping_utc": "2026-09-12T08:55:59.160865+00:00",
+  "retrieval_seconds_through_observed_stopping": 420.410728,
+  "retrieval_note": "Normal stop, not hibernation. AWS does not bill normal instance compute in stopping or stopped state. Start-request times include unbilled pending time, conservatively.",
+  "ebs_gib": 200,
+  "ebs_usd_per_gib_month": 0.0928,
+  "ebs_month_basis_hours": 720,
+  "ebs_estimated_usd_per_day": 0.6186666666666666,
+  "ipv4_usd_per_hour": 0.005,
+  "ipv4_note": "Conservative allocation for one address throughout the report interval, including stopped gaps.",
+  "components_usd": {
+    "main_compute_through_guest_powerdown_usd": 7.915461079034705,
+    "retrieval_compute_through_observed_stopping_upper_estimate_usd": 0.6826197312460223,
+    "main_transition_contingency_60_seconds_usd": 0.09742183333333333,
+    "retained_ebs_from_main_start_through_report_usd": 0.3851134972619753,
+    "public_ipv4_full_elapsed_interval_upper_estimate_usd": 0.07469873869305556
+  },
+  "estimated_total_usd": 9.155314879569092,
+  "excluded": [
+    "tax",
+    "data transfer",
+    "other account workloads",
+    "storage after report cutoff"
+  ],
+  "last_verified_instance_state": "stopped",
+  "last_verified_instance_state_utc": "2026-09-12T19:02:37.439899+00:00",
+  "provider_state_transition_reason": "User initiated (2026-09-12 08:54:09 GMT)",
+  "source_urls": [
+    "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html",
+    "https://aws.amazon.com/ebs/pricing/"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "verified_utc": "2026-09-14T06:05:21.900359+00:00",
+  "changed_source_files": [
+    "scripts/analyze_diagnosis_followup.py",
+    "tests/test_followup_analysis.py"
+  ],
+  "identical_design_roles": [
+    "main",
+    "pilot"
+  ],
+  "same_250_question_order": true,
+  "original_main_questions_executed": 0,
+  "original_data_preserved": true,
+  "upload_sha256": "9ccef852feefb62706567427e49edbb2541c435cb7b89068783d9877551638a8",
+  "upload_bytes": 17256057,
+  "suite": {
+    "passed": 256,
+    "warnings": 3,
+    "seconds": 40.17
+  }
+}

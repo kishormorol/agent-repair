@@ -1,0 +1,32 @@
+[
+  {
+    "batch": "batch01",
+    "archive": "output/aws-experiment/2026-09-11-main/retrieved-20260912T084858Z/batch01-20260912T041145Z.tar.gz",
+    "sha256": "5b0952694951b64471a29d2be6f5538d2a927161b00f34666b7608e2f28cba7f",
+    "bytes": 19348305
+  },
+  {
+    "batch": "batch02",
+    "archive": "output/aws-experiment/2026-09-11-main/retrieved-20260912T084858Z/batch02-20260912T042720Z.tar.gz",
+    "sha256": "4954eca0a87fb00fb57c807e1476a07bb8f722b0fb01f22e149e298783ac02e7",
+    "bytes": 19678301
+  },
+  {
+    "batch": "batch03",
+    "archive": "output/aws-experiment/2026-09-11-main/retrieved-20260912T084858Z/batch03-20260912T044310Z.tar.gz",
+    "sha256": "00f06161401dbcca076852898fd05c0cef40d783ee3e7108a0ac5573effc0193",
+    "bytes": 19596411
+  },
+  {
+    "batch": "batch04",
+    "archive": "output/aws-experiment/2026-09-11-main/retrieved-20260912T084858Z/batch04-20260912T045723Z.tar.gz",
+    "sha256": "edc0c9886491fc927f5757edb6595e256ed6762aa6209a8d2cfaeb8c948c9e4b",
+    "bytes": 19652946
+  },
+  {
+    "batch": "batch05",
+    "archive": "output/aws-experiment/2026-09-11-main/retrieved-20260912T084858Z/batch05-20260912T051029Z.tar.gz",
+    "sha256": "4a17c27df2095a4ccb418975cc138704175bbf05f9b9fed76b513fbb91be88fd",
+    "bytes": 19494738
+  }
+]

@@ -1,0 +1,56 @@
+{
+  "pilot-batch01-20260914T060917Z.tar.gz": {
+    "sha256": "c0a9db5942e693a297f99d3c03979ca05af8f3c7dfdc6030726186ec09552680",
+    "bytes": 17283006,
+    "role": "pilot",
+    "batch": "batch01",
+    "returncode": 0,
+    "verified_utc": "2026-09-14T11:58:14.078611+00:00",
+    "matches_live_aws_sha256": true
+  },
+  "main-batch01-20260914T061711Z.tar.gz": {
+    "sha256": "b1ae99e2bf16f0b2228e12086a94717bbcd0d3e234b615413c9d6fa95438124b",
+    "bytes": 19910047,
+    "role": "main",
+    "batch": "batch01",
+    "returncode": 0,
+    "verified_utc": "2026-09-14T11:58:14.180342+00:00",
+    "matches_live_aws_sha256": true
+  },
+  "main-batch02-20260914T063719Z.tar.gz": {
+    "sha256": "42eaccbec6cb33ab0bb1a508008e40d692c73f445e94338174e70bb33c5d7d1a",
+    "bytes": 19879026,
+    "role": "main",
+    "batch": "batch02",
+    "returncode": 0,
+    "verified_utc": "2026-09-14T11:58:14.275581+00:00",
+    "matches_live_aws_sha256": true
+  },
+  "main-batch03-20260914T065936Z.tar.gz": {
+    "sha256": "ea30f2c3fa1800203f0ad9b8fa8a773f714c98c93236c58a8b3946184c6b2087",
+    "bytes": 19828377,
+    "role": "main",
+    "batch": "batch03",
+    "returncode": 0,
+    "verified_utc": "2026-09-14T11:58:14.371194+00:00",
+    "matches_live_aws_sha256": true
+  },
+  "main-batch04-20260914T072051Z.tar.gz": {
+    "sha256": "06c58b663db59791c6d6a4a54030d1d904bd88e22b51c1ef76d338b4eaf5977d",
+    "bytes": 20021973,
+    "role": "main",
+    "batch": "batch04",
+    "returncode": 0,
+    "verified_utc": "2026-09-14T11:58:14.470844+00:00",
+    "matches_live_aws_sha256": true
+  },
+  "main-batch05-20260914T074224Z.tar.gz": {
+    "sha256": "0599abb9c250d3300a332e9509901829fcfe654273db6907e8883ab257c29b4b",
+    "bytes": 19794749,
+    "role": "main",
+    "batch": "batch05",
+    "returncode": 0,
+    "verified_utc": "2026-09-14T11:58:14.564445+00:00",
+    "matches_live_aws_sha256": true
+  }
+}

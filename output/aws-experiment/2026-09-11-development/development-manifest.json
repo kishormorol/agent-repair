@@ -1,0 +1,22 @@
+{
+  "created_utc": "2026-09-11T13:13:28.644648+00:00",
+  "phase": "development",
+  "run_id": "aws119-development50-20260911-v1",
+  "n_initial_questions": 50,
+  "selection": "uniform without replacement from sorted IDs, before outcomes",
+  "seed": 20260911,
+  "excluded_questions": 10,
+  "exclusion_sources": [],
+  "exclusion_limit": "All pilot IDs and IDs recovered from local saved notebook/CSV artifacts; external historical completeness is not asserted.",
+  "dataset_source_archive": "September 10 downloaded AWS pilot artifact",
+  "dataset_sha256": "a9b4c5906587ac0d20eb83dcb29d0240e268e342c170f7f22988f59f13fa82c3",
+  "development_ids_sha256": "93e49f595496e08324bf7309441a6b7bcf702b1a8d832b35b0ea8d6638f2860d",
+  "explored_ids_sha256": "e65636cabd953776c09099e1d6c055a657eb9c6c7bf7335f384898a9dc3c036a",
+  "session_cap_usd": 5,
+  "maximum_compute_minutes_including_startup": 45,
+  "allocation_note": "Move $5 from the original $79 study allocation to this development run; retain the $20 reserve and $119 total ceiling.",
+  "code_bundle_sha256": "fdd203304326499372254c9c3380f0986ee08f1195d8ed79b19ac4a53160db8d",
+  "aws_estimated_credit_balance_usd": 112.14,
+  "aws_estimated_credit_used_usd": 7.86,
+  "aws_credit_checked_utc": "2026-09-11T13:11:41Z"
+}

@@ -1,0 +1,23 @@
+Fri Sep 11 03:27:47 UTC 2026
+runlevel (to lvl 5)   6.17.0-1020-aws  Fri Sep 11 03:26:53 2026   still running
+reboot   system boot  6.17.0-1020-aws  Fri Sep 11 03:26:43 2026   still running
+shutdown system down  6.17.0-1020-aws  Fri Sep 11 03:21:09 2026 - Fri Sep 11 03:26:43 2026  (00:05)
+reboot   system boot  6.17.0-1020-aws  Fri Sep 11 03:20:57 2026 - Fri Sep 11 03:21:09 2026  (00:00)
+shutdown system down  6.17.0-1020-aws  Thu Sep 10 22:35:10 2026 - Fri Sep 11 03:20:57 2026  (04:45)
+runlevel (to lvl 5)   6.17.0-1020-aws  Thu Sep 10 22:19:25 2026 - Thu Sep 10 22:35:10 2026  (00:15)
+reboot   system boot  6.17.0-1020-aws  Thu Sep 10 22:19:14 2026 - Thu Sep 10 22:35:10 2026  (00:15)
+shutdown system down  6.17.0-1020-aws  Thu Sep 10 18:21:07 2026 - Thu Sep 10 22:19:14 2026  (03:58)
+runlevel (to lvl 5)   6.17.0-1020-aws  Thu Sep 10 17:27:27 2026 - Thu Sep 10 18:21:07 2026  (00:53)
+reboot   system boot  6.17.0-1020-aws  Thu Sep 10 17:26:20 2026 - Thu Sep 10 18:21:07 2026  (00:54)
+
+wtmp begins Thu Sep 10 17:26:20 2026
+NEXT                            LEFT LAST                        PASSED UNIT                     ACTIVATES
+Fri 2026-09-11 03:30:32 UTC 2min 44s Fri 2026-09-11 03:21:08 UTC      - aws119-budget-stop.timer aws119-budget-stop.service
+
+1 timers listed.
+Pass --all to see loaded but inactive timers, too.
+Sep 11 03:26:44 ip-172-31-8-51 kernel: 
+Sep 11 03:26:44 ip-172-31-8-51 kernel: piix4_smbus 0000:00:01.3: SMBus base address uninitialized - upgrade BIOS or use force_addr=0xaddr
+Sep 11 03:26:43 ip-172-31-8-51 systemd-fsck[240]: cloudimg-rootfs: clean, 354753/26083328 files, 23585686/52166395 blocks
+Sep 11 03:26:43 ip-172-31-8-51 systemd[1]: Finished systemd-fsck-root.service - File System Check on Root Device.
+77665b28b6e891dab606f537e71b6db904237337552de783fd509eaab072eb2c  /workspace/aws119-session/attempt2/attempt-20260910T223200Z.tar.gz

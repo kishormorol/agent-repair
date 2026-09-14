@@ -1,0 +1,7 @@
+{
+  "matched": true,
+  "numeric_tolerance": 1e-12,
+  "local_output": "pooled-analysis-local.json",
+  "remote_output": "retrieved-20260912T084858Z/pooled-analysis.json",
+  "study_sha256": "e4ea08c8291b0f797d05b15110d762634ec48d57ae53e05aaf4373c805986308"
+}

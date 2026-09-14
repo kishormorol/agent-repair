@@ -1,0 +1,18 @@
+{
+  "observed_utc": "2026-09-14T11:57:34.940586+00:00",
+  "complete": {
+    "main_protocol_sha256": "9dc15ffe49874be12a2b82b124e28e209daf7a3476337fb3dfe92cb6edfbe81b",
+    "complete": true
+  },
+  "completed_file_mtime_utc": "2026-09-14T08:01:04.069207+00:00",
+  "archive_sha256": {
+    "main-batch02-20260914T063719Z.tar.gz": "42eaccbec6cb33ab0bb1a508008e40d692c73f445e94338174e70bb33c5d7d1a",
+    "main-batch05-20260914T074224Z.tar.gz": "0599abb9c250d3300a332e9509901829fcfe654273db6907e8883ab257c29b4b",
+    "main-batch04-20260914T072051Z.tar.gz": "06c58b663db59791c6d6a4a54030d1d904bd88e22b51c1ef76d338b4eaf5977d",
+    "main-batch01-20260914T061711Z.tar.gz": "b1ae99e2bf16f0b2228e12086a94717bbcd0d3e234b615413c9d6fa95438124b",
+    "pilot-batch01-20260914T060917Z.tar.gz": "c0a9db5942e693a297f99d3c03979ca05af8f3c7dfdc6030726186ec09552680",
+    "main-batch03-20260914T065936Z.tar.gz": "ea30f2c3fa1800203f0ad9b8fa8a773f714c98c93236c58a8b3946184c6b2087"
+  },
+  "boot_journal": "IDX BOOT ID                          FIRST ENTRY                 LAST ENTRY\n-15 211f2f88cc2d4b32adf6e66dc6e5223d Fri 2026-08-28 08:14:50 UTC Fri 2026-08-28 08:15:47 UTC\n-14 289bc77e8d8246cf9a49dbcedb22891a Thu 2026-09-10 17:26:30 UTC Thu 2026-09-10 18:21:07 UTC\n-13 ccddd9a093814f98b0a31ac713a024c7 Thu 2026-09-10 22:19:14 UTC Thu 2026-09-10 22:35:10 UTC\n-12 d74f72f3ddad4486b42e5827a9bb33cb Fri 2026-09-11 03:20:57 UTC Fri 2026-09-11 03:21:10 UTC\n-11 3160ee4b8798460293828a7b718360b2 Fri 2026-09-11 03:26:43 UTC Fri 2026-09-11 03:28:18 UTC\n-10 5a7704da7a0846e49f93179c0936881a Fri 2026-09-11 13:14:38 UTC Fri 2026-09-11 13:14:47 UTC\n -9 64afd8ff0af14443b06b5828a97e782a Fri 2026-09-11 13:20:29 UTC Fri 2026-09-11 13:41:11 UTC\n -8 d4c149f2c71f4de2a38d73c52650ccd3 Fri 2026-09-11 15:10:22 UTC Fri 2026-09-11 15:20:19 UTC\n -7 6b65921aeebb4129a1615d347a32590a Sat 2026-09-12 04:07:06 UTC Sat 2026-09-12 05:28:11 UTC\n -6 aa7d0e13c426488c9b27c6171dc1973e Sat 2026-09-12 08:49:09 UTC Sat 2026-09-12 08:54:16 UTC\n -5 75b63c2dea934a458281b0a5640fe1dd Sun 2026-09-13 18:09:42 UTC Sun 2026-09-13 18:18:47 UTC\n -4 ef1e2f6da8c34434a75dc44b0f621262 Sun 2026-09-13 23:38:25 UTC Sun 2026-09-13 23:55:49 UTC\n -3 85a8dbb02554448f90729c6a33792c70 Mon 2026-09-14 03:07:43 UTC Mon 2026-09-14 03:16:25 UTC\n -2 e42d2eec4c44465c97dc7e52ffb83086 Mon 2026-09-14 05:53:55 UTC Mon 2026-09-14 05:59:12 UTC\n -1 e1178cb991744a1fb3a91a267e66ea4c Mon 2026-09-14 06:07:46 UTC Mon 2026-09-14 08:04:11 UTC\n  0 3c1aa5fb5d934b8cb602b06029c1649c Mon 2026-09-14 11:52:56 UTC Mon 2026-09-14 11:57:34 UTC\n",
+  "study_shutdown_journal": "Sep 14 08:04:11 ip-172-31-8-51 systemd[1]: lvm2-monitor.service: Deactivated successfully.\nSep 14 08:04:11 ip-172-31-8-51 systemd[1]: Stopped lvm2-monitor.service - Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling.\nSep 14 08:04:11 ip-172-31-8-51 systemd[1]: Reached target shutdown.target - System Shutdown.\nSep 14 08:04:11 ip-172-31-8-51 systemd[1]: Reached target final.target - Late Shutdown Services.\nSep 14 08:04:11 ip-172-31-8-51 systemd[1]: systemd-poweroff.service: Deactivated successfully.\nSep 14 08:04:11 ip-172-31-8-51 systemd[1]: Finished systemd-poweroff.service - System Power Off.\nSep 14 08:04:11 ip-172-31-8-51 systemd[1]: Reached target poweroff.target - System Power Off.\nSep 14 08:04:11 ip-172-31-8-51 systemd[1]: Shutting down.\nSep 14 08:04:11 ip-172-31-8-51 systemd-shutdown[1]: Syncing filesystems and block devices.\nSep 14 08:04:11 ip-172-31-8-51 systemd-shutdown[1]: Sending SIGTERM to remaining processes...\nSep 14 08:04:11 ip-172-31-8-51 systemd-journald[214]: Received SIGTERM from PID 1 (systemd-shutdow).\nSep 14 08:04:11 ip-172-31-8-51 systemd-journald[214]: Journal stopped\n"
+}

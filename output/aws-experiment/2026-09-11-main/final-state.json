@@ -1,0 +1,30 @@
+{
+  "instance_id": "i-03b33e00c47b11be6",
+  "instance_type": "g7e.2xlarge",
+  "aws_account": "692430448570",
+  "region": "eu-west-2",
+  "verified_utc": "2026-09-12T19:02:37.439899+00:00",
+  "state": "stopped",
+  "launch_time": "2026-09-12T08:48:59+00:00",
+  "state_reason": {
+    "Code": "Client.UserInitiatedShutdown",
+    "Message": "Client.UserInitiatedShutdown: User initiated shutdown"
+  },
+  "state_transition_reason": "User initiated (2026-09-12 08:54:09 GMT)",
+  "public_ip": null,
+  "volumes": [
+    {
+      "DeviceName": "/dev/sda1",
+      "Ebs": {
+        "AttachTime": "2026-09-10T17:26:02+00:00",
+        "DeleteOnTermination": true,
+        "Status": "attached",
+        "VolumeId": "vol-0bcdc6e12dd5777c5",
+        "EbsCardIndex": 0
+      }
+    }
+  ],
+  "verification_method": "AWS CLI DescribeInstances using a temporary authenticated session; STS account independently verified",
+  "normal_stop_requested": true,
+  "new_instance_start_or_inference_during_final_verification": false
+}

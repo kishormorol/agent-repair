@@ -1,0 +1,40 @@
+{
+  "observed_utc": "2026-09-14T17:19:25.650066+00:00",
+  "requested_utc": "2026-09-14T17:18:36.999893+00:00",
+  "account_id": "692430448570",
+  "instance_id": "i-03b33e00c47b11be6",
+  "region": "eu-west-2",
+  "instance_type": "g7e.2xlarge",
+  "gpu_hourly_usd": 5.84531,
+  "deadline_utc": "2026-09-14T22:48:36+00:00",
+  "external_stop_deadline_utc": "2026-09-14T22:46:36+00:00",
+  "external_stop_schedule": "aws119-extension-stop-20260914-v1",
+  "external_stop_verified": true,
+  "instance_initiated_shutdown_behavior": "stop",
+  "persistent_storage_confirmed": true,
+  "credit_ec2_eligibility_verified": true,
+  "credit_expires_utc": "2027-04-11T00:00:00+00:00",
+  "eligible_credit_conservative_bound_usd": 54,
+  "credit_observation": "September 14 billing UI: $75.35 estimated EC2-eligible Free Tier balance; $21.35 deducted for lag/overhead",
+  "prior_gross_conservative_bound_usd": 45,
+  "session_gross_ceiling_usd": 35,
+  "session_infrastructure_bound_usd": 34.649204999999995,
+  "protocol_sha256": "be6f3170150ca7541cf5a4cb3d8742dddb7582d1ec995293959a7b76b2fc305c",
+  "package_sha256": "e7dc416afc69ec9e29b022fdb11c08300f156a7d63c4d22607f3617ddadb49ac",
+  "start_response": [
+    {
+      "InstanceId": "i-03b33e00c47b11be6",
+      "CurrentState": {
+        "Code": 0,
+        "Name": "pending"
+      },
+      "PreviousState": {
+        "Code": 80,
+        "Name": "stopped"
+      }
+    }
+  ],
+  "instance_start_utc": "2026-09-14T17:18:37+00:00",
+  "state": "running",
+  "public_ip": "16.61.13.26"
+}

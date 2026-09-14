@@ -1,0 +1,14 @@
+{
+  "observed_utc": "2026-09-11T03:34:31.973400+00:00",
+  "instance_id": "i-03b33e00c47b11be6",
+  "state": "stopped",
+  "state_reason": {
+    "Code": "Client.UserInitiatedShutdown",
+    "Message": "Client.UserInitiatedShutdown: User initiated shutdown"
+  },
+  "public_ip": null,
+  "retained_volume_id": "vol-0bcdc6e12dd5777c5",
+  "volume_state": "in-use",
+  "volume_size_gib": 200,
+  "volume_encrypted": true
+}

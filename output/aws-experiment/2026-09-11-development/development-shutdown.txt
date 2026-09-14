@@ -1,0 +1,25 @@
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Stopping lvm2-monitor.service - Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling...
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Stopping multipathd.service - Device-Mapper Multipath Device Controller...
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 multipathd[288]: multipathd: shut down
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: systemd-tmpfiles-setup-dev.service: Deactivated successfully.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-tmpfiles-setup-dev.service - Create Static Device Nodes in /dev.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: systemd-tmpfiles-setup-dev-early.service: Deactivated successfully.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-tmpfiles-setup-dev-early.service - Create Static Device Nodes in /dev gracefully.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: multipathd.service: Deactivated successfully.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Stopped multipathd.service - Device-Mapper Multipath Device Controller.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: systemd-remount-fs.service: Deactivated successfully.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-remount-fs.service - Remount Root and Kernel File Systems.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: systemd-fsck-root.service: Deactivated successfully.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Stopped systemd-fsck-root.service - File System Check on Root Device.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: lvm2-monitor.service: Deactivated successfully.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Stopped lvm2-monitor.service - Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Reached target shutdown.target - System Shutdown.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Reached target final.target - Late Shutdown Services.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: systemd-poweroff.service: Deactivated successfully.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Finished systemd-poweroff.service - System Power Off.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Reached target poweroff.target - System Power Off.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd[1]: Shutting down.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd-shutdown[1]: Syncing filesystems and block devices.
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd-shutdown[1]: Sending SIGTERM to remaining processes...
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd-journald[212]: Received SIGTERM from PID 1 (systemd-shutdow).
+2026-09-11T13:41:11+00:00 ip-172-31-8-51 systemd-journald[212]: Journal stopped

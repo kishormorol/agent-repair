@@ -1,0 +1,23 @@
+........................................................................ [ 28%]
+........................................................................ [ 56%]
+........................................................................ [ 84%]
+.......................................                                  [100%]
+=============================== warnings summary ===============================
+../anaconda3/lib/python3.10/site-packages/jupyter_client/connect.py:27
+  /Users/kishormorol/anaconda3/lib/python3.10/site-packages/jupyter_client/connect.py:27: DeprecationWarning: Jupyter is migrating its paths to use standard platformdirs
+  given by the platformdirs library.  To remove this warning and
+  see the appropriate new directories, set the environment variable
+  `JUPYTER_PLATFORM_DIRS=1` and then run `jupyter --paths`.
+  The use of platformdirs will be the default in `jupyter_core` v6
+    from jupyter_core.paths import jupyter_data_dir
+
+tests/test_execute_iclr_notebook.py::test_completed_cells_are_saved_before_next_stage
+  /Users/kishormorol/anaconda3/lib/python3.10/site-packages/nbclient/util.py:47: DeprecationWarning: There is no current event loop
+    loop = asyncio.get_event_loop()
+
+tests/test_paper_assets.py::test_main_tables_and_intervals_use_all_audited_conditions
+  /Users/kishormorol/anaconda3/lib/python3.10/site-packages/fontTools/misc/py23.py:11: DeprecationWarning: The py23 module has been deprecated and will be removed in a future release. Please update your code.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+255 passed, 3 warnings in 25.69s

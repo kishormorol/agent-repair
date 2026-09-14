@@ -1,0 +1,64 @@
+{
+  "scope": "All September 13-14 diagnosis attempts and retrievals combined",
+  "hourly_usd": 5.84531,
+  "intervals": [
+    {
+      "purpose": "Failed preflight",
+      "start_utc": "2026-09-13T18:09:33+00:00",
+      "end_utc": "2026-09-13T18:18:47+00:00",
+      "seconds": 554.0,
+      "estimated_compute_usd": 0.899528261111111,
+      "endpoint_source": "guest shutdown journal"
+    },
+    {
+      "purpose": "Development attempt with audit defect",
+      "start_utc": "2026-09-13T23:38:16+00:00",
+      "end_utc": "2026-09-13T23:55:49+00:00",
+      "seconds": 1053.0,
+      "estimated_compute_usd": 1.7097531749999997,
+      "endpoint_source": "guest shutdown journal"
+    },
+    {
+      "purpose": "First retrieval attempt",
+      "start_utc": "2026-09-14T03:07:33+00:00",
+      "end_utc": "2026-09-14T03:16:25+00:00",
+      "seconds": 532.0,
+      "estimated_compute_usd": 0.8638069222222222,
+      "endpoint_source": "guest shutdown journal"
+    },
+    {
+      "purpose": "Verified failure retrieval",
+      "start_utc": "2026-09-14T05:53:45+00:00",
+      "end_utc": "2026-09-14T05:59:12+00:00",
+      "seconds": 327.0,
+      "estimated_compute_usd": 0.5309489916666666,
+      "endpoint_source": "guest shutdown journal"
+    },
+    {
+      "purpose": "Corrected complete study",
+      "start_utc": "2026-09-14T06:07:37+00:00",
+      "end_utc": "2026-09-14T08:04:11+00:00",
+      "seconds": 6994.0,
+      "estimated_compute_usd": 11.35613837222222,
+      "endpoint_source": "guest shutdown journal"
+    },
+    {
+      "purpose": "Final result retrieval",
+      "start_utc": "2026-09-14T11:52:47+00:00",
+      "end_utc": "2026-09-14T12:04:20.441008+00:00",
+      "seconds": 693.441008,
+      "estimated_compute_usd": 1.1259382384645777,
+      "endpoint_source": "independent stopped-state observation; conservative endpoint"
+    }
+  ],
+  "compute_usd": 16.486113960686797,
+  "storage_ipv4_and_overhead_allowance_usd": 1.8,
+  "authorized_combined_cap_usd": 25,
+  "excludes": [
+    "tax",
+    "transfer"
+  ],
+  "is_invoice": false,
+  "retained_ebs_storage_continues": true,
+  "estimated_infrastructure_usd": 18.286113960686798
+}

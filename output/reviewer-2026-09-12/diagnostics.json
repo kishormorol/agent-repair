@@ -1,0 +1,1550 @@
+{
+  "analysis_status": "exploratory_review_stage",
+  "n_initial_questions": 250,
+  "n_failed_questions": 113,
+  "n_strategy_seed_rows": 2034,
+  "policy_accounting": {
+    "full_restart": {
+      "n_questions": 113,
+      "n_seed_rows": 339,
+      "success": {
+        "n_questions": 113,
+        "mean": 0.11209439528023597,
+        "lo": 0.07374631268436577,
+        "hi": 0.15634218289085544
+      },
+      "mean_cost_per_attempt": {
+        "recovery_gen_tokens": 271.5929203539823,
+        "recovery_prompt_tokens": 3153.268436578171,
+        "recovery_model_requests": 5.256637168141592,
+        "recovery_tool_calls": 4.536873156342183
+      },
+      "policy_trial_totals": {
+        "recovery_gen_tokens": 92070,
+        "recovery_prompt_tokens": 1068958,
+        "recovery_model_requests": 1782,
+        "recovery_tool_calls": 1538
+      },
+      "termination_counts": {
+        "finished": 162,
+        "budget": 99,
+        "max_steps": 78
+      },
+      "missing_final_answers": 177,
+      "budget_stop_fraction": 0.2920353982300885,
+      "token_cap_reached_fraction": 0.4247787610619469,
+      "zero_token_caps": 0,
+      "token_cap_utilization": {
+        "n": 339,
+        "mean": 0.9103532166375996,
+        "min": 0.22270742358078602,
+        "q25": 0.882523719909041,
+        "median": 0.9742574257425742,
+        "q75": 1.0,
+        "max": 1.0
+      },
+      "reference_gated_full_cohort": {
+        "success": {
+          "n_questions": 250,
+          "mean": 0.5986666666666667,
+          "lo": 0.5426666666666666,
+          "hi": 0.6546999999999996
+        },
+        "em": {
+          "n_questions": 250,
+          "mean": 0.42666666666666664,
+          "lo": 0.3693333333333333,
+          "hi": 0.4853666666666662
+        },
+        "f1": {
+          "n_questions": 250,
+          "mean": 0.559709665970768,
+          "lo": 0.5092498377976044,
+          "hi": 0.6113078738844807
+        }
+      }
+    },
+    "random_step__bt2": {
+      "n_questions": 113,
+      "n_seed_rows": 339,
+      "success": {
+        "n_questions": 113,
+        "mean": 0.10619469026548672,
+        "lo": 0.06784660766961652,
+        "hi": 0.14749262536873156
+      },
+      "mean_cost_per_attempt": {
+        "recovery_gen_tokens": 268.38053097345136,
+        "recovery_prompt_tokens": 4179.581120943953,
+        "recovery_model_requests": 5.147492625368732,
+        "recovery_tool_calls": 4.40117994100295
+      },
+      "policy_trial_totals": {
+        "recovery_gen_tokens": 90981,
+        "recovery_prompt_tokens": 1416878,
+        "recovery_model_requests": 1745,
+        "recovery_tool_calls": 1492
+      },
+      "termination_counts": {
+        "finished": 171,
+        "budget": 97,
+        "max_steps": 71
+      },
+      "missing_final_answers": 168,
+      "budget_stop_fraction": 0.2861356932153392,
+      "token_cap_reached_fraction": 0.43952802359882004,
+      "zero_token_caps": 0,
+      "token_cap_utilization": {
+        "n": 339,
+        "mean": 0.9007122874101856,
+        "min": 0.2668112798264642,
+        "q25": 0.8686131386861314,
+        "median": 0.9725274725274725,
+        "q75": 1.0,
+        "max": 1.0
+      },
+      "reference_gated_full_cohort": {
+        "success": {
+          "n_questions": 250,
+          "mean": 0.596,
+          "lo": 0.539966666666667,
+          "hi": 0.6533333333333332
+        },
+        "em": {
+          "n_questions": 250,
+          "mean": 0.4186666666666667,
+          "lo": 0.36,
+          "hi": 0.4773666666666662
+        },
+        "f1": {
+          "n_questions": 250,
+          "mean": 0.557906122366479,
+          "lo": 0.5063810232139161,
+          "hi": 0.6091663654971349
+        }
+      }
+    },
+    "fixed_early": {
+      "n_questions": 113,
+      "n_seed_rows": 339,
+      "success": {
+        "n_questions": 113,
+        "mean": 0.11504424778761062,
+        "lo": 0.07079646017699115,
+        "hi": 0.1622418879056047
+      },
+      "mean_cost_per_attempt": {
+        "recovery_gen_tokens": 258.10029498525074,
+        "recovery_prompt_tokens": 3720.5693215339234,
+        "recovery_model_requests": 4.820058997050148,
+        "recovery_tool_calls": 4.067846607669616
+      },
+      "policy_trial_totals": {
+        "recovery_gen_tokens": 87496,
+        "recovery_prompt_tokens": 1261273,
+        "recovery_model_requests": 1634,
+        "recovery_tool_calls": 1379
+      },
+      "termination_counts": {
+        "finished": 193,
+        "budget": 75,
+        "max_steps": 71
+      },
+      "missing_final_answers": 146,
+      "budget_stop_fraction": 0.22123893805309736,
+      "token_cap_reached_fraction": 0.3008849557522124,
+      "zero_token_caps": 0,
+      "token_cap_utilization": {
+        "n": 339,
+        "mean": 0.822910504427748,
+        "min": 0.3006993006993007,
+        "q25": 0.6938775510204082,
+        "median": 0.8597285067873304,
+        "q75": 1.0,
+        "max": 1.0
+      },
+      "reference_gated_full_cohort": {
+        "success": {
+          "n_questions": 250,
+          "mean": 0.6,
+          "lo": 0.544,
+          "hi": 0.6573333333333332
+        },
+        "em": {
+          "n_questions": 250,
+          "mean": 0.412,
+          "lo": 0.356,
+          "hi": 0.4706666666666666
+        },
+        "f1": {
+          "n_questions": 250,
+          "mean": 0.5564298848301799,
+          "lo": 0.5047686781661263,
+          "hi": 0.6082111388938676
+        }
+      }
+    },
+    "unc__perplexity__argmax__bt2": {
+      "n_questions": 113,
+      "n_seed_rows": 339,
+      "success": {
+        "n_questions": 113,
+        "mean": 0.09734513274336283,
+        "lo": 0.061946902654867256,
+        "hi": 0.13569321533923304
+      },
+      "mean_cost_per_attempt": {
+        "recovery_gen_tokens": 269.86430678466076,
+        "recovery_prompt_tokens": 4083.2595870206487,
+        "recovery_model_requests": 5.106194690265487,
+        "recovery_tool_calls": 4.351032448377581
+      },
+      "policy_trial_totals": {
+        "recovery_gen_tokens": 91484,
+        "recovery_prompt_tokens": 1384225,
+        "recovery_model_requests": 1731,
+        "recovery_tool_calls": 1475
+      },
+      "termination_counts": {
+        "finished": 171,
+        "budget": 103,
+        "max_steps": 65
+      },
+      "missing_final_answers": 168,
+      "budget_stop_fraction": 0.30383480825958703,
+      "token_cap_reached_fraction": 0.44837758112094395,
+      "zero_token_caps": 0,
+      "token_cap_utilization": {
+        "n": 339,
+        "mean": 0.9037639080242276,
+        "min": 0.24768518518518517,
+        "q25": 0.8739025797263436,
+        "median": 0.9854014598540146,
+        "q75": 1.0,
+        "max": 1.0
+      },
+      "reference_gated_full_cohort": {
+        "success": {
+          "n_questions": 250,
+          "mean": 0.592,
+          "lo": 0.536,
+          "hi": 0.648
+        },
+        "em": {
+          "n_questions": 250,
+          "mean": 0.42,
+          "lo": 0.36266666666666664,
+          "hi": 0.4786666666666667
+        },
+        "f1": {
+          "n_questions": 250,
+          "mean": 0.5521824946945237,
+          "lo": 0.5007812478902991,
+          "hi": 0.6033021416872333
+        }
+      }
+    },
+    "position_matched_random": {
+      "n_questions": 113,
+      "n_seed_rows": 339,
+      "success": {
+        "n_questions": 113,
+        "mean": 0.09734513274336282,
+        "lo": 0.06194690265486725,
+        "hi": 0.13864306784660765
+      },
+      "mean_cost_per_attempt": {
+        "recovery_gen_tokens": 264.457227138643,
+        "recovery_prompt_tokens": 3885.7640117994097,
+        "recovery_model_requests": 5.011799410029499,
+        "recovery_tool_calls": 4.2566371681415935
+      },
+      "policy_trial_totals": {
+        "recovery_gen_tokens": 89651,
+        "recovery_prompt_tokens": 1317274,
+        "recovery_model_requests": 1699,
+        "recovery_tool_calls": 1443
+      },
+      "termination_counts": {
+        "finished": 178,
+        "budget": 90,
+        "max_steps": 71
+      },
+      "missing_final_answers": 161,
+      "budget_stop_fraction": 0.26548672566371684,
+      "token_cap_reached_fraction": 0.40117994100294985,
+      "zero_token_caps": 0,
+      "token_cap_utilization": {
+        "n": 339,
+        "mean": 0.8762977339626786,
+        "min": 0.30677290836653387,
+        "q25": 0.7888438525381201,
+        "median": 0.9575757575757575,
+        "q75": 1.0,
+        "max": 1.0
+      },
+      "reference_gated_full_cohort": {
+        "success": {
+          "n_questions": 250,
+          "mean": 0.592,
+          "lo": 0.5346666666666667,
+          "hi": 0.6480333333333329
+        },
+        "em": {
+          "n_questions": 250,
+          "mean": 0.41333333333333333,
+          "lo": 0.3546666666666667,
+          "hi": 0.472
+        },
+        "f1": {
+          "n_questions": 250,
+          "mean": 0.5516988996313233,
+          "lo": 0.500123522317688,
+          "hi": 0.6035842938283262
+        }
+      }
+    },
+    "unc__perplexity__argmax": {
+      "n_questions": 113,
+      "n_seed_rows": 339,
+      "success": {
+        "n_questions": 113,
+        "mean": 0.08554572271386432,
+        "lo": 0.04424778761061947,
+        "hi": 0.12979351032448377
+      },
+      "mean_cost_per_attempt": {
+        "recovery_gen_tokens": 255.61356932153396,
+        "recovery_prompt_tokens": 5077.274336283187,
+        "recovery_model_requests": 4.766961651917404,
+        "recovery_tool_calls": 3.9852507374631267
+      },
+      "policy_trial_totals": {
+        "recovery_gen_tokens": 86653,
+        "recovery_prompt_tokens": 1721196,
+        "recovery_model_requests": 1616,
+        "recovery_tool_calls": 1351
+      },
+      "termination_counts": {
+        "finished": 186,
+        "budget": 91,
+        "max_steps": 62
+      },
+      "missing_final_answers": 153,
+      "budget_stop_fraction": 0.26843657817109146,
+      "token_cap_reached_fraction": 0.37168141592920356,
+      "zero_token_caps": 0,
+      "token_cap_utilization": {
+        "n": 339,
+        "mean": 0.8226608222657773,
+        "min": 0.21354166666666666,
+        "q25": 0.6676706827309237,
+        "median": 0.9298642533936652,
+        "q75": 1.0,
+        "max": 1.0
+      },
+      "reference_gated_full_cohort": {
+        "success": {
+          "n_questions": 250,
+          "mean": 0.5866666666666667,
+          "lo": 0.528,
+          "hi": 0.6453333333333332
+        },
+        "em": {
+          "n_questions": 250,
+          "mean": 0.4066666666666666,
+          "lo": 0.348,
+          "hi": 0.4666666666666666
+        },
+        "f1": {
+          "n_questions": 250,
+          "mean": 0.5440392040383102,
+          "lo": 0.4907354097857791,
+          "hi": 0.5968859995907135
+        }
+      }
+    }
+  },
+  "execution_overlap": {
+    "full_restart": {
+      "same_execution_seed_rows": 210,
+      "different_execution_seed_rows": 129,
+      "same_execution_fraction": 0.6194690265486725,
+      "questions_with_any_different_execution": 43,
+      "question_mean_wins": 5,
+      "question_mean_losses": 8,
+      "question_mean_ties": 100,
+      "same_execution_contribution": 0.0,
+      "different_execution_contribution": -0.014749262536873154,
+      "paired_success": {
+        "estimand": "equal_question_mean_seed_success",
+        "n_questions": 113,
+        "mean_a": 0.09734513274336283,
+        "mean_b": 0.11209439528023597,
+        "delta": -0.014749262536873154,
+        "delta_lo": -0.04129793510324483,
+        "delta_hi": 0.008849557522123894,
+        "ci": 0.95,
+        "resamples": 10000,
+        "analysis_seed": 0,
+        "p_value": 0.35806419358064195,
+        "test": "paired_sign_flip_assuming_within_question_exchangeability",
+        "strategy_a": "unc__perplexity__argmax__bt2",
+        "strategy_b": "full_restart",
+        "outcome": "success"
+      },
+      "paired_cost_differences": {
+        "recovery_gen_tokens": {
+          "n_questions": 113,
+          "mean": -1.7286135693215336,
+          "lo": -8.899852507374632,
+          "hi": 5.699115044247788
+        },
+        "recovery_prompt_tokens": {
+          "n_questions": 113,
+          "mean": 929.9911504424779,
+          "lo": 579.1690265486725,
+          "hi": 1321.9488200589967
+        },
+        "recovery_model_requests": {
+          "n_questions": 113,
+          "mean": -0.1504424778761062,
+          "lo": -0.303834808259587,
+          "hi": -0.0029498525073746364
+        },
+        "recovery_tool_calls": {
+          "n_questions": 113,
+          "mean": -0.18584070796460178,
+          "lo": -0.36283185840707965,
+          "hi": -0.011799410029498528
+        }
+      },
+      "secondary_outcomes": {
+        "em": {
+          "estimand": "equal_question_mean_seed_success",
+          "n_questions": 113,
+          "mean_a": 0.07079646017699115,
+          "mean_b": 0.0855457227138643,
+          "delta": -0.014749262536873154,
+          "delta_lo": -0.03834808259587021,
+          "delta_hi": 0.005899705014749263,
+          "ci": 0.95,
+          "resamples": 10000,
+          "analysis_seed": 0,
+          "p_value": 0.3344665533446655,
+          "test": "paired_sign_flip_assuming_within_question_exchangeability",
+          "strategy_a": "unc__perplexity__argmax__bt2",
+          "strategy_b": "full_restart",
+          "outcome": "em"
+        },
+        "f1": {
+          "estimand": "equal_question_mean_seed_success",
+          "n_questions": 113,
+          "mean_a": 0.12752391356041726,
+          "mean_b": 0.144176947357418,
+          "delta": -0.016653033797000706,
+          "delta_lo": -0.042768151560631566,
+          "delta_hi": 0.006438700360301012,
+          "ci": 0.95,
+          "resamples": 10000,
+          "analysis_seed": 0,
+          "p_value": 0.19038096190380963,
+          "test": "paired_sign_flip_assuming_within_question_exchangeability",
+          "strategy_a": "unc__perplexity__argmax__bt2",
+          "strategy_b": "full_restart",
+          "outcome": "f1"
+        }
+      },
+      "prospective_precision": {
+        "observed_question_difference_variance": 0.018629723275741018,
+        "approximate_n_for_95pct_half_width_pp": {
+          "2": 179,
+          "5": 29
+        },
+        "note": "Normal-approximation planning from this cohort's variance; not observed power, simultaneous coverage or a guaranteed future interval width."
+      }
+    },
+    "random_step__bt2": {
+      "same_execution_seed_rows": 173,
+      "different_execution_seed_rows": 166,
+      "same_execution_fraction": 0.5103244837758112,
+      "questions_with_any_different_execution": 68,
+      "question_mean_wins": 9,
+      "question_mean_losses": 9,
+      "question_mean_ties": 95,
+      "same_execution_contribution": 0.0,
+      "different_execution_contribution": -0.008849557522123894,
+      "paired_success": {
+        "estimand": "equal_question_mean_seed_success",
+        "n_questions": 113,
+        "mean_a": 0.09734513274336283,
+        "mean_b": 0.10619469026548672,
+        "delta": -0.008849557522123894,
+        "delta_lo": -0.04129793510324483,
+        "delta_hi": 0.020648967551622415,
+        "ci": 0.95,
+        "resamples": 10000,
+        "analysis_seed": 0,
+        "p_value": 0.6951304869513049,
+        "test": "paired_sign_flip_assuming_within_question_exchangeability",
+        "strategy_a": "unc__perplexity__argmax__bt2",
+        "strategy_b": "random_step__bt2",
+        "outcome": "success"
+      },
+      "paired_cost_differences": {
+        "recovery_gen_tokens": {
+          "n_questions": 113,
+          "mean": 1.4837758112094401,
+          "lo": -6.681489675516225,
+          "hi": 9.614454277286123
+        },
+        "recovery_prompt_tokens": {
+          "n_questions": 113,
+          "mean": -96.32153392330386,
+          "lo": -519.4566371681416,
+          "hi": 338.41519174041287
+        },
+        "recovery_model_requests": {
+          "n_questions": 113,
+          "mean": -0.041297935103244865,
+          "lo": -0.19469026548672566,
+          "hi": 0.10619469026548672
+        },
+        "recovery_tool_calls": {
+          "n_questions": 113,
+          "mean": -0.05014749262536876,
+          "lo": -0.23303834808259585,
+          "hi": 0.12684365781710916
+        }
+      },
+      "secondary_outcomes": {
+        "em": {
+          "estimand": "equal_question_mean_seed_success",
+          "n_questions": 113,
+          "mean_a": 0.07079646017699115,
+          "mean_b": 0.06784660766961652,
+          "delta": 0.0029498525073746312,
+          "delta_lo": -0.02064896755162242,
+          "delta_hi": 0.02654867256637168,
+          "ci": 0.95,
+          "resamples": 10000,
+          "analysis_seed": 0,
+          "p_value": 1.0,
+          "test": "paired_sign_flip_assuming_within_question_exchangeability",
+          "strategy_a": "unc__perplexity__argmax__bt2",
+          "strategy_b": "random_step__bt2",
+          "outcome": "em"
+        },
+        "f1": {
+          "estimand": "equal_question_mean_seed_success",
+          "n_questions": 113,
+          "mean_a": 0.12752391356041726,
+          "mean_b": 0.14018680663996405,
+          "delta": -0.012662893079546789,
+          "delta_lo": -0.041379108902853505,
+          "delta_hi": 0.014465163135914385,
+          "ci": 0.95,
+          "resamples": 10000,
+          "analysis_seed": 0,
+          "p_value": 0.3745625437456254,
+          "test": "paired_sign_flip_assuming_within_question_exchangeability",
+          "strategy_a": "unc__perplexity__argmax__bt2",
+          "strategy_b": "random_step__bt2",
+          "outcome": "f1"
+        }
+      },
+      "prospective_precision": {
+        "observed_question_difference_variance": 0.02670670037926676,
+        "approximate_n_for_95pct_half_width_pp": {
+          "2": 257,
+          "5": 42
+        },
+        "note": "Normal-approximation planning from this cohort's variance; not observed power, simultaneous coverage or a guaranteed future interval width."
+      }
+    },
+    "position_matched_random": {
+      "same_execution_seed_rows": 148,
+      "different_execution_seed_rows": 191,
+      "same_execution_fraction": 0.4365781710914454,
+      "questions_with_any_different_execution": 93,
+      "question_mean_wins": 10,
+      "question_mean_losses": 10,
+      "question_mean_ties": 93,
+      "same_execution_contribution": 0.0,
+      "different_execution_contribution": 0.0,
+      "paired_success": {
+        "estimand": "equal_question_mean_seed_success",
+        "n_questions": 113,
+        "mean_a": 0.09734513274336283,
+        "mean_b": 0.09734513274336282,
+        "delta": 0.0,
+        "delta_lo": -0.02949852507374631,
+        "delta_hi": 0.02949852507374631,
+        "ci": 0.95,
+        "resamples": 10000,
+        "analysis_seed": 0,
+        "p_value": 1.0,
+        "test": "paired_sign_flip_assuming_within_question_exchangeability",
+        "strategy_a": "unc__perplexity__argmax__bt2",
+        "strategy_b": "position_matched_random",
+        "outcome": "success"
+      },
+      "paired_cost_differences": {
+        "recovery_gen_tokens": {
+          "n_questions": 113,
+          "mean": 5.4070796460177,
+          "lo": -2.4573746312684346,
+          "hi": 13.516297935103243
+        },
+        "recovery_prompt_tokens": {
+          "n_questions": 113,
+          "mean": 197.4955752212389,
+          "lo": -165.75228613569323,
+          "hi": 571.146386430678
+        },
+        "recovery_model_requests": {
+          "n_questions": 113,
+          "mean": 0.0943952802359882,
+          "lo": -0.08259587020648966,
+          "hi": 0.2596607669616509
+        },
+        "recovery_tool_calls": {
+          "n_questions": 113,
+          "mean": 0.09439528023598819,
+          "lo": -0.1032448377581121,
+          "hi": 0.2861356932153392
+        }
+      },
+      "secondary_outcomes": {
+        "em": {
+          "estimand": "equal_question_mean_seed_success",
+          "n_questions": 113,
+          "mean_a": 0.07079646017699115,
+          "mean_b": 0.05604719764011799,
+          "delta": 0.014749262536873154,
+          "delta_lo": -0.005899705014749263,
+          "delta_hi": 0.038348082595870206,
+          "ci": 0.95,
+          "resamples": 10000,
+          "analysis_seed": 0,
+          "p_value": 0.3016698330166983,
+          "test": "paired_sign_flip_assuming_within_question_exchangeability",
+          "strategy_a": "unc__perplexity__argmax__bt2",
+          "strategy_b": "position_matched_random",
+          "outcome": "em"
+        },
+        "f1": {
+          "estimand": "equal_question_mean_seed_success",
+          "n_questions": 113,
+          "mean_a": 0.12752391356041726,
+          "mean_b": 0.12645401297811545,
+          "delta": 0.0010699005823018284,
+          "delta_lo": -0.02475791305940234,
+          "delta_hi": 0.026157261617517042,
+          "ci": 0.95,
+          "resamples": 10000,
+          "analysis_seed": 0,
+          "p_value": 0.9361063893610639,
+          "test": "paired_sign_flip_assuming_within_question_exchangeability",
+          "strategy_a": "unc__perplexity__argmax__bt2",
+          "strategy_b": "position_matched_random",
+          "outcome": "f1"
+        }
+      },
+      "prospective_precision": {
+        "observed_question_difference_variance": 0.025793650793650803,
+        "approximate_n_for_95pct_half_width_pp": {
+          "2": 248,
+          "5": 40
+        },
+        "note": "Normal-approximation planning from this cohort's variance; not observed power, simultaneous coverage or a guaranteed future interval width."
+      }
+    },
+    "unc__perplexity__argmax": {
+      "same_execution_seed_rows": 51,
+      "different_execution_seed_rows": 288,
+      "same_execution_fraction": 0.1504424778761062,
+      "questions_with_any_different_execution": 96,
+      "question_mean_wins": 15,
+      "question_mean_losses": 10,
+      "question_mean_ties": 88,
+      "same_execution_contribution": 0.0,
+      "different_execution_contribution": 0.011799410029498523,
+      "paired_success": {
+        "estimand": "equal_question_mean_seed_success",
+        "n_questions": 113,
+        "mean_a": 0.09734513274336283,
+        "mean_b": 0.08554572271386432,
+        "delta": 0.011799410029498523,
+        "delta_lo": -0.029498525073746312,
+        "delta_hi": 0.05309734513274336,
+        "ci": 0.95,
+        "resamples": 10000,
+        "analysis_seed": 0,
+        "p_value": 0.6817318268173183,
+        "test": "paired_sign_flip_assuming_within_question_exchangeability",
+        "strategy_a": "unc__perplexity__argmax__bt2",
+        "strategy_b": "unc__perplexity__argmax",
+        "outcome": "success"
+      },
+      "paired_cost_differences": {
+        "recovery_gen_tokens": {
+          "n_questions": 113,
+          "mean": 14.250737463126844,
+          "lo": 4.580973451327435,
+          "hi": 23.90862831858407
+        },
+        "recovery_prompt_tokens": {
+          "n_questions": 113,
+          "mean": -994.014749262537,
+          "lo": -1351.7040560471978,
+          "hi": -656.3730088495576
+        },
+        "recovery_model_requests": {
+          "n_questions": 113,
+          "mean": 0.33923303834808255,
+          "lo": 0.11504424778761063,
+          "hi": 0.5575958702064886
+        },
+        "recovery_tool_calls": {
+          "n_questions": 113,
+          "mean": 0.36578171091445427,
+          "lo": 0.12389380530973451,
+          "hi": 0.6047197640117994
+        }
+      },
+      "secondary_outcomes": {
+        "em": {
+          "estimand": "equal_question_mean_seed_success",
+          "n_questions": 113,
+          "mean_a": 0.07079646017699115,
+          "mean_b": 0.04129793510324483,
+          "delta": 0.029498525073746312,
+          "delta_lo": 0.0029498525073746312,
+          "delta_hi": 0.05604719764011799,
+          "ci": 0.95,
+          "resamples": 10000,
+          "analysis_seed": 0,
+          "p_value": 0.0524947505249475,
+          "test": "paired_sign_flip_assuming_within_question_exchangeability",
+          "strategy_a": "unc__perplexity__argmax__bt2",
+          "strategy_b": "unc__perplexity__argmax",
+          "outcome": "em"
+        },
+        "f1": {
+          "estimand": "equal_question_mean_seed_success",
+          "n_questions": 113,
+          "mean_a": 0.12752391356041726,
+          "mean_b": 0.10950778379003334,
+          "delta": 0.018016129770383943,
+          "delta_lo": -0.013497645652701814,
+          "delta_hi": 0.0506601167408505,
+          "ci": 0.95,
+          "resamples": 10000,
+          "analysis_seed": 0,
+          "p_value": 0.27877212278772123,
+          "test": "paired_sign_flip_assuming_within_question_exchangeability",
+          "strategy_a": "unc__perplexity__argmax__bt2",
+          "strategy_b": "unc__perplexity__argmax",
+          "outcome": "f1"
+        }
+      },
+      "prospective_precision": {
+        "observed_question_difference_variance": 0.0494627054361567,
+        "approximate_n_for_95pct_half_width_pp": {
+          "2": 476,
+          "5": 77
+        },
+        "note": "Normal-approximation planning from this cohort's variance; not observed power, simultaneous coverage or a guaranteed future interval width."
+      }
+    }
+  },
+  "descriptive_fixed_early": {
+    "success": {
+      "estimand": "equal_question_mean_seed_success",
+      "n_questions": 113,
+      "mean_a": 0.09734513274336283,
+      "mean_b": 0.11504424778761062,
+      "delta": -0.017699115044247787,
+      "delta_lo": -0.061946902654867256,
+      "delta_hi": 0.026548672566371678,
+      "ci": 0.95,
+      "resamples": 10000,
+      "analysis_seed": 0,
+      "p_value": 0.5235476452354765,
+      "test": "paired_sign_flip_assuming_within_question_exchangeability",
+      "strategy_a": "unc__perplexity__argmax__bt2",
+      "strategy_b": "fixed_early",
+      "outcome": "success"
+    },
+    "em": {
+      "estimand": "equal_question_mean_seed_success",
+      "n_questions": 113,
+      "mean_a": 0.07079646017699115,
+      "mean_b": 0.05309734513274336,
+      "delta": 0.017699115044247787,
+      "delta_lo": -0.014749262536873154,
+      "delta_hi": 0.053097345132743355,
+      "ci": 0.95,
+      "resamples": 10000,
+      "analysis_seed": 0,
+      "p_value": 0.38886111388861117,
+      "test": "paired_sign_flip_assuming_within_question_exchangeability",
+      "strategy_a": "unc__perplexity__argmax__bt2",
+      "strategy_b": "fixed_early",
+      "outcome": "em"
+    },
+    "f1": {
+      "estimand": "equal_question_mean_seed_success",
+      "n_questions": 113,
+      "mean_a": 0.12752391356041726,
+      "mean_b": 0.1369207943915149,
+      "delta": -0.009396880831097614,
+      "delta_lo": -0.04634476650007063,
+      "delta_hi": 0.02913689709226677,
+      "ci": 0.95,
+      "resamples": 10000,
+      "analysis_seed": 0,
+      "p_value": 0.6392360763923608,
+      "test": "paired_sign_flip_assuming_within_question_exchangeability",
+      "strategy_a": "unc__perplexity__argmax__bt2",
+      "strategy_b": "fixed_early",
+      "outcome": "f1"
+    }
+  },
+  "nonzero_treatment_origin": {
+    "n_questions": 43,
+    "question_fraction": 0.3805309734513274,
+    "paired_success_versus_restart": {
+      "estimand": "equal_question_mean_seed_success",
+      "n_questions": 43,
+      "mean_a": 0.10852713178294572,
+      "mean_b": 0.14728682170542634,
+      "delta": -0.03875968992248062,
+      "delta_lo": -0.10852713178294572,
+      "delta_hi": 0.023255813953488372,
+      "ci": 0.95,
+      "resamples": 10000,
+      "analysis_seed": 0,
+      "p_value": 0.3738626137386261,
+      "test": "paired_sign_flip_assuming_within_question_exchangeability",
+      "strategy_a": "unc__perplexity__argmax__bt2",
+      "strategy_b": "full_restart",
+      "outcome": "success"
+    },
+    "note": "Exploratory subgroup defined by the frozen treatment origin on the original trace; does not estimate an origin-wide optimum."
+  },
+  "cohort": {
+    "initial_successes": 137,
+    "initial_exact_matches": 97.0,
+    "accepted_without_exact_match": 40,
+    "original_failure_steps": {
+      "n": 113,
+      "mean": 5.6371681415929205,
+      "min": 2.0,
+      "q25": 3.0,
+      "median": 6.0,
+      "q75": 8.0,
+      "max": 8.0
+    },
+    "original_failure_token_allowance": {
+      "n": 113,
+      "mean": 303.98230088495575,
+      "min": 77.0,
+      "q25": 162.0,
+      "median": 344.0,
+      "q75": 432.0,
+      "max": 548.0
+    },
+    "original_failure_termination": {
+      "max_steps": 52,
+      "finished": 61
+    },
+    "context_paragraph_counts": {
+      "2": 1,
+      "6": 1,
+      "10": 248
+    }
+  },
+  "signal_quality": {
+    "profiles": 113,
+    "empty_usable_profiles": 0,
+    "total_original_failure_steps": 637,
+    "usable_perplexity_steps": 637
+  },
+  "unique_study_usage": {
+    "executions": 1058,
+    "recovery_gen_tokens": 303700,
+    "recovery_prompt_tokens": 5292100,
+    "recovery_model_requests": 5697,
+    "recovery_tool_calls": 4953
+  },
+  "illustrative_cases": [
+    {
+      "selection_stratum": "treatment_higher",
+      "qid": "5a7619765542992db9473728",
+      "question": "In 1632, where was one of the most highly acclaimed English architects born?",
+      "gold_answer": "East Knoyle",
+      "original_answer": null,
+      "original_termination": "max_steps",
+      "original_steps": 8,
+      "token_allowance": 439,
+      "rows": [
+        {
+          "strategy": "full_restart",
+          "seed": 0,
+          "target_step": 0,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": null,
+          "terminated_reason": "max_steps",
+          "recovery_gen_tokens": 439
+        },
+        {
+          "strategy": "full_restart",
+          "seed": 1,
+          "target_step": 0,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": null,
+          "terminated_reason": "max_steps",
+          "recovery_gen_tokens": 365
+        },
+        {
+          "strategy": "full_restart",
+          "seed": 2,
+          "target_step": 0,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": null,
+          "terminated_reason": "max_steps",
+          "recovery_gen_tokens": 393
+        },
+        {
+          "strategy": "unc__perplexity__argmax__bt2",
+          "seed": 0,
+          "target_step": 3,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": null,
+          "terminated_reason": "max_steps",
+          "recovery_gen_tokens": 373
+        },
+        {
+          "strategy": "unc__perplexity__argmax__bt2",
+          "seed": 1,
+          "target_step": 3,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": null,
+          "terminated_reason": "max_steps",
+          "recovery_gen_tokens": 380
+        },
+        {
+          "strategy": "unc__perplexity__argmax__bt2",
+          "seed": 2,
+          "target_step": 3,
+          "success": 1,
+          "em": 0.0,
+          "f1": 0.6666666666666666,
+          "final_answer": "East Knoyle, Wiltshire, England",
+          "terminated_reason": "finished",
+          "recovery_gen_tokens": 419
+        }
+      ]
+    },
+    {
+      "selection_stratum": "restart_higher",
+      "qid": "5a7322a25542991f9a20c634",
+      "question": "Was the Metropolitan Life Insurance Company Tower [Met Life Tower] or the 15 Hudson Yards building designed by the firm of Napoleon LeBrun & Sons?",
+      "gold_answer": "The Metropolitan Life Insurance Company Tower",
+      "original_answer": null,
+      "original_termination": "max_steps",
+      "original_steps": 8,
+      "token_allowance": 458,
+      "rows": [
+        {
+          "strategy": "full_restart",
+          "seed": 0,
+          "target_step": 0,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.3125,
+          "final_answer": "The Metropolitan Life Insurance Company Tower was designed by Napoleon LeBrun & Sons, but there is no information to suggest that 15 Hudson Yards was designed by the same firm.",
+          "terminated_reason": "finished",
+          "recovery_gen_tokens": 191
+        },
+        {
+          "strategy": "full_restart",
+          "seed": 1,
+          "target_step": 0,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.32258064516129037,
+          "final_answer": "The Metropolitan Life Insurance Company Tower was designed by Napoleon LeBrun & Sons, but there is no information to suggest that 15 Hudson Yards was designed by them.",
+          "terminated_reason": "finished",
+          "recovery_gen_tokens": 183
+        },
+        {
+          "strategy": "full_restart",
+          "seed": 2,
+          "target_step": 0,
+          "success": 1,
+          "em": 0.0,
+          "f1": 0.625,
+          "final_answer": "The Metropolitan Life Insurance Company Tower was designed by Napoleon LeBrun & Sons.",
+          "terminated_reason": "finished",
+          "recovery_gen_tokens": 102
+        },
+        {
+          "strategy": "unc__perplexity__argmax__bt2",
+          "seed": 0,
+          "target_step": 4,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.3125,
+          "final_answer": "The Metropolitan Life Insurance Company Tower was designed by Napoleon LeBrun & Sons, but there is no information to suggest that Napoleon LeBrun & Sons designed the 15 Hudson Yards building.",
+          "terminated_reason": "finished",
+          "recovery_gen_tokens": 237
+        },
+        {
+          "strategy": "unc__perplexity__argmax__bt2",
+          "seed": 1,
+          "target_step": 4,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": null,
+          "terminated_reason": "max_steps",
+          "recovery_gen_tokens": 457
+        },
+        {
+          "strategy": "unc__perplexity__argmax__bt2",
+          "seed": 2,
+          "target_step": 4,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.14814814814814814,
+          "final_answer": "The Met Life Tower was designed by Napoleon LeBrun & Sons, but the design firm for 15 Hudson Yards is not mentioned in the provided information.",
+          "terminated_reason": "finished",
+          "recovery_gen_tokens": 169
+        }
+      ]
+    },
+    {
+      "selection_stratum": "both_unsuccessful",
+      "qid": "5a733b835542991f9a20c6b2",
+      "question": "Which movie is loosley based off the Brother Grimm's \"Iron Henry\"?",
+      "gold_answer": "The Frog Prince",
+      "original_answer": null,
+      "original_termination": "max_steps",
+      "original_steps": 8,
+      "token_allowance": 382,
+      "rows": [
+        {
+          "strategy": "full_restart",
+          "seed": 0,
+          "target_step": 0,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": null,
+          "terminated_reason": "budget",
+          "recovery_gen_tokens": 382
+        },
+        {
+          "strategy": "full_restart",
+          "seed": 1,
+          "target_step": 0,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": null,
+          "terminated_reason": "budget",
+          "recovery_gen_tokens": 382
+        },
+        {
+          "strategy": "full_restart",
+          "seed": 2,
+          "target_step": 0,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": null,
+          "terminated_reason": "max_steps",
+          "recovery_gen_tokens": 382
+        },
+        {
+          "strategy": "unc__perplexity__argmax__bt2",
+          "seed": 0,
+          "target_step": 5,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": "There is no",
+          "terminated_reason": "finished",
+          "recovery_gen_tokens": 382
+        },
+        {
+          "strategy": "unc__perplexity__argmax__bt2",
+          "seed": 1,
+          "target_step": 5,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": null,
+          "terminated_reason": "budget",
+          "recovery_gen_tokens": 382
+        },
+        {
+          "strategy": "unc__perplexity__argmax__bt2",
+          "seed": 2,
+          "target_step": 5,
+          "success": 0,
+          "em": 0.0,
+          "f1": 0.0,
+          "final_answer": null,
+          "terminated_reason": "budget",
+          "recovery_gen_tokens": 382
+        }
+      ]
+    }
+  ],
+  "case_selection": "First sorted question ID per outcome stratum, all three seeds shown; outcome-selected illustrations, not failure-type prevalence or human validation.",
+  "study_sha256": "e4ea08c8291b0f797d05b15110d762634ec48d57ae53e05aaf4373c805986308",
+  "frozen_code_sha256": "b418bca20be1674d65dc76dc14c42f2b6304eee6856d34a6f083c3d4e6ef4eb9",
+  "generated_at_utc": "2026-09-13T04:52:30.014692+00:00",
+  "bootstrap_resamples": 10000,
+  "analysis_seed": 0,
+  "archived_input_checks_by_batch": {
+    "batch01": 77,
+    "batch02": 78,
+    "batch03": 82,
+    "batch04": 78,
+    "batch05": 83
+  },
+  "source_sha256": {
+    "output/aws-experiment/2026-09-11-main/retrieved-20260912T084858Z/batch01-20260912T041145Z.tar.gz": "5b0952694951b64471a29d2be6f5538d2a927161b00f34666b7608e2f28cba7f",
+    "output/aws-experiment/2026-09-11-main/study-freeze.json": "771d9235f2389eb1258b05fd64e376ebb6e51f2732ca85f6c0e630ca86f9dc77",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/data/processed/failed_ids.json": "1c74bf701e0e2a7bcb9afa3d273fa1576133f5bf58309e5526a311c2e3193de0",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/data/processed/pool.json": "c0d12015a4d45eca36b96adb6dd58a26c5c4c2de1830395bb66a71b44c605985",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/repairs/manifest.json": "83a2f338ba345544c1875f5c7ca35d8d0ce818a723d10a742feaf95055d31b1b",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/repairs/results.jsonl": "5fe9e93528895b013d0cf73b13435a1f15fcaee5fc0386d37c52e7e7a01d07aa",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a733b835542991f9a20c6b2.json": "d92878bc2ee1fcaf5bf936c24404b7d08fe4581770097e570b2d2bf9bb7c73d0",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a7499eb55429929fddd8470.json": "32da2df9630a57408616314d877386953fa96457d6eb5ddb72227d6462f09609",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a7570a65542996c70cfaefd.json": "3834346f781f3f3ed930a2664d03a0ab61f8547f9172a395bbcc40ed4fa05f1d",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a760ab65542994ccc918697.json": "4d3b432366390b82f2f5d6bbffb48e2391a66b91be54f4d288d39bc72c1cef0d",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a762cf0554299109176e6a4.json": "e5c2bbbc4cb21917d5a24033cd1bcd2a1de0631d8e27977a363ba3e17978bf4e",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a76648f5542992db9473795.json": "4b2e3c556c5ce42e444f24f0b4872a4c1027aee9d69d4b1df0ff5320d290fd32",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a77626b5542993569682d77.json": "65bfa1e6a29cf3a19d79b0bab21d8403a61ee4adc5b440af83ef8ca24865a2c4",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a7781c955429949eeb29ea8.json": "6fd465b4a3c3cead502212a5cfb0496435b192c529336323f7bbd95e921624ed",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a79c9395542994bb94570a2.json": "e741df2a03146865bcfb745938598124baf7d7608196bb3aa1ba0c771f272b46",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a79caec5542994bb94570ad.json": "1003609c18c7011f22c2980b66f30dc8450225e10b193854a0280d35706b1b58",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a7a8d15554299042af8f669.json": "95a89cbd7d9d6dfa1744efa7cb4e2cf51dcff14e0cce485dc12d51b39592c392",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a7b41b555429931da12ca3f.json": "b3c0ce257afd2dbd0a0cd73eb66e16f546c5ea9934b341fe9f038ad12a140bc3",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a7cc59c55429909bec767fb.json": "8add32f910440f05fde11e3ae3cd5e3f3b1acf53d2aca1f49862f025fa94a0fd",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a7db1a15542995ed0d16660.json": "2fd7f4e864deb278afd61d91e8fdbbac13bb1d2052453c0bc371cc0421fd9170",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a80ac53554299485f5986a0.json": "d295622a1182aa84c56a01e5e05ad2a51667173c6841ce7f35ede156110554e5",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a81ebee554299676cceb16d.json": "eabf6a0c0818e26df30066593a178229bd0f06dcb43f895511b343ad5224a464",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a8367c1554299334474600e.json": "9e1aaa361ab2dcf1ad709e8a0e1685c9d228e8eb91ce4a99058fc6147f512c66",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a836ce55542993344746012.json": "b377efe5b940cc6b1a5ef9210d6ae1a3260496bba5ea6958ca23631cef991c1d",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a84e0a45542991dd0999e11.json": "bd4e1fd57f745bea30ab7dfe2bd657a51c43818d4540de38dc704ccf4b6dcad8",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a8b2ccf55429971feec4665.json": "1053632b8b066328bceac544e0411a68bd552c3f69be025cc01499fb5e3d5d91",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a8bbddf5542997f31a41db2.json": "7b43085120406f29c21349c4b325cd0132c63850f683f69465e4135614723f6d",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5a8c42d7554299240d9c20f5.json": "8a25dca0123677b32e789b1a1aa68fab79caceed5dc99dc2cd74740a1a2effc5",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ab58f9a554299488d4d99da.json": "280cad8d7c50bbdfcc9a97fb4b0d2d595ef305a5b6f113feb3cbd52d5212881f",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ab6633b55429954757d3278.json": "883c90cafb6a2b482a86fc351a7d67f501fe8a5878e26f702dfc4f5eb5780aff",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ab6c47e55429954757d3368.json": "a7f2c14f7037236356355f3062445e2bee0d9acafb7d73d610a982b1a2ebaebc",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ab720685542993667793f44.json": "70d27b262664b46f38e24b0b56b0fa07edeaf15de379fc329d3b18a12215078f",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ab900045542991b5579f0c0.json": "1f55500e5fbfda0ce438ded3c6b458596f7c6850d5bef397e03d928b93e03fa5",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ab90f5755429934fafe6e57.json": "507cd16bf7a49f2da70197c20334e4fcba4efb30ceedd20e9c8128c451dbc2bf",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ab9cfb455429970cfb8ebae.json": "07b01a2f4c2a8a81e1e259d5aefac8450f8104fe9cbd4aec0910effeed278e8c",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5abab36455429955dce3eed1.json": "505bab06d4ebb3abe66d7ca63602af6fcf09cf6cb47acf7035e9e658e3614eaf",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5abbd2575542993f40c73bbd.json": "cb4254f2810c87278f7c84d67947531888bffecec47efe1f03dafb753f4378fd",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5abdaa0f55429965af743dad.json": "a6179b1473306ae5f54da55e031353df2949696c346c8bca36d199c2cccbe82b",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ac0060f554299012d1db578.json": "87d8372868509d44d3f35f5965c68fde023c7f7ea1dc472ad64f87870abf0fd6",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ac05c245542992a796dece5.json": "9d6b32abe0ac6a39e1ad0a83b416ac5f6ec8420f7a2ca982db6b04e763cbd198",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ac05e035542992a796decf7.json": "2876cdaf931e57ce2262f8b28691ac0483ebf318f9d6b27bf404f0b48b580f01",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ac175635542994ab5c67d4b.json": "9f291a44f3aa968d86ddd82b58b355debdd9e412f31f3d37144a89c84fea3a11",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ac2d1d755429921a00ab053.json": "421013b1ff570da36a61aae5de037416eb5e712cfb2cc8616465fe870d201074",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ac38bf355429939154137ba.json": "c6e8d18b80280628f7528c80b2999ea5dcbb1d74072df55acf555bf9e28347b5",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ac559bd5542993e66e82328.json": "94281031c04581b7a87e779157ca30ee538a57cdc80f5a04faae0aa8366f630c",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5addd5795542990dbb2f7e9d.json": "69873286642aefcc6ca140dcc1a54bec8c2c81fc7674e811010c91df781623b6",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5aded1595542995ec70e8f29.json": "5a91ed3119a493c538a05a42eaf671f8cf7d2f130774ef403998cece878db08c",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5adf37785542992d7e9f92d3.json": "a4e9e9438086398450e63e4b4152b5b09a5159889fef98246fb56538666b5f79",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5adf86b45542993344016cc1.json": "f3e1bdb69b1c09311e33caf8ca4a55d83c92c401416c8794825749d396442601",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5adf8fe55542993344016d0f.json": "ee2b3b347ca58125b1d3bf49cbb632c51919c4080a4243057578387af8f1fdae",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5adfa8d0554299025d62a32c.json": "286216a8cde2abb5ecf8704b61457aa089f668696cc571297b30dd54ac45a36d",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5adff34555429942ec259baa.json": "03e2061d64c696124a1ab1e2ca511ef429d868bf88e81f7682d56291e2bdfb4a",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ae1ebf95542997283cd22f2.json": "e8a2e7afffb3b00b64f979b547d44e2c40469f89bc660e111e3bef6ff965853b",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ae4f2c75542993aec5ec0fb.json": "ced867ca7e7040cb6f03676cca6d55aab723a3ee69fd3c1fde67443e199c63cf",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ae66b055542995703ce8b61.json": "7af6abc67d452963c5e9df8b3af68d408610dd16b3449fcf75711a3f426a6357",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/trajectories/5ae7ed9555429952e35ea9e6.json": "cfbe1fa4d99fc30fda02b1f5d01dc6e6793a22acb7752ca7fa91f9e7cd0bc80d",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5a733b835542991f9a20c6b2.json": "5925fc35c6fbbe67e80646719f26cc075cf72185e35b3693e31188ef1341002f",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5a7499eb55429929fddd8470.json": "ac2ab8cd4a13f1f7685889b64ff07dd6255e033baaff7fe13541fd4ee3fa6515",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5a762cf0554299109176e6a4.json": "a6ec24b69bd359bfbb525f42a4fbf44e478bab87d889ad334701d5a840e939a9",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5a79caec5542994bb94570ad.json": "5e98ae98090aa4bcb416b53385c838cb8052bbb657b4319eaf612964f20bf500",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5a80ac53554299485f5986a0.json": "d08642a5b998dbf7bd3b5d4a53dd0b318b93c5f49711889008777f42db9fbc6d",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5a81ebee554299676cceb16d.json": "a1df6b94f57997a395bfa8b83b9852ce1bc3d0990966c8e57ff2392b821d34d0",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5a84e0a45542991dd0999e11.json": "7cf23a9a9540583b64a727aed0865b5123b864503c5902c3d068cdede34fe703",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5a8b2ccf55429971feec4665.json": "ecfcc888878fcccc8dfb568643bed8c65a553a3bf90dbf1f8dc3adc8d970fbd8",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5ab900045542991b5579f0c0.json": "0255790fc417080f1d4fca4ee81bd91a2a673b822066e3dd71af07799cecc70f",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5ab9cfb455429970cfb8ebae.json": "ae9f548c5e3cea49a526bd3c782c4c8d6391368eea87c27d3c60f7364ee65bc1",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5abab36455429955dce3eed1.json": "0a6717f0f51fd41729af26a6c55b4cc99543af08c57b8e076fab65e2cb7e9b59",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5ac0060f554299012d1db578.json": "7bcf74e6c707c61b72d590deceaa73248cc5b1bed3e1c2faab0539ffac7c01a2",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5ac175635542994ab5c67d4b.json": "78f5eaa0313e2dfb6154d4af777616fbfbc7811b30db6f4af458608131c818ae",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5ac38bf355429939154137ba.json": "082d8827d076971f4bc9d492984481f524c3a202b19126ebfdab6a59d14ebf8b",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5addd5795542990dbb2f7e9d.json": "979b73d748fd132032cdbf6cc04b8a9da40bb867ed85a15ae5dd14490738e548",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5aded1595542995ec70e8f29.json": "7ac1b99b5c122fe65a2f383ffa8258ea8a9c1bbc31034f3eca2617ef74227fe2",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5adf86b45542993344016cc1.json": "aa304cbb928bc44affbccc06731c98c10da9adad8574810a9fca63a9dc7aa036",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5adfa8d0554299025d62a32c.json": "81294e2910b8bbdc3710b882d9f4883e810e6726dcbc7f641fa82481b302c4a6",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5adff34555429942ec259baa.json": "f5d886d811e74a798f0f497d649f7aee462961b65246f946a1fe198479f4725d",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/outputs/uncertainty/5ae66b055542995703ce8b61.json": "9484848f999b2b79f358ab2089bce341781ff374163bf96d3161489efbb0f56b",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/study_policy.json": "6eeac375ac43831c779f11e6cf4cb09995b645b19d84f8c7ca18555c0a984c92",
+    "output/aws-experiment/2026-09-11-main/results/batch01/run/test_ids.json": "5502d4ea741b2a098fef97fbfe46d8b93b07ea814d6dc6bc3a250b9d0cfa1bc8",
+    "output/aws-experiment/2026-09-11-main/retrieved-20260912T084858Z/batch02-20260912T042720Z.tar.gz": "4954eca0a87fb00fb57c807e1476a07bb8f722b0fb01f22e149e298783ac02e7",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/data/processed/failed_ids.json": "44ac06c5157c488b56795e11291cd3fe69a4b9441c929e63bdb9fe4fe5c0e27b",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/data/processed/pool.json": "99f880ac18582635b20c90ba59f4a744aaa75809114d8f4c2e4053dfee0d7b2f",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/repairs/manifest.json": "a1143fa39b9380c951ea17c77cddda8ee88a3768ef93134fc5cd55d5dd339e0b",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/repairs/results.jsonl": "b9634556f23cad0ffc815c2159f172e46497a19fc18e9bea269f21b637d23ea4",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a73ae3b55429978a71e907c.json": "66fcb677ea85342942822530a85f9fa83a276652692d59cb07058e31dc917d17",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a746ddc55429929fddd8423.json": "06540ce367b58c7b5abb7c84927f30b4d5bb65ebc69ce9423880d27694a34c03",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a75495a5542996c70cfaed8.json": "3f4765de4f4b1fc2196c9d4bf52b5701f2c8c1867e831e4fc427b0e896447859",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a7619765542992db9473728.json": "c14de3d3f093ccc0d107a3693cdfd48c9d9f8f85b7f9650a62beb39eb7adec1a",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a76e88555429972597f13f4.json": "11cfdf4c2c5288c5b9fd17562784542c6239def8c0651af95ff9921fc8ab4628",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a77414155429972597f14d7.json": "f368a8d0a422582b52cc74c79b043e1105500deb243e08e7397eb5adf2c7dc58",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a77519c55429972597f14fa.json": "2f204527f20c14bb96f0b5cf2f33627ca03becd977461de7470c988c04027dfd",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a77a9df55429967ab10521c.json": "fdb862bd48624dde93830d8145417122216361c3d728d39179d2bb612a6930ef",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a77d3f555429967ab1052c5.json": "e9f65ca3a8bad54eb67dddcc02367738727f7c67be114a53f5f6ccfaa6145775",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a79cabc5542994f819ef0a1.json": "672f9902dc9762287bf5e5f71a21966c85884765befd0fb7c473210de81f5cf0",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a7a01b15542996c55b2dcd1.json": "34219f4ba1e3f6ccf8b09ec84863b792ec8e0bf30039e5c7a4d86ab20083464f",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a7b9fac554299294a54aa2f.json": "43675918c643a6a18f71616b69b33c5bdfd7b5d6aa15a73b2ec7ebf8a2f9a833",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a7c53a855429935c91b515d.json": "1b9e1d41498418e2adda46c4a7c7bdc52771217617a19251a2012b254e276acf",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a7cce4b554299683c1c6388.json": "6bedb1e3bb48860a6b2b7f528a7813d3ecab10a27537e912d0f1026f494d8e50",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a7e04b05542995f4f40238a.json": "12ba853e418bc342cc884587d2ef599b3e1fbf4af3a1ae02b760df8dee89294b",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a7e4414554299495941995c.json": "2990bf805afa25859b2f622b149823696941ce550d86b89045bf25859020af6d",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a7e689f55429934daa2fc1c.json": "0cf17e0e9c707181a513020cff18dc38107de5720cffce9c29cfe0b6e40607a6",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a8026a05542992e7d278df8.json": "4681ae92142e929d3863ec2dd797ce02624818b770d32ca61671e376ca006956",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a8072a5554299485f5985f1.json": "c8c2b1a19195b6bc31e67b7529dee3bb7544414bc833040054597ad50d4159c5",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a81a4135542990a1d231e37.json": "30431b0d39f1d5f96dd492be5d8af3d295999136626b1e4bba39ef84b251cb2e",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a81f49c5542995ce29dcc9a.json": "94baab9eb10a80a89c670357c3a2f6531bc653e05a3ca6fd611951372f612e86",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a82ffe755429940e5e1a949.json": "8f598ad06aca52633a41ac34fa1ca0f6669743ba829feea110f66dca81c3f04d",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a83a2a15542993344746063.json": "9dd6645ae16fd09315efa887bcd375a7ba18318756a7bee7ce75c0db840a72d2",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a8769475542993e715abf2b.json": "76b4dfdbf03f869ba08354d0a0ee0eef42171099f017f3a839a1277ba64d64f9",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a8afa4d55429949d91db44c.json": "dc17a01cdac05a6f21d134ae78859fc6493c70a9254a4594898c42c9100e3d19",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a8b8b3a5542995d1e6f13e5.json": "179b09e682b669df9e8f66ca3d562c32457a3940f0e41d91109f6a51a6233504",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5a8edb5c55429917b4a5bde9.json": "e9995ed17ffe7c1cad0ecfd1fcd329f031840648b11090a151c7b337fdd0ac6e",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ab46a0f5542990594ba9c1b.json": "aeca317ffc3e3a024780e59ae22ccd326d45a1f6f07c800d9cdcefc868efe89b",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ab48a7c5542991751b4d7ab.json": "3295746a7890b390583e2ea0dae3f018aae4331e246729a0f7234bf3a9fbd1e2",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ab529005542996a3a96a045.json": "af28d1f7fa4b54e13ec74572c827c7999fadd3448ffe348c00e35eee45386c41",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ab59ffe5542997d4ad1f193.json": "4f7f07881768d715889155c193a75b001e529d289df4f81c9b5cf6f80d121635",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ab7178f5542991d32223774.json": "522baf8f4c1759fa121333761eda4b1639fd933ffc04082002e62a09bc7d59ed",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ab809195542991d3222380f.json": "4a94d3290bed926eabae1d7378a722873eb61f06776fcdcdf36a1040b340eba9",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5abd0553554299700f9d7963.json": "9d937fb3c9c8d082a0c1129bd4ffdbacfe3040b5804164d9afb9d1a5a2c6cc5c",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5abd05e655429965836004f1.json": "6be5ae7d3a98d703d9b81b3baddfdd7c664c1a83981148e7a25d65f018b0fdd1",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ac0641f554299294b218fbe.json": "c5783b1f1749a9d53c9ccb6666205e49c724419654bbd1e852a5e8638402030a",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ac4efa85542991943173a04.json": "8a7d1266a6655430da7f69048bf391a4c0dfa054e12fd642bf62a2813c05bb17",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ac55ea55542993e66e82377.json": "5188919d1736238f6f478cf073bc6216debfca8e7c53df7f214487fa34ec9386",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5adea2435542992fa25da7e4.json": "f085023e925786e4dbe19edb4242c23df90cdf7438e9e1009c041e28c272e1a0",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5adf744d5542992d7e9f937e.json": "7303c5ca0b4c4d8c205703693f657f2e0ae8de435efe8addea1577f8aaee9229",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5adf75e35542993344016c98.json": "f90a03a48bf8bb5b60a4404c944c989970f6b54175d0458955224c85fb8c8e8b",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5adfd22255429906c02daa4f.json": "ea955a5c8f0aca1fa1e35699e3501058219254b8f50773e4f0148f9b131fb705",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ae12bcc5542997b2ef7d11a.json": "58ec6ebedcc9912612e64f7c3adfd097bec86e682d780a02deb9a0c48e1de24d",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ae1d32a554299492dc91b9c.json": "472d74a292717abbbff7ce6c9402b83275e091ea57419ca63ec987ec4c454158",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ae2a9c6554299492dc91c42.json": "a4b74784264a30b5d41c9990e8eb6bb20577cc7b32f6bb149dddbe9b66900e97",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ae45adc55429970de88d93f.json": "f51c0cbd4ba5fd37138abe424331c83cd376b9d26b3e37933c90b233f4bf7798",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ae4ce835542990ba0bbb14d.json": "f5050bb074e5db8ab9ebcf3a7d14425334c6cd93ba71ebdd6c0c29dbda0e737e",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ae531695542990ba0bbb1fb.json": "63657a8dd2a513e8c7cf2f67a6b0cebcd4977b5ebae41b998a23288655c4d8db",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ae614215542992663a4f254.json": "dae14dd622c817b57c3237b005ffc1d851286f20c25cf797527f3b766a3d2d5a",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/trajectories/5ae680cc5542996d980e7ba5.json": "f73626fb35af66dd7b3fc603bed535daa21583687d58c74bff2c473a2a5cb994",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a746ddc55429929fddd8423.json": "eedcbc0de880f4a5ee099d092b414924a042349a1144e6902eb88bfd4144594b",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a7619765542992db9473728.json": "4a0de766e2c7d60aee8b23694b6e9b480e66e40424046927a3226913fd0fe1cc",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a77a9df55429967ab10521c.json": "5f05abc623075532f1138b2a6b38bb1d65fffadaad1f8b56baa3f1b5bb174379",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a77d3f555429967ab1052c5.json": "c62067e75da620667109de86005e67e493581d6de88a7c786f025d790b293981",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a7c53a855429935c91b515d.json": "7d59ae4bf7cc4364c2739db54fdfbb3d0d43695152484708911caf8a144bab5d",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a7e4414554299495941995c.json": "424d9ce4c5b921257a241b479ff8786a212bec28f78793d614bcc131c0b69b43",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a8072a5554299485f5985f1.json": "61f6d14ea67151192e81dfe4a04130f5a485187bf993852090c97168ba3c5c15",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a81a4135542990a1d231e37.json": "aff3b24ae3c12aa1caff1048fc3bbc2e15f17244ef4d1fad00fd175294a8e584",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a83a2a15542993344746063.json": "9f79ca1ed7fc5bcf4dbc804d3d60aa4b982d98e6e7d88aed119c3d113970280b",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a8769475542993e715abf2b.json": "cb1f90ccd164f4f0382fe052e8afe7ceb482bcdfc8c769a4c8ef59d9ef2ed002",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a8b8b3a5542995d1e6f13e5.json": "f6b3c17d4059209aa499f1919789afd5248b7793d2b81150b6867b8315fe844d",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5a8edb5c55429917b4a5bde9.json": "bdeb2ce66f6226b55ff0506936e7167f6a9f4873bfac0c553a62e7f94612365c",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5ab529005542996a3a96a045.json": "83d4cc7ebbb4d89d8ecf2207c311ae17adce455e2f900f6c9e5d69d1ff5e4316",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5ab59ffe5542997d4ad1f193.json": "3a152835cb6caa224a02b3e38b143beb7a3f5f3390bf734028d7320fb3c1caea",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5abd05e655429965836004f1.json": "21f86e4538e0c9a881038501a0f98413bf3b065147f405c9910e7c641ce7dc24",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5adea2435542992fa25da7e4.json": "a0d04c62dfef7a83c1dbc62c07a98d4dd4bda56c5e04cdaafc3c27020db42965",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5adf744d5542992d7e9f937e.json": "22e8fb9d687a9cf2ee636da5d806adcb9dbf7042dfa810ac79c757501317e390",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5ae12bcc5542997b2ef7d11a.json": "0ffb6aceb4931853a2909d5a3fb1dfed4179d4aa8e0a1450bc270dbdf5c4756b",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5ae45adc55429970de88d93f.json": "9e14189d7fbfb21f62f2c7397c63547a753ccc9979517710db980a02367cedfd",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5ae531695542990ba0bbb1fb.json": "6b099cb15fd7d341f5b99a474ee1587e1f74e6580f9346d014ecafe9a308bcee",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/outputs/uncertainty/5ae680cc5542996d980e7ba5.json": "209eed0b443e73653857bb48faecf5f9d6d7c1949fab59cfc3fe11c414791d27",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/study_policy.json": "00d63eb7f0b4ab9af4ab6b10d54da04ede7aacc7de31d9b4879df41560a0076f",
+    "output/aws-experiment/2026-09-11-main/results/batch02/run/test_ids.json": "4804f05eaa40fc973e258fc12e9c7fe2b19a8f1b37adc46e0546e4c8f2a901cf",
+    "output/aws-experiment/2026-09-11-main/retrieved-20260912T084858Z/batch03-20260912T044310Z.tar.gz": "00f06161401dbcca076852898fd05c0cef40d783ee3e7108a0ac5573effc0193",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/data/processed/failed_ids.json": "f28d5aa57a031403e6b86b6c4c3845a53a3a0934ea3ad453681a7c084b662aa4",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/data/processed/pool.json": "4f777e7933fbfa60828f70e38f0a2c15c7840f7b5cb57684e679273c71b70735",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/repairs/manifest.json": "394d6cc14d73d1fcf923452e85db7181e55f7262dcafd6b583d420cfaa195654",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/repairs/results.jsonl": "4ef645e75e0b8dc2a4ccb26640621f26ce24bc0bac513c78f11b74b52787d239",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a73aeb855429908901be311.json": "9e1da98604e1ce8bd3a41cf86e0a99fa3aff314011d075ff8042ccd230fcc9b5",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a74d64055429916b0164223.json": "2f325c7a32c2b1101cd60c4cfa45bdc03aba2de232d63aeb84bba99e4571a57b",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a7642f7554299109176e6e8.json": "6f165794b637e002fbe4408f7f44c6b5213bcbae148a43720c781fc4d2a741bd",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a77e70f5542992a6e59dfeb.json": "8c2cc0dd7bc4b80e6995ddca46c6311b5845c8fd17b06b8197e399457c8279ee",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a79a26d554299029c4b5f63.json": "016b098517aa3459b9feecdfba8776a258543091e397e36ef1edd3b3fc7f2728",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a79d2fe5542994f819ef0c3.json": "37d0b8a23c67bc6477222596ce6f9aa134201cfd13624ea0638b73ae253eb82f",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a7a7dc15542994f819ef1f2.json": "15a66cbc3fb4530473527801119300e891316f2b8ab6b872b1fbc3c915d37247",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a7bd25a554299294a54ab13.json": "76751f562a71499afeaf70753686d5458c24c5704c3b5f14d50dd08c8f98c327",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a7c2819554299683c1c62db.json": "b689561ab3441e28d0a897dadce00be64a26c9c53f7b7c07d2b41a1559106c9c",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a7e08305542995f4f4023ab.json": "9061661a22e834cdc637237f036a10f5dc4f1ee17e01876f9bc7a7f26a252ddd",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a7e86245542991319bc94ce.json": "3640197e932aae94999cdf336aed8add8a182d09bc05126ac03dd15eb57529c9",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a81b92a5542995ce29dcc52.json": "90078432fc0490a5c6b45d7b098e46b1095eea26da85e7a94ed0c26c247cddbe",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a81e097554299676cceb129.json": "db6d0680336382a1df58256c7e59c2347c4417ed4a018651e724f689b5d6361f",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a84b5ac5542991dd0999da4.json": "22a36f9a3baec63756da4722823e8ded87f4a5b1ccad9b862349a6b5b3045138",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a8549c65542997b5ce3ffe6.json": "70a43237830908eb733be4399f449fbf4ff14c3c54f177c108688e04d43bdcf8",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a85ac1e5542997b5ce4001f.json": "b44a6e2f12b5f51da98572e781232fd1352679408f0e0d411507901b896b1ce7",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a888fe6554299206df2b2f7.json": "33d9d9044177f35cdb86aa2b52c93a1ceb2bba687ae8187555909b5c577c9a58",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a89810655429946c8d6e929.json": "74d15ba7aca85ca8b49025b68362359b2bf1f1277e82f9f1070b58d2ab9c9651",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a8b3f8a5542995d1e6f131f.json": "8b6e7c46b8e354aeece2b1be946d105da5483183f8f1d3d99b23463365e94605",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a8c5eca554299240d9c213d.json": "28bee33d885bf651eb7fbeca2b8227bc2cf608c5b67a1f73ac3b205224138c89",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a8cacac554299585d9e3716.json": "15732e7010915ac7a03e1368e4d78b12e31e8b9f3b34dccc5e97d7ba46b52e49",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a8f2ba155429918e830d1b9.json": "9fa0191a9b84b81dd656dfb047efd55adc51ed65ea0ad6efe37be139c664bc45",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a8fa20555429918e830d298.json": "fc21944c8f7ebfcddf270269d2711ccf36b792cb4f4d7ea29e1f647d9813ecec",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a904f6355429916514e746e.json": "5f6af84cbaa0bd5e56c0e0ee3d3bef88dfb446794e0351afaab169fe39b00371",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a9080275542995651fb5175.json": "6907285c13b3a2573e9b38e189decbc85132c6c2bc8582343d84d1e3e53f156f",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5a90cb205542995651fb51fe.json": "57c08c5cfbe6fd22ad100322979f87804a8b49fecbc0d84086d0b18bab31234c",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ab2421555429970612095cc.json": "7032647e1f3f66731e638d0411c1e6c89783991669fb5b61048b6d2de456e330",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ab6369655429953192ad2a1.json": "a6e6990121bdb94416f1a891c305fa7c5701b23fa07557aeb057e09936981c16",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ab6e848554299710c8d1faa.json": "dfdf7a4066bd4763ad76f69640b7a1e5145a3fd35dc2b83df40a732875f4338a",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ab8f57b5542991b5579f097.json": "df725492546c801f1d586591b43252c4aa5a1712a6dfc0f145fb491c35c01140",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ab938db5542996be2020454.json": "6c768580b85dacf2400ed63c56ca0d300933991406b51a29983cbd73d5b61006",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ab9b939554299743d22ebca.json": "a9d07f84d5a118aad8408d49d797b5ce9d2710352ea9b4c5539f7ffd6571796d",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5abb17e75542996cc5e49fa2.json": "9ac70a3d91eca04e04ca9a723eb7509a70352fee22f928794c2b523e98f84472",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5abb7d8b5542996cc5e4a006.json": "ab2298a6fff68d74a052f193c02e4c6f350c525aa02978cbf81627ecb7f463bf",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5abd420f55429933744ab75c.json": "f1acd9bea39c11c58af6e43679b43194538a376ae63bcd366edfe18a3ad8e07b",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5abd6f0855429933744ab7d5.json": "e6c015deafa033af28eef99293fccbff7d8d269b8e7433ad6914878d62eb792b",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ac170af5542994d76dcce20.json": "c29997141dd58d59408d80d0e3d6c80fc60d9fb0085e02f593a65f8d84e48dd9",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ac257fe55429951e9e68562.json": "6e4c92a121b954c01ccd64108cb7fa61dfb50efceb04049081b7c1031a47264d",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ac261265542992f1f2b3896.json": "350bd484a755e199b165a1ab8c8ba8948c38055cef5f62bc97d89841b5a74a0e",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ac372195542995ef918c194.json": "1681f49ede134a19e655febaaa8f5b3de9e95b004e5112e89dc1b2fe40e4394d",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5adc53f75542996e6852530a.json": "ddf85e417809d967ff2ffe8cfde5b4689e057f3d7849cf82d468c648abe56a53",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5add47085542997545bbbd13.json": "f302a0e71647a3b42b26385b478bfac824e2bdc57047fa002211d6989fbc4060",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5addf9e05542997dc79070f9.json": "6d27ff856998a77a495b039dfddda911b56c511de4314e02b054bf41da88d9f9",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ade1ddf55429939a52fe827.json": "46e76823a527f558ef6edc124a48215ea10f9b86d8d0eb6db5bb4df34c50d113",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5adf07f25542992d7e9f9279.json": "468a77d154257d4e811b6e3852664c827e2fea848dce247dcb8e371b7ec5de8b",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ae49bb755429970de88d9d7.json": "97dd703d0bfa4dca3ca95d1ac4daa8084fe928eba12341285a8293c06005cf02",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ae4ad375542995dadf243a4.json": "591a0e2d80ed0741c984c12d324a3399596dd1715cef0c7b137a41fa85d1f96f",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ae560155542990ba0bbb293.json": "b46a31741370f1fbc5dedb1817d05dd96c8c9c6f4073ddedcd9e5e37b6605a0c",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ae819ac55429952e35eaa16.json": "8cb7f7421fa7f803cf1708d3f5c88a30f354c7bff8fafc2ac7607798fd0b3d5d",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/trajectories/5ae834e95542997ec272776a.json": "a2a251713225bec72b7df1be9c33fa45143c9b625d434dee19e00af2b7bd5564",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a73aeb855429908901be311.json": "0533f1ada30a2a6f46e3b1634c7d07fcd0884506eddb9f86b2c4eb003a566316",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a74d64055429916b0164223.json": "0b42b438ca00a381228ac557281801246e3bbffab6cb520617a24ae18d9d5473",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a7642f7554299109176e6e8.json": "ba4d670dc4448aaffcb58dae430853620dd13e53ce6b64c12359f7b198d25556",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a77e70f5542992a6e59dfeb.json": "adca26873f8ef663cd2fa79a7c1ed8bd9fe94bf0f39b9de95f3c844e00597cc9",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a79a26d554299029c4b5f63.json": "764d391e1e9b32f1a96b8f12dca67c1c7a3c4f965c2dc0546fa7ded8cd36c2fa",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a7a7dc15542994f819ef1f2.json": "e49d1b5fb5219bcfb789128d294709cbe84fe86693a0f3b1a818b96af97cd6c8",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a7e08305542995f4f4023ab.json": "d5cf9f4ed2544c5df14e579f56e99a9c5d5540d72df24988319300a8fb8294f5",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a7e86245542991319bc94ce.json": "27f74bb02f125f3cce752df01424151e0cb942e5301007c84995152777e90628",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a8549c65542997b5ce3ffe6.json": "115ba3dfe74e4cfaae4f7c5c462116771f6fd1b87411cabf47f897aebabe44b2",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a888fe6554299206df2b2f7.json": "46a439bf32cbdc46d9f6053d08a32a65173c7580ed97527f4ad6d19dce18778d",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a89810655429946c8d6e929.json": "9427cc0b7b99b453a8df11a350b233acf305a83a69dd3f9c77861bc9ffb92de3",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a8fa20555429918e830d298.json": "8e00bb3ee4d95856f6d00af5d86cf2a8795a66d6a64a6741b9d27889dfafb4d9",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a904f6355429916514e746e.json": "db72bc56d4c57911e91da372c339bac789397cfaabdebd315ead59efd43460b4",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5a90cb205542995651fb51fe.json": "32f61fa6b0a8fddcad9c4b5755d46e719a2d2e0700939eeaa9d8c97d53fa00bb",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5ab8f57b5542991b5579f097.json": "c41e125b58645990b652cbdb456f365bacd58e43c8404a54663e8f782ef9c4cf",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5ab9b939554299743d22ebca.json": "f9a8807840f752bef36e7b7702756e460ef464a11b85304b35b1fe110b399cae",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5ac170af5542994d76dcce20.json": "2633e16cae2738cf75628966031e30062cc259a2bbebade6bee8c07bb26f9323",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5ac257fe55429951e9e68562.json": "ce2ad91bff4bbc829b2c1151bb4226b22ea25748b7e6d8982dd979cfe03fdd98",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5ac372195542995ef918c194.json": "70a39b30cf801eb9873248350fddd8998cf25360aa7e728e62e9a5ac89f731e6",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5adc53f75542996e6852530a.json": "954780fd398bbe5bac62d76e37079cca3b4c91671b79fd0ec412e19e2e782b7f",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5add47085542997545bbbd13.json": "2b60497ea42d9cdf1f3d9714175e082f797b4255156b9c3d57ed3e34a6782134",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5adf07f25542992d7e9f9279.json": "b24cc992a83ee82fa4ed4770bfd9d70b0be41a7aaecaa704c07cad68bf974a31",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5ae4ad375542995dadf243a4.json": "5eb42656b73db9fa0e75ba11c1667a4894ad8aba78307db8e5f7dcb5341d9e8d",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5ae560155542990ba0bbb293.json": "d9f783746631f6823afaf207ea6c7c009aebd2e84b0a549f1df4fd597b94dd2c",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/outputs/uncertainty/5ae819ac55429952e35eaa16.json": "1f5ae3e3cac8c1d2c996e6748b49b3d15eccd57a207b2577f5dc6c8c5fffe2d9",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/study_policy.json": "cafc1572b6f19d8b99e79601b7817b269c4b72af6973d27bc261ee0ccff97b1a",
+    "output/aws-experiment/2026-09-11-main/results/batch03/run/test_ids.json": "9fd63bf9e315107a581ab3cadbf2145e6d9b5a2f5135a83db10df77f1ec14860",
+    "output/aws-experiment/2026-09-11-main/retrieved-20260912T084858Z/batch04-20260912T045723Z.tar.gz": "edc0c9886491fc927f5757edb6595e256ed6762aa6209a8d2cfaeb8c948c9e4b",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/data/processed/failed_ids.json": "fcc0ba7cd7564a7359cdfabbead093e57aa805834645a029bb783fde86b1bd53",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/data/processed/pool.json": "1683d478c603c4950aa5d00de155a523ae00800910e5af051f1ebfb1782589a9",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/repairs/manifest.json": "39e84823af9696169c929ccd8ee69ca9c91487e42914abeb2771b0337207b3dc",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/repairs/results.jsonl": "cb92ccafd24a2796322f4d75fd895d02328fc7373d4bb8992163c6dee034c1eb",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a7339c85542991f9a20c6a2.json": "f096bab0bca13f7cbc671d2b666e21264d32de87b486a0d01c5bea3e07471217",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a7507455542993748c8979d.json": "e61ea1951e87daa0f804bd538304165d5d89485498dc192c21eb58cdc3fd1c28",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a75d9c05542992db94736f6.json": "750491e607ca795d181559f83b61aec32dd24d6f06d4b708261879868a9a64c6",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a7607b6554299109176e619.json": "b8e4f2c00d728d2f67c28438a023c3e93b70996d186beb9070510267a9a5733a",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a773c7755429972597f14b5.json": "78b46c5fc19858a050b285c86e406442a76c250fe39ec7b9cea9eef53bc62868",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a77724455429972597f153e.json": "88650b946690bd02b54d0c8cd76efaffb20cc09f288f2f205058d935d0bc8cd5",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a77b13655429967ab105235.json": "e4bab0f8a100e81e4e0b7b64052e30f0da04edc2e21a69672d87ec1e78fcf9f7",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a78bd515542990784727749.json": "570b9b0046734cc1ee886ea7210aefa7cdf88d55c08d02879acee9ac6fe945b1",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a7cdd6b55429909bec76858.json": "258cb1c3b5f6f701362e5184dc2dfe2141409490bba1edc730935cfaad135bf5",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a7d6a2d5542991319bc93c6.json": "9beb2c9bd2931b9dd3b331928c6cb08cda2c8df394c3c415436e6a7b7c4c22cc",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a7ec6f355429934daa2fc61.json": "8a1d9db0740cda2a9f3bf98f88fdba574cafb713940a6408b040f0eab69ae920",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a7f404a55429930675136dd.json": "dafc1a7912467dd791493d8d7288dd14c369610db28a8a5cf7d9568d5bcfcfdd",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a803ed45542996402f6a496.json": "b390571d70a2c4a6b92f8cd74ec1299a5d7ddc76a80d91976f3e124489044772",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a8078d85542995d8a8ddf78.json": "5a70ae65907f4dd3949d655035dd82131cec0f52219ba6760b98eb258f12fc3a",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a81711455429938b614233e.json": "414926fe9fb669684de62bd24905bbfb319941328bf17819b851d8ed24b17673",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a81e4e8554299676cceb140.json": "f31665eb5cf41f36a33800a0decd756fda2aa98bd5f8ea04ec3a0f9faa04df76",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a83411655429966c78a6b5d.json": "b3677247af4265cc50108ae2e32e149907162f4b722ed7a9e020c4ce01ed9703",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a8393665542990548d0b1ea.json": "afec9e955f1359a846099f04b03ca05612922abcc82a20b1762f04bb37629525",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a84b2995542994c784dda11.json": "40adcb43083fac87ce31fe086f60f91f445fcf2676eec120f696d3fe2f072cc7",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a8838635542997e5c09a5a9.json": "f7d7e9fba8c73e052f3de6a15b12a8b408f7bb8de60444efa2ee6bff68672e36",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a8843a455429938390d3f0c.json": "edd0f08643e2888e540bfdb3fd5fc45d28128f8c77dfa6898b35ae6c780b5a58",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a88abf75542997e5c09a6a1.json": "672c6e811c2ef261adbbee30d9ace366030a744c9c6e9eb62fa04f8797f0e9be",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a89b1de5542992e4fca8378.json": "c6d3c8d15fe2410787e72022473f05d9695b13be150176bf95c9aafaf9ee7665",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a89d2d75542992e4fca83d2.json": "8c6a5e72da18ac2e32fa7e3493f5645160e962a5b5d885eceb90132ac656c19c",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a8e2fe95542995085b373d0.json": "cde743b065d607539aeb91a5dbf3033f260dcf2ee293aff4b018adc61b3ec94a",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5a8f791c5542992414482ad9.json": "cc3c3ebc82d21e4f33255b70fcb27b4283a544dd98d4919265d888de34154ace",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ab2d3df554299194fa9352c.json": "b6ff9957d3ffcd66d978e81610814d83a2263be6fd23b5bc7cb934d01d6ac757",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ab4028555429976abd1bd2b.json": "f34e21e1c67aac8eea99fb6020120577f5313f1b235a141cef2b9c3b16fe5294",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ab7f7465542993667794071.json": "45aa28f69755d64b325ba3407229c9fb3fb0d275d4f49c19c5ecccc7572facde",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ab865ad5542992aa3b8c8dd.json": "64572ac3d87a02b3529b2f78f9909b3562f8c41ce6418a4efae86a7d3eeac53e",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5aba72d75542994dbf019912.json": "c67bd6f7478aaf5e27de2687bf5efae5c3aee7f284011dd16a647fc37d8f5f26",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5abaf4535542996cc5e49f35.json": "c95e7f76dbd25e4feb9e42baa01c1448f3d9f0ccbe693a6fd0cd4ba195340482",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5abb02fe554299232ef4a39f.json": "acbc395ea4f3ced7cb49869bc74c3806fe7d20d6436a6c9ca07e44df86745cfb",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ac1a2f755429964131be258.json": "1259d7b87663f194a1d27073761c37e6dec0ab792539de847ddab806e9a1257e",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ac2f79e5542996773102661.json": "5046ba38103160c6d4cd687149a4bc77163bb7325224611b8c102fe3382634ce",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ac30a79554299657fa290e2.json": "494307bf43fd4ff09ae59f2505b9819be222d78ff0d59195098d1b6ac20513c7",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ac4f04e5542995c82c4ad81.json": "d47eb4d2726c20bf6dc9e330a94c323f8032461c8f97b9ca28f440fc6d8071d5",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5adbf84555429947ff17387c.json": "89d3ba6335cc7401073f63570e8d2638f814f478f26eaa5af1d2264988ed4d18",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5adc02445542994650320c4e.json": "396e0e81d3f569fca67daec290fb72819298cf83c7c21b15dfb1ec9dea266d7b",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5add311b5542994ed6169cc5.json": "ee37db5a8bdb5caa3c5b98018f59ec450f282751286464793b07d56d82a2b173",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5add67915542992200553af8.json": "e185140fdce40de26bd2ba902941a1b007c91f44d44ea1ed863c39ba3ed2fedd",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ade42b55542992fa25da717.json": "a97f49d5c6978eec8590b1dc3181e7f702f7c3904e247897ca71e30db2354ec2",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ade51b45542997c77adedf4.json": "f570db241121d116c4e275a0523538b97a66f8af66ea3b9483f5371d4dcf6e65",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ade858a55429975fa854eea.json": "46d3dcde43f04e2b7921f0ab0a91ccc4ab1ef176cf1c37f7d92a8ad93b0676b1",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ade914b55429939a52fe8f9.json": "6af7e25b983cc67bbed92a81d56113683ba3965f632a1070476972c90eb78139",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5adfb698554299603e418385.json": "748e7553726f2eb941822f3978cca7185e8f54426b524a2b2937b7e3198d9ff7",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ae0413555429942ec259c61.json": "ecfbb4ee806123e5893dcd2ac3d67c8cafea799d3f4da2ca12a84a53bbefde62",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ae0f4645542997b2ef7d0aa.json": "e17eae50eba8d19f7481cea81139f8656e5a2da1ed1b1b274c49704cf3a38e8e",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ae114f155429901ffe4ad5c.json": "2c1e2fd41e6b83d759f1634b1e7198eee15b6d35b0caed62cb0de7dccf1c1af3",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/trajectories/5ae6152d5542996de7b71b38.json": "dc4123b0aa405ae8acf0093d741dbcfee67df5faf411df51ef751ed1e0e6f5a2",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5a75d9c05542992db94736f6.json": "da60a7ab91873c83f5086b56bcd83cd02ec5db26cc98577a92af782dde6d9b32",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5a7607b6554299109176e619.json": "b514e8240ca6da97b7d91dc07301de4aacc2c0702d62c45502c904b7e6a76cdf",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5a773c7755429972597f14b5.json": "ceac9741447c62a64b2c35e3e20ad9fe7d20bf554719c378cce9b23d905a35d5",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5a78bd515542990784727749.json": "ad27b5ab3a2a87f6aea7db8b7bb41cde3ae8c2bb537c3a8c5af8590a6b712af2",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5a7cdd6b55429909bec76858.json": "2d273fd459c2298c6a22070e1390c2fb37c4eba5541f68890efc0f909b87f762",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5a803ed45542996402f6a496.json": "08d2d438c2b0869eba843f9e126b50dfdf350ebfcaad10adab8e300adac24f2e",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5a81711455429938b614233e.json": "c3f1dd1fce33db6bcf16bba4356d4efafabe325d86e6094c235c4cdbf6cd5e6d",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5a8393665542990548d0b1ea.json": "2566b078539abfa8552b495c5c65b5d3a469a66ef751d668bbb7f7a2dd045501",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5a8843a455429938390d3f0c.json": "f18104f4e1289ed006f7bbd16acabb23d99babb2a2fb333b387d20cc10a752b7",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5a89d2d75542992e4fca83d2.json": "f897ea50f883c2080cc0686cc271b27f6e110224f78c68c8b232af3458d430e2",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5a8e2fe95542995085b373d0.json": "9ad04320febd21d07919ed24709fb4a1e303df3c33628bed5566d486fd2ccd78",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5abaf4535542996cc5e49f35.json": "dc8fba848fcd2aaf10c80473be782baa21b61109f9880e30f100041938810cf2",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5ac30a79554299657fa290e2.json": "48714ddd42032af26265d6e8de231f322a39865b84a327a31b2134b4ed0f470d",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5adbf84555429947ff17387c.json": "45a266d15bcdc2790950b0faf5433cfd2f4c3b505d4de9618d44e035d160c260",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5adc02445542994650320c4e.json": "0e0e94da868d777def6418305a288853c7b6eec78c6d3a2428b5a320f70dd315",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5ade42b55542992fa25da717.json": "247964f33c37bacbb457c35b3c8f50ef86a56a69dac3021701a2737e571d55fe",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5ade51b45542997c77adedf4.json": "6b62435fa63a5e46e0e00d4d122c433fd8d72ece5c20dd7ea8ef578420d03597",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5ade914b55429939a52fe8f9.json": "f9345cd8d83c6a2159cb97c9f026fa02da88fa10ef4c395b48cecdc56d258c41",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5adfb698554299603e418385.json": "7723431fa24dedb5bbd59aa2668937bb6bb9f98e89d75a955ea0110b6874c950",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5ae0f4645542997b2ef7d0aa.json": "0552c3d85f40e1ea298456b377941a963c951468ba64c5c2440be8c7ee345a0d",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/outputs/uncertainty/5ae114f155429901ffe4ad5c.json": "7a729d6193f6bc935a2fff6e77d4c7f0a1f835fda4f17002c169fb6efcb2575a",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/study_policy.json": "6cb7d39af5b4d24caffc1a92c6b7a4bf73bcb4a2f2458adb9a0a76d40be3cd02",
+    "output/aws-experiment/2026-09-11-main/results/batch04/run/test_ids.json": "20057d191b8861832442a147979da70e3611b2ace7a6edd43ede7f774121443d",
+    "output/aws-experiment/2026-09-11-main/retrieved-20260912T084858Z/batch05-20260912T051029Z.tar.gz": "4a17c27df2095a4ccb418975cc138704175bbf05f9b9fed76b513fbb91be88fd",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/data/processed/failed_ids.json": "c59e3d94dede69258224d551f85a0212ae87c29cb17d7a416906b01d7a1832ac",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/data/processed/pool.json": "1be4b586a0d3dd8865311e54634548f01993e3f38c824f2628194aa81b892c08",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/repairs/manifest.json": "4e194e75f1b27c35289aa626cb41c756bda706e928ef28b504a65a4064ce65a9",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/repairs/results.jsonl": "ce826241a7c568627c62a3934ee8c6d2579eb0963a2c24b85985828f40482198",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a7322a25542991f9a20c634.json": "a96dd3c7b08890c36c51b2d86427ac1a929a8e59ad2d4d4642ca85eb52fa9098",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a73250a5542991f9a20c643.json": "fc6c25406f24f07ac666ce829b16cceb50a2c07c2c6690ca34ed5e413d5e0120",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a733d5d5542991f29ee2d71.json": "0ae4fb0f847bb23430e581fdd9263b3bf0c50c04d91d6057e5c76a1ded872d82",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a74b4e555429929fddd84c2.json": "360fb0113d97f701ac1545b1d494fb368a5e9e41150d03e42d11c6433fbc9f1b",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a7666095542992d0ec060db.json": "b7494a0d48f3b7b4e2e3adab761424b18be81183dcf12880efd02195866ff847",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a76f22055429972597f13fa.json": "8a1d257dbc8c61766d6db9e4a8104a6aeaf021a3730713b13a43a42b1844f4f7",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a77897f55429949eeb29edc.json": "0f65c78784ee00f1eb178fdfa9ebcc7afda7b44375e326527469a29c97efc5f6",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a7b542455429927d897bf92.json": "ed368484ba018f52aa310332b68b9fdea1d9d00b7bf1f43e150a7c6ae73ec235",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a7bc1bf55429927d897c033.json": "1e427aa1499bbf8f4ca90f30a5f8cc429dc11b6c2e2c4c2824eca5c6fa77e043",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a806cdf5542996402f6a508.json": "f940835c08b35e940eb23b2660ccfebe3454357707b039370bf845e22397c5e6",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a8205b755429926c1cdadee.json": "8fca42c13c3da81d275df7e41b1ddc2e398ce593298af614d57632522d95d9c3",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a832fdd55429954d2e2ec4f.json": "9d55ef5a6badc63a446bf5304696291a6a3a71be20a8d6dc5d0b4df8db507811",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a84ac585542991dd0999d72.json": "05a17eba596ba987ff15e478a5e7b5833a58e629b6fd642ef7b00a6ba0d5c4b5",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a866fed554299211dda2b2e.json": "675a62713ba4dfb37ea67819c8714fbcc8aad132353c5663860fd5c834e62d03",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a87144155429960ec39b72b.json": "4f74ebed7a73e69a8da1bb7fc40291d9cf8c3ee596f3a31f85251bc855076c26",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a8777395542996e4f3087f3.json": "68fc9338a0e3f0b3468995115718a1ab59516728ae9d7132ab6be9e8838f83ad",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a88b513554299206df2b338.json": "9ed55cfc2ac89736f15ec23f47b8fa9c2534c6221b02354dc09347a04a45b3ea",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a88d7fc5542993b751ca879.json": "56292eca9137cb2929f8d921b88ca4dc8e91579bc43f1df5679acf01d183c211",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a89ddf25542992e4fca83ff.json": "10936f7cb6c0fd4ab0864950fa37df6e1837f186c9587a2845af6040d8b92af7",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a89fa2655429970aeb701d2.json": "6b3ce92e665c274c2462aeb0787b3da3579ca2ad2633cd432fabdb1c1b82753c",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a8a5a1955429930ff3c0da7.json": "6a4015cdee9b9a53e84dbeb65f09881547198ab110880fe17ca67c925a891280",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a8ad6db55429950cd6afba7.json": "4592b239fdd0d48b1bbc1d87d1a62dfa86c3ce037f6f2e43540951a7d1b062b4",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a8ba3ff55429971feec4744.json": "1fed1e492ecadda9ec0221462dfefff6cd03635dfcc167280dc12c7db7eea2a4",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a8f05b1554299458435d517.json": "9904795c31f4d33daa4d24456387460b0bfb427ad7f5b4d71c5f025a8f35e1a8",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5a8f69b55542997ba9cb324f.json": "c909ec36e74d054b8f7749cf65917acff5e2c2b72a0c1c9e36009f5bdb67feb6",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ab1d6545542997061209588.json": "67249a0af559b85f60cad43cbc77123ae82217fdc07a5c725177ce8bd54c33dd",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ab259b25542993be8fa98de.json": "4ea3f070c0861b8ab5b4209f01bcf59e29c84011dcaae61d946147a1309ff9d2",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ab521575542996a3a96a02e.json": "3bffc4f119ff6bc74f0f98ec1e326cf84d706bc7b7bd5d97e96412e9ed030a0b",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ab5cedf554299488d4d9a34.json": "180e6b5dcc16fcba9d803e51ceb0924569fc559e713d946fd4492b1bda0c2913",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ab626d555429953192ad279.json": "bee9254c27db9ddfd47dd52fb427b99948b1eaf60c637969a2d7aad727eaae8c",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ab67cf455429954757d3302.json": "7f2e6f02dff552e632bb5fa7cca6f6e85ce9392a0dc0f316a498e66f392dbb6e",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ab6be2f55429954757d335c.json": "f1aa07b0ad649e89f9ed8fc6498d694e0cc18b55121af6fb1b68330f3ac035b6",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5aba0c2655429955dce3edb7.json": "fe66afbc5940951ef726ee8b16b5049687521ecde94b0e01c36b463218ef3e0e",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5abc19705542993a06baf86e.json": "eccae9a021f478a37d63432b200e7a47bec53ae5018ba3eb54b6308b7a08ff27",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5abd81ff5542993062266cb3.json": "49649812f6218e4185f55fc49cff2b22f87289b1b84b5e67d8de5d435f9b346c",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5abefbc15542990832d3a117.json": "e2a50b7b59ba4528802b0837623e3fd417921c3f3807adb2bac0e589d510a194",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ac160bb5542994d76dccdfb.json": "ef860eabc21643937ae59779611c981b13847c5807acb998904f97c9a470818e",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ac272f95542992f1f2b38d3.json": "5f67e8cbdf7664496713c61553e465c8727a62c7b58abc114ceba2c87bbfbf71",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ac2a277554299657fa28ff3.json": "61d29624ec41eab8179b9f0fc6f58781cc92c5c31455ced62b0b553628b1c6d1",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5adcfebe5542992c1e3a24f3.json": "a7a98deb19c4bd91ef2ca0c3ab8e4c01072b1aa507699884754fc10b17594401",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5add39ca5542992ae4cec4fb.json": "bdcbda1909821dacb888aab7aee1316102e2a219d802abbec7a99d0a0d274b75",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5adda7275542995b365fab57.json": "b316772d3e459947c151b6ebaff52aee36094ef95f1f782f553bee96031827f2",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ae038e955429942ec259c4d.json": "9d2c2ef5945d2aa92e35947c2839e2f03036e857daa40cbbd2dea2da82aace1b",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ae199305542997b2ef7d20e.json": "1e5a57218aef8f81689b8ae92662eb8bb5518ef7d24133f6b7499a2bdd4f0cc2",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ae203d6554299234fd04394.json": "9ddaf1cbedb2a1b1dd1066ec34c2597e915002c4c2b2b2728896e8c6bbdafabc",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ae234005542994d89d5b392.json": "4698bb968e8e6f3237311d87338314a4b0ab168c63b99c162eecfd42c8e796d6",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ae3599b5542992e3233c39d.json": "31b9c6e4952831a94034f09a7c8947df6b65ca458b62302bc0a148c5978c165c",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ae383e15542992f92d822fb.json": "2addab4204f8e1d5234cbe745db4149370483390ce103127ef85b3ba7c744448",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ae518ae5542993aec5ec13c.json": "59f95979ee7ec6d223212e143e98aa13fe8b8faacce8191b7aa2908bf67e3ffe",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/trajectories/5ae72b745542991e8301cb7f.json": "c83decbb1b1119f420ec3bbf53ec022c414f7a7888babbf010bf6a024bf461d7",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a7322a25542991f9a20c634.json": "1152e7e19f0c889697e8e2a4e024912af762dbbf78b80febb482861bc3938cc4",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a73250a5542991f9a20c643.json": "ca8bbff370dde14a7870a3ccd4f7168d68e4ac759829fd2b9d58c2173b178484",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a733d5d5542991f29ee2d71.json": "0bfa3949e3c5b59b4ede9b90e2c0b977b93ec13c366434e966f01706e570e0a3",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a74b4e555429929fddd84c2.json": "dd22dfb0a647bec6b42f9cb27c09cb7b01bfc2a8b209b466fe7cc066df79257c",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a7666095542992d0ec060db.json": "ba5fd392db87843dcdf6edc139ae1c98df33ef9bc17c652c450f21efc8eacbb1",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a77897f55429949eeb29edc.json": "f24ae4327d42a991d32e80c1cc220ae495fa9ed30caee18c1fceb9bd85c21193",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a806cdf5542996402f6a508.json": "209d0d5ea97e12692ef864e0cac16eced4f2dfca67f7ff02b2ed779820c3cb8d",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a84ac585542991dd0999d72.json": "04b78915d415228ebe2957d951f45b5335fcecf546ebe11874b889474a47d837",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a88b513554299206df2b338.json": "00a30a60044cc849cf3cf9ed9dc28f405404ec17abc33bb1596086e0cceb53d7",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a89ddf25542992e4fca83ff.json": "6079a4c9d37de018d9a8b3370d14c858e207a58e66ea5f1d0eacb5a3ee1e3976",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a89fa2655429970aeb701d2.json": "5bc398b7d469eaa68740f82c3fd54d08fd895254218899124e46fce66225e67b",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a8a5a1955429930ff3c0da7.json": "31d7886e93b404c30566b5a9261d9cbec049a8c1e313237b282783dc07861876",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5a8f05b1554299458435d517.json": "2ebd41efafaa5e61bc247f920a6c26acd34f38c44f09de6f8643bbd0c35c66c8",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5ab1d6545542997061209588.json": "16cd5a83d709098debfda68a606c9538c774838c4afa383d46f6b3ce2e5536f1",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5ab521575542996a3a96a02e.json": "21917df55de6e678ac48982898e8e46db7f0e4a26d8053d4b3d247c42e4698d5",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5ab6be2f55429954757d335c.json": "781231393f0dcbf6fde8883902576c7603d06d6200c969dc21df1721c36b6cc6",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5aba0c2655429955dce3edb7.json": "4e751de17d33ef6aaf52462c9badb88a99df6ae4a991331daf0c0f0d0edbc036",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5abc19705542993a06baf86e.json": "67806baedda670e048d1e4a4f8b924b612f5275d335065e92936457589118a2c",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5abd81ff5542993062266cb3.json": "ed80d2cc3d1852244d2a1ea2f9388210a8fc1a62b2eae9f9c37cce63e2907e02",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5ac160bb5542994d76dccdfb.json": "98b4e11435cd80a71983f6611562e5b3f337d0fe17c9e4b2169eae1632355c11",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5ac272f95542992f1f2b38d3.json": "609305a4b00792fcb01d7e200d32713a47651e8115127a80943750b9068c6112",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5adcfebe5542992c1e3a24f3.json": "259df457a882f85466388f0f8f7f00a04d049a17f80351d1228c7a99744375c4",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5ae234005542994d89d5b392.json": "28262f26aa9ba5c8e3de7ee20272d3205b744416460710b2927a08dda35912eb",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5ae3599b5542992e3233c39d.json": "a1d1208d03586ae110d8e800b016c113c6d7edc6ab2e97a70858a8fc2d01ab75",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5ae383e15542992f92d822fb.json": "0211af24c721c34f2d171e965de2ab9ec56ea71680d131d6496f0c32589d513e",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/outputs/uncertainty/5ae72b745542991e8301cb7f.json": "58e1ff500f8eb159027f7ca4620c18c0f2c481e84f9e26ce1ceb2840dc43c25d",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/study_policy.json": "1df95fc020766769ae6df6c476f3f976e7864f9870adabdc89cda33e82cce87d",
+    "output/aws-experiment/2026-09-11-main/results/batch05/run/test_ids.json": "9638c29279140b9bfd432f977a8e06c459f8686aff46daa3c700e61390eddae7"
+  },
+  "analysis_code_sha256": {
+    "scripts/analyze_study_diagnostics.py": "a0e51453d08a2ab4dfc2061bf7fca9e6e47e507c61863a4068ec431290258820",
+    "src/analysis/review_diagnostics.py": "6faea69a64982d478942f26d0872e957a1d11e25fbfa5a5768066ad5aaaa5abc",
+    "scripts/analyze_study_batches.py": "7cbd388758c5825b20ba26b87610a4a0140767cb37b1707fd1aa1f54a46291e6",
+    "scripts/run_paired_analysis.py": "72d22f48e427df36bc55759c1185e2697ed365aebdcd81c9837af60ec912bfc8",
+    "src/eval/metrics.py": "7eb40ce32d61968919c526816eb422b96a54911fd69a62d8d4b4e99ab3fe4f72",
+    "src/env/hotpot_env.py": "70dd3ccb0154363071662da5e76d54e113d1b00309d2375ae4fc8c80de9554b1",
+    "src/localize/rules.py": "2e7104f9c8fc8a9165f90d5776ecea469fe81f46fafb307f9655d5c3c87ea1f1",
+    "src/repair/controlled.py": "bedfef0be20228851cd4af1fef23ac925b1fe9a8791ce926ea7d92a67acf010f"
+  },
+  "review_analysis_plan": {
+    "path": "docs/reviewer_diagnostics_plan_2026-09-12.md",
+    "sha256": "bdbbf68a0c8811bb5188abee4c2a071aefe90c909b9c9196f7026adf93550421"
+  },
+  "export_sha256": {
+    "diagnostics.trials.csv": "875df4adde8a4dd58688f0a528dab16598d639746af63d8ebab803b9d651800d",
+    "diagnostics.initial.csv": "64dca7e1c617cc836b30d368e028972f82eb77c6d741f80f96bfaa47f9724b15"
+  }
+}

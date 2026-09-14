@@ -1,0 +1,31 @@
+c39a352021ef1111af3ed70c41373c8585e303d3ec3a4fa005cc6cafb7157126  /workspace/aws119-session/diagnosis-20260913-v1/pilot-batch01-20260913T234450Z.tar.gz
+IDX BOOT ID                          FIRST ENTRY                 LAST ENTRY
+-13 211f2f88cc2d4b32adf6e66dc6e5223d Fri 2026-08-28 08:14:50 UTC Fri 2026-08-28 08:15:47 UTC
+-12 289bc77e8d8246cf9a49dbcedb22891a Thu 2026-09-10 17:26:30 UTC Thu 2026-09-10 18:21:07 UTC
+-11 ccddd9a093814f98b0a31ac713a024c7 Thu 2026-09-10 22:19:14 UTC Thu 2026-09-10 22:35:10 UTC
+-10 d74f72f3ddad4486b42e5827a9bb33cb Fri 2026-09-11 03:20:57 UTC Fri 2026-09-11 03:21:10 UTC
+ -9 3160ee4b8798460293828a7b718360b2 Fri 2026-09-11 03:26:43 UTC Fri 2026-09-11 03:28:18 UTC
+ -8 5a7704da7a0846e49f93179c0936881a Fri 2026-09-11 13:14:38 UTC Fri 2026-09-11 13:14:47 UTC
+ -7 64afd8ff0af14443b06b5828a97e782a Fri 2026-09-11 13:20:29 UTC Fri 2026-09-11 13:41:11 UTC
+ -6 d4c149f2c71f4de2a38d73c52650ccd3 Fri 2026-09-11 15:10:22 UTC Fri 2026-09-11 15:20:19 UTC
+ -5 6b65921aeebb4129a1615d347a32590a Sat 2026-09-12 04:07:06 UTC Sat 2026-09-12 05:28:11 UTC
+ -4 aa7d0e13c426488c9b27c6171dc1973e Sat 2026-09-12 08:49:09 UTC Sat 2026-09-12 08:54:16 UTC
+ -3 75b63c2dea934a458281b0a5640fe1dd Sun 2026-09-13 18:09:42 UTC Sun 2026-09-13 18:18:47 UTC
+ -2 ef1e2f6da8c34434a75dc44b0f621262 Sun 2026-09-13 23:38:25 UTC Sun 2026-09-13 23:55:49 UTC
+ -1 85a8dbb02554448f90729c6a33792c70 Mon 2026-09-14 03:07:43 UTC Mon 2026-09-14 03:16:25 UTC
+  0 e42d2eec4c44465c97dc7e52ffb83086 Mon 2026-09-14 05:53:55 UTC Mon 2026-09-14 05:58:30 UTC
+Sep 13 23:55:49 ip-172-31-8-51 systemd[1]: Stopped systemd-remount-fs.service - Remount Root and Kernel File Systems.
+Sep 13 23:55:49 ip-172-31-8-51 systemd[1]: systemd-fsck-root.service: Deactivated successfully.
+Sep 13 23:55:49 ip-172-31-8-51 systemd[1]: Stopped systemd-fsck-root.service - File System Check on Root Device.
+Sep 13 23:55:49 ip-172-31-8-51 systemd[1]: lvm2-monitor.service: Deactivated successfully.
+Sep 13 23:55:49 ip-172-31-8-51 systemd[1]: Stopped lvm2-monitor.service - Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling.
+Sep 13 23:55:49 ip-172-31-8-51 systemd[1]: Reached target shutdown.target - System Shutdown.
+Sep 13 23:55:49 ip-172-31-8-51 systemd[1]: Reached target final.target - Late Shutdown Services.
+Sep 13 23:55:49 ip-172-31-8-51 systemd[1]: systemd-poweroff.service: Deactivated successfully.
+Sep 13 23:55:49 ip-172-31-8-51 systemd[1]: Finished systemd-poweroff.service - System Power Off.
+Sep 13 23:55:49 ip-172-31-8-51 systemd[1]: Reached target poweroff.target - System Power Off.
+Sep 13 23:55:49 ip-172-31-8-51 systemd[1]: Shutting down.
+Sep 13 23:55:49 ip-172-31-8-51 systemd-shutdown[1]: Syncing filesystems and block devices.
+Sep 13 23:55:49 ip-172-31-8-51 systemd-shutdown[1]: Sending SIGTERM to remaining processes...
+Sep 13 23:55:49 ip-172-31-8-51 systemd-journald[213]: Received SIGTERM from PID 1 (systemd-shutdow).
+Sep 13 23:55:49 ip-172-31-8-51 systemd-journald[213]: Journal stopped

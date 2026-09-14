@@ -1,0 +1,83 @@
+{
+  "note": "Derived correction; original pilot outputs and archives are unchanged.",
+  "reference": "https://github.com/hotpotqa/hotpot/blob/master/hotpot_evaluate_v1.py",
+  "changes": [
+    {
+      "kind": "initial",
+      "id": "5ac311925542995ef918c0de",
+      "qid": "5ac311925542995ef918c0de",
+      "old_f1": 0.13333333333333333,
+      "official_f1": 0.0,
+      "success_changed": false
+    },
+    {
+      "kind": "repair",
+      "id": "68804d99fcec81272a591eb565a0e479e30b0b9a7f99dbea640c23039126f8f3",
+      "qid": "5ac311925542995ef918c0de",
+      "old_f1": 0.08333333333333333,
+      "official_f1": 0.0,
+      "success_changed": false
+    },
+    {
+      "kind": "repair",
+      "id": "10ae403322f2203eb0ad8c50d76c9bb3171a65d8aae0b370f8b36bfd34a6cf12",
+      "qid": "5ac311925542995ef918c0de",
+      "old_f1": 0.125,
+      "official_f1": 0.0,
+      "success_changed": false
+    },
+    {
+      "kind": "repair",
+      "id": "45f85554d333bec2d997e0f890ed3e0f5abfbdebba06c24f2d22f11fb4627ec5",
+      "qid": "5ac311925542995ef918c0de",
+      "old_f1": 0.18181818181818182,
+      "official_f1": 0.0,
+      "success_changed": false
+    },
+    {
+      "kind": "repair",
+      "id": "c8e38748482b3276920d68c50c267224b999f7c4fadbdab81c703c4bec6d6048",
+      "qid": "5ac311925542995ef918c0de",
+      "old_f1": 0.125,
+      "official_f1": 0.0,
+      "success_changed": false
+    },
+    {
+      "kind": "repair",
+      "id": "7de51c0b1432e86ef0d58cf933023085e110c40e20d5b9160224b685845ccfbf",
+      "qid": "5ac311925542995ef918c0de",
+      "old_f1": 0.125,
+      "official_f1": 0.0,
+      "success_changed": false
+    }
+  ],
+  "binary_success_changes": 0,
+  "corrected_initial_mean_f1": 0.4809523809523809,
+  "corrected_strategy_metrics": {
+    "fixed_early": {
+      "rows": 12,
+      "successes": 0,
+      "em": 0.0,
+      "f1": 0.0
+    },
+    "full_restart": {
+      "rows": 12,
+      "successes": 1,
+      "em": 0.08333333333333333,
+      "f1": 0.08333333333333333
+    },
+    "random_step__bt2": {
+      "rows": 12,
+      "successes": 1,
+      "em": 0.08333333333333333,
+      "f1": 0.08333333333333333
+    },
+    "unc__perplexity__argmax__bt2": {
+      "rows": 12,
+      "successes": 1,
+      "em": 0.08333333333333333,
+      "f1": 0.08333333333333333
+    }
+  },
+  "scorer_source_sha256": "70dd3ccb0154363071662da5e76d54e113d1b00309d2375ae4fc8c80de9554b1"
+}

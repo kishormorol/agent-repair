@@ -1,0 +1,22 @@
+{
+  "observed_utc": "2026-09-14T06:04:51.918540+00:00",
+  "main_initial_questions_executed": 0,
+  "pilot_initial_questions": 5,
+  "pilot_policy_seed_allowance_rows": 135,
+  "pilot_unique_repairs": 99,
+  "pilot_diagnoses": 5,
+  "raw_trajectories_checked": 104,
+  "mismatches_under_old_audit": 45,
+  "mismatches_under_search_lookup_accounting": 0,
+  "root_cause": "The auditor counted finish is_tool_call flags as retrieval calls, but the runner records only search/lookup retrieval calls. Model request counts were consistent.",
+  "reproduced_with_frozen_source": true,
+  "regression_test": "tests/test_followup_analysis.py::test_followup_audit_counts_finish_as_request_but_not_retrieval",
+  "regression_failed_before_fix": true,
+  "suite_after_fix": {
+    "passed": 256,
+    "warnings": 3,
+    "seconds": 40.17
+  },
+  "preserved_archive": "archive-verification-20260914.json",
+  "amendment": "Two audit count expressions now use search/lookup actions; inference code, responses, model, prompts, question IDs and comparison design are unchanged."
+}
