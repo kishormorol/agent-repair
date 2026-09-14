@@ -41,3 +41,10 @@ Thumbs.db
 
 # Claude Code
 .claude/
+
+# Run outputs. The AWS studies write ~2 GB per run: model archives, trial
+# exports and per-batch copies of the HotpotQA dev set. The provenance the
+# papers cite — frozen protocols, data audits, cost estimates, per-batch
+# audits, pooled analyses — is force-added and tracked; the bulk is not.
+output/
+tmp/
