@@ -1,0 +1,12 @@
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Condition & Output tokens & Prompt tokens & Requests & Tool calls & F / B / S \\
+\midrule
+Full restart & 271.6 & 3153.3 & 5.26 & 4.54 & 162 / 99 / 78 \\
+Random + backtrack 2 & 268.4 & 4179.6 & 5.15 & 4.40 & 171 / 97 / 71 \\
+Fixed early (descriptive) & 258.1 & 3720.6 & 4.82 & 4.07 & 193 / 75 / 71 \\
+Uncertainty + backtrack 2 & 269.9 & 4083.3 & 5.11 & 4.35 & 171 / 103 / 65 \\
+Position-matched random & 264.5 & 3885.8 & 5.01 & 4.26 & 178 / 90 / 71 \\
+Uncertainty, no backtrack & 255.6 & 5077.3 & 4.77 & 3.99 & 186 / 91 / 62 \\
+\bottomrule
+\end{tabular}

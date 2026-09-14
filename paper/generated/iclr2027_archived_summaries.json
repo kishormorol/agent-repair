@@ -1,0 +1,178 @@
+{
+  "status": "rounded_archived_display_values_not_raw_trials",
+  "datasets": {
+    "HotpotQA": {
+      "random_step": {
+        "fixed_%": 8.1,
+        "avg_tokens": 182.0,
+        "avg_tool_calls": 2.8
+      },
+      "full_restart": {
+        "fixed_%": 14.2,
+        "avg_tokens": 274.0,
+        "avg_tool_calls": 4.74
+      },
+      "oracle_targeted__bt2": {
+        "fixed_%": 12.4,
+        "avg_tokens": 272.0,
+        "avg_tool_calls": 4.51
+      },
+      "oracle_targeted__bt2__informed": {
+        "fixed_%": 11.8,
+        "avg_tokens": 276.0,
+        "avg_tool_calls": 4.6
+      },
+      "oracle_targeted__informed": {
+        "fixed_%": 11.4,
+        "avg_tokens": 244.0,
+        "avg_tool_calls": 3.85
+      },
+      "unc__verbalized_confidence__topk__bt2": {
+        "fixed_%": 12.1,
+        "avg_tokens": 262.0,
+        "avg_tool_calls": 4.36
+      },
+      "unc__verbalized_confidence__topk__bt2__informed": {
+        "fixed_%": 12.7,
+        "avg_tokens": 265.0,
+        "avg_tool_calls": 4.4
+      },
+      "unc__verbalized_confidence__topk__informed": {
+        "fixed_%": 10.3,
+        "avg_tokens": 236.0,
+        "avg_tool_calls": 3.93
+      },
+      "uncertainty_ensemble_any": {
+        "fixed_%": 36.0,
+        "avg_tokens": 12868.0,
+        "avg_tool_calls": 206.16
+      },
+      "oracle_targeted": {
+        "fixed_%": 10.9,
+        "avg_tokens": 236.0,
+        "avg_tool_calls": 3.7
+      }
+    },
+    "MuSiQue": {
+      "random_step": {
+        "fixed_%": 3.8,
+        "avg_tokens": 216.0,
+        "avg_tool_calls": 3.9
+      },
+      "full_restart": {
+        "fixed_%": 5.9,
+        "avg_tokens": 348.0,
+        "avg_tool_calls": 6.62
+      },
+      "oracle_targeted__bt2": {
+        "fixed_%": 5.6,
+        "avg_tokens": 347.0,
+        "avg_tool_calls": 6.39
+      },
+      "oracle_targeted__bt2__informed": {
+        "fixed_%": 5.6,
+        "avg_tokens": 347.0,
+        "avg_tool_calls": 6.43
+      },
+      "oracle_targeted__informed": {
+        "fixed_%": 4.9,
+        "avg_tokens": 321.0,
+        "avg_tool_calls": 5.87
+      },
+      "unc__verbalized_confidence__topk__bt2": {
+        "fixed_%": 3.8,
+        "avg_tokens": 326.0,
+        "avg_tool_calls": 5.97
+      },
+      "unc__verbalized_confidence__topk__bt2__informed": {
+        "fixed_%": 4.6,
+        "avg_tokens": 323.0,
+        "avg_tool_calls": 6.02
+      },
+      "unc__verbalized_confidence__topk__informed": {
+        "fixed_%": 3.9,
+        "avg_tokens": 285.0,
+        "avg_tool_calls": 5.28
+      },
+      "uncertainty_ensemble_any": {
+        "fixed_%": 16.2,
+        "avg_tokens": 15317.0,
+        "avg_tool_calls": 281.18
+      },
+      "oracle_targeted": {
+        "fixed_%": 4.9,
+        "avg_tokens": 320.0,
+        "avg_tool_calls": 5.82
+      }
+    },
+    "2WikiMHQA": {
+      "random_step": {
+        "fixed_%": 19.0,
+        "avg_tokens": 170.0,
+        "avg_tool_calls": 2.36
+      },
+      "full_restart": {
+        "fixed_%": 21.2,
+        "avg_tokens": 246.0,
+        "avg_tool_calls": 4.03
+      },
+      "oracle_targeted__bt2": {
+        "fixed_%": 22.0,
+        "avg_tokens": 234.0,
+        "avg_tool_calls": 3.68
+      },
+      "oracle_targeted__bt2__informed": {
+        "fixed_%": 21.0,
+        "avg_tokens": 230.0,
+        "avg_tool_calls": 3.63
+      },
+      "oracle_targeted__informed": {
+        "fixed_%": 12.2,
+        "avg_tokens": 177.0,
+        "avg_tool_calls": 2.37
+      },
+      "unc__verbalized_confidence__topk__bt2": {
+        "fixed_%": 24.6,
+        "avg_tokens": 239.0,
+        "avg_tool_calls": 3.82
+      },
+      "unc__verbalized_confidence__topk__bt2__informed": {
+        "fixed_%": 23.6,
+        "avg_tokens": 236.0,
+        "avg_tool_calls": 3.82
+      },
+      "unc__verbalized_confidence__topk__informed": {
+        "fixed_%": 24.3,
+        "avg_tokens": 213.0,
+        "avg_tool_calls": 3.36
+      },
+      "uncertainty_ensemble_any": {
+        "fixed_%": 46.0,
+        "avg_tokens": 11426.0,
+        "avg_tool_calls": 166.56
+      },
+      "oracle_targeted": {
+        "fixed_%": 10.0,
+        "avg_tokens": 171.0,
+        "avg_tool_calls": 2.26
+      }
+    }
+  },
+  "sources": {
+    "results/hotpotqa/run_colab_hotpotqa.ipynb": {
+      "cell_index_zero_based": 34,
+      "sha256": "1975391dbff9bd14bec6ee732150adf93536664725e2aec06be1e637582749d7",
+      "scope": "Visible rounded rows only; not raw trials or a full strategy grid."
+    },
+    "results/musique/run_colab_musique.ipynb": {
+      "cell_index_zero_based": 35,
+      "sha256": "4b6333b9df83dc0e078c674ea30626b7ed9748f9185edd48e7b4fe31923a2cfe",
+      "scope": "Visible rounded rows only; not raw trials or a full strategy grid."
+    },
+    "results/2wikimultihopqa/run_colab_2wikimultihopqa.ipynb": {
+      "cell_index_zero_based": 34,
+      "sha256": "20dd928b854ed5e56c3666f88883bf53f46ebec9298fcf83f2886ee7c549c505",
+      "scope": "Visible rounded rows only; not raw trials or a full strategy grid."
+    }
+  }
+}

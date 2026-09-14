@@ -1,0 +1,67 @@
+{
+  "status": "audited_hotpotqa_main_with_archived_diagnostics_not_submission_ready",
+  "controlled_main_study": {
+    "study_sha256": "e4ea08c8291b0f797d05b15110d762634ec48d57ae53e05aaf4373c805986308",
+    "code_sha256": "b418bca20be1674d65dc76dc14c42f2b6304eee6856d34a6f083c3d4e6ef4eb9",
+    "sources": {
+      "output/aws-experiment/2026-09-11-main/study-freeze.json": "771d9235f2389eb1258b05fd64e376ebb6e51f2732ca85f6c0e630ca86f9dc77",
+      "output/aws-experiment/2026-09-11-main/main-summary.json": "c648d4e517bd8a8ed98348cc7b2e17f14bb2012d71f81648d0b29972c6bf178b",
+      "output/aws-experiment/2026-09-11-main/pooled-analysis-local.json": "29d5aea51b28a02bd6f52ead0b3aa019cf16b04823197775a16065bfac0d8b37",
+      "output/aws-experiment/2026-09-11-main/analysis-reproduction-check.json": "84149a225655e389bc1c75b0a88257af1fb762335b75d6b688e0cf3eb4f4396c",
+      "output/aws-experiment/2026-09-11-main/position-profile.json": "c846ddcd111b5f737a91bf921b521d61de709b7d84a6182eca6389eeed5cbff7",
+      "output/aws-experiment/2026-09-11-main/historical-reconstruction.json": "ddfd2ef01570823d11f6e4390e1aa92850647357024d6517ea550992bb1035b2",
+      "output/aws-experiment/2026-09-11-main/archive-verification.json": "d318fe6f4a168e5b011b636a4ae735a8e49d82c1c8d816b65e28775cb84ab2f4",
+      "output/aws-experiment/2026-09-11-main/cost-estimate.json": "3b97f39392e2cb15a66c43639957c411343db2fd3c28139e6ea274e037d2c44d",
+      "output/aws-experiment/2026-09-11-main/final-state.json": "48a2ca361ea2d4cc780b5da48d9772a18527552fbf0ea2745e7ba4517feee537",
+      "output/aws-experiment/2026-09-11-main/audits/batch01.json": "9419b2541628e28d7c8c506f9822339178bdf6f5718fdd3973806170436e554a",
+      "output/aws-experiment/2026-09-11-main/audits/batch02.json": "22bd76df65d58f4f79e6ffd4d593d78a7475d56644325758a5cacfe249e23149",
+      "output/aws-experiment/2026-09-11-main/audits/batch03.json": "e959d4eda2ffec1667e359c9272078a262bada1cce5939cc993dad9a961de4c1",
+      "output/aws-experiment/2026-09-11-main/audits/batch04.json": "ae006c1aae283b8e17772eda42a24b0c3685ff035732222f6b3ced2c64017677",
+      "output/aws-experiment/2026-09-11-main/audits/batch05.json": "91c31afbf4c3a36c10e0f373b5c35a69b64bc01451ef727be8e1b585adc1e82c"
+    },
+    "analysis": "Reproduced paired question analysis; seed means, 10000 bootstrap resamples, four Holm contrasts.",
+    "historical_exclusions": "Reconstructed documented history; original full pool JSON not compared.",
+    "cost": "Estimated infrastructure usage before credits, tax and transfer; not a policy-efficiency comparison."
+  },
+  "review_stage_diagnostics": {
+    "path": "output/reviewer-2026-09-12/diagnostics.json",
+    "sha256": "53df87fda5c7b6975183a64f18846df495a99a42fab4ce0d7d71a479f544d94a",
+    "status": "Exploratory analyses added after the frozen primary results were known.",
+    "primary_contrasts_unchanged": true
+  },
+  "archived_commit": "756f80d",
+  "datasets_in_draft": [
+    "HotpotQA",
+    "MuSiQue",
+    "2WikiMHQA"
+  ],
+  "excluded_dataset": {
+    "FEVER": "Claim text was substituted for evidence in the loader."
+  },
+  "sources": {
+    "results/cross_dataset/cross_dataset_traj_stats.csv": "e17f0977e320e363faf6dfba5d8c553df30bff27d413a2e9e640037136979c06",
+    "results/cross_dataset/cross_dataset_localization.csv": "acf77a2e1bd6bf3f4c814cb934483a4761bcea4d33612885cac2085ee85825cd"
+  },
+  "notebook_sources": {
+    "results/hotpotqa/run_colab_hotpotqa.ipynb": {
+      "cell_index_zero_based": 34,
+      "sha256": "1975391dbff9bd14bec6ee732150adf93536664725e2aec06be1e637582749d7",
+      "scope": "Visible rounded rows only; not raw trials or a full strategy grid."
+    },
+    "results/musique/run_colab_musique.ipynb": {
+      "cell_index_zero_based": 35,
+      "sha256": "4b6333b9df83dc0e078c674ea30626b7ed9748f9185edd48e7b4fe31923a2cfe",
+      "scope": "Visible rounded rows only; not raw trials or a full strategy grid."
+    },
+    "results/2wikimultihopqa/run_colab_2wikimultihopqa.ipynb": {
+      "cell_index_zero_based": 34,
+      "sha256": "20dd928b854ed5e56c3666f88883bf53f46ebec9298fcf83f2886ee7c549c505",
+      "scope": "Visible rounded rows only; not raw trials or a full strategy grid."
+    }
+  },
+  "notebook_validation": "Judge, backtrack, and restart means agree with CSVs to displayed precision.",
+  "costs": "Rounded recovery-only token/tool means; acquisition, prompt, and selector costs absent.",
+  "uncertainty": "Historical intervals cannot be regenerated from aggregates; audited main-study intervals are separate.",
+  "best_unc": "Retrospective maximum over all variants, including judge-informed hints.",
+  "budget": "Historical runs may exceed requested caps; CPU fixes do not repair old outcomes."
+}

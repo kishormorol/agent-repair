@@ -1,0 +1,36 @@
+\par\medskip\noindent\begin{minipage}{\linewidth}
+\paragraph{Case 1: Higher treatment seed mean.}
+\textit{In 1632, where was one of the most highly acclaimed English architects born?} Reference answer: East Knoyle. The original trace has 8 steps and a 439-token recovery allowance.
+\begin{center}\footnotesize
+\begin{tabular}{@{}p{.20\linewidth}rp{.16\linewidth}p{.44\linewidth}@{}}
+\toprule Condition & Origin & Gate; F1, seeds 0/1/2 & Answers, seeds 0/1/2 \\
+\midrule
+Restart & 0 & 0/0/0; 0.00/0.00/0.00 & \textit{no answer}; \textit{no answer}; \textit{no answer} \\
+Uncertainty + bt2 & 3 & 0/0/1; 0.00/0.00/0.67 & \textit{no answer}; \textit{no answer}; East Knoyle, Wiltshire, England \\
+\bottomrule\end{tabular}\end{center}
+Question ID: \texttt{5a7619765542992db9473728}.
+\end{minipage}\par
+\par\medskip\noindent\begin{minipage}{\linewidth}
+\paragraph{Case 2: Higher restart seed mean.}
+\textit{Was the Metropolitan Life Insurance Company Tower [Met Life Tower] or the 15 Hudson Yards building designed by the firm of Napoleon LeBrun \& Sons?} Reference answer: The Metropolitan Life Insurance Company Tower. The original trace has 8 steps and a 458-token recovery allowance.
+\begin{center}\footnotesize
+\begin{tabular}{@{}p{.20\linewidth}rp{.16\linewidth}p{.44\linewidth}@{}}
+\toprule Condition & Origin & Gate; F1, seeds 0/1/2 & Answers, seeds 0/1/2 \\
+\midrule
+Restart & 0 & 0/0/1; 0.31/0.32/0.62 & The Metropolitan Life Insurance Company Tower was designed by Napoleon LeBrun \& Sons, but there is no information to suggest that 15 Hudson Yards was designed by the same firm.; The Metropolitan Life Insurance Company Tower was designed by Napoleon LeBrun \& Sons, but there is no information to suggest that 15 Hudson Yards was designed by them.; The Metropolitan Life Insurance Company Tower was designed by Napoleon LeBrun \& Sons. \\
+Uncertainty + bt2 & 4 & 0/0/0; 0.31/0.00/0.15 & The Metropolitan Life Insurance Company Tower was designed by Napoleon LeBrun \& Sons, but there is no information to suggest that Napoleon LeBrun \& Sons designed the 15 Hudson Yards building.; \textit{no answer}; The Met Life Tower was designed by Napoleon LeBrun \& Sons, but the design firm for 15 Hudson Yards is not mentioned in the provided information. \\
+\bottomrule\end{tabular}\end{center}
+Question ID: \texttt{5a7322a25542991f9a20c634}.
+\end{minipage}\par
+\par\medskip\noindent\begin{minipage}{\linewidth}
+\paragraph{Case 3: Both policies unsuccessful.}
+\textit{Which movie is loosley based off the Brother Grimm's "Iron Henry"?} Reference answer: The Frog Prince. The original trace has 8 steps and a 382-token recovery allowance.
+\begin{center}\footnotesize
+\begin{tabular}{@{}p{.20\linewidth}rp{.16\linewidth}p{.44\linewidth}@{}}
+\toprule Condition & Origin & Gate; F1, seeds 0/1/2 & Answers, seeds 0/1/2 \\
+\midrule
+Restart & 0 & 0/0/0; 0.00/0.00/0.00 & \textit{no answer}; \textit{no answer}; \textit{no answer} \\
+Uncertainty + bt2 & 5 & 0/0/0; 0.00/0.00/0.00 & There is no; \textit{no answer}; \textit{no answer} \\
+\bottomrule\end{tabular}\end{center}
+Question ID: \texttt{5a733b835542991f9a20c6b2}.
+\end{minipage}\par

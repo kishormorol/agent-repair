@@ -1,0 +1,21 @@
+{
+  "study_sha256": "9dc15ffe49874be12a2b82b124e28e209daf7a3476337fb3dfe92cb6edfbe81b",
+  "initial_questions": 250,
+  "failed_questions": 118,
+  "unique_repairs": 2079,
+  "trial_rows": 3186,
+  "checks": "Protocol, five audits, local/remote JSON and all trial columns, complete policy/seed coverage and measured policy means",
+  "source_sha256": {
+    "pooled-analysis-local.json": "efa5d61302366361106abefe75f047374385c0cc23ee14c07738086ffff6b627",
+    "pooled-analysis-local.trials.csv": "7785bb5a7cedd18a5f5228bd7f8001448eed653ae5cfa2da8b0556aef1767e9f",
+    "analysis-reproduction-check.json": "84fbfdb3c56aca60b48297abe0a4aee8add616dcc69d15b5b662bdcb7a32ad13",
+    "prepared/main/protocol.json": "8a1f774c28a1b6e55431a0711b245c2c4845c16ea17e3ea6dfbf37298f9fa6da",
+    "retrieved/main/pooled-analysis.json": "35111811047e95232b92780d447e108d20f9d5eba8e8e8a3d9d6f3340bba9f47",
+    "retrieved/main/pooled-analysis.trials.csv": "7785bb5a7cedd18a5f5228bd7f8001448eed653ae5cfa2da8b0556aef1767e9f"
+  },
+  "asset_sha256": {
+    "iclr2027_diagnosis_contrasts.tex": "3a6be39da5e42c43d59f8543eecb77f108f91a7a3b377eabb721e436b3a1c1a6",
+    "iclr2027_diagnosis_costs.tex": "c50c23ab51ecb6643f35e865cc30cd7c68d10a1763cd325c3b28f267d29cd316",
+    "iclr2027_diagnosis_results.tex": "c8a170756fdbcfae5d98c597855513e49808be9bcf7d27b902d888d3d347ef98"
+  }
+}

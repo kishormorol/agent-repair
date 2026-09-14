@@ -1,126 +1,214 @@
-# Running Locally (H100) — Full HotpotQA dev (7,405 questions)
+# Running and Reproducing Agent Repair
 
-The local pipeline is **CLI scripts** (not notebooks), so it can run unattended for
-hours in `tmux`/`nohup`. Everything is **batched** (many rollouts on the GPU at
-once) and **resumable** (checkpointed after every item — just re-run to continue).
+Run commands from the repository root. Separate CPU analysis of archived
+results from GPU generation of new observations. Neither a successful build
+nor a passing CPU test suite independently reproduces the paper's results.
 
----
+The current cloud allocation is **$119 using AWS credits**. Use the reduced defaults in
+[run_iclr2027.ipynb](run_iclr2027.ipynb) and the
+[AWS setup guide](CLOUD_GPU_SETUP.md#current-allocation-119-on-aws).
+The direct CLI pilot YAML below still describes the earlier expanded
+diagnostic experiment; do not run it unchanged as the low-budget profile.
+An offline worksheet is available with
+`python scripts/estimate_budget.py --total-usd 119 --reserve-usd 20 --hourly-usd 8.944 --spent-usd 0`.
+This uses the September 8 London Linux p5.4xlarge base quote; recheck it at launch.
+It does not enforce a provider billing limit.
 
-## 1. Setup (once)
+## CPU Tests and Working Draft
 
-```bash
-git clone <your repo>            # or copy the folder over
-cd agent-repair
-
-python -m venv .venv && source .venv/bin/activate      # or conda
-pip install -r requirements.txt
-```
-
-> **Note on versions.** `requirements.txt` pins `torch==2.4.0` + `vllm==0.6.3.post1`
-> + `transformers==4.45.2`, which supports H100 (`sm_90`). If the machine has a
-> *newer* GPU (Blackwell / `sm_120`), that stack will NOT work — tell me and I'll
-> re-pin to a newer torch/vLLM.
-
-Download the data (auto-falls back to Hugging Face if the CMU host is down):
+Python 3.10 or newer is required by the source syntax. Use the CPU dependency
+list instead of installing the GPU serving stack on a laptop:
 
 ```bash
-python scripts/run_setup.py --config config/config_local.yaml
+python -m venv .venv-analysis
+source .venv-analysis/bin/activate
+python -m pip install -r requirements-analysis.txt
+python -m pytest -q tests
+python scripts/build_iclr_draft.py
 ```
 
----
+The builder uses archived QA aggregates and explicitly indexed saved
+notebook tables to regenerate files under `paper/generated/`, including a
+provenance manifest with input hashes and cell indices. It checks that
+notebook and CSV baseline rates agree at displayed precision. It does not
+infer hidden table rows, missing raw trials, or confidence intervals.
 
-## 2. Run the pipeline
-
-All commands use the local profile: `--config config/config_local.yaml`
-(full dev = 7,405 questions, batching on, 3 seeds).
+With `latexmk`, a TeX distribution, and required font packages installed:
 
 ```bash
-# Stage 1 — generate trajectories        (~1-2 h on H100)
-python scripts/run_generate.py    --config config/config_local.yaml
-
-# Stage 2 — step-level uncertainty        (~1-2 h)
-python scripts/run_uncertainty.py --config config/config_local.yaml
-
-# Stage 3 — 72B judge annotation          (~1-2 h)
-python scripts/run_annotate.py    --config config/config_local.yaml
-
-# Stage 4 — localization scoring          (CPU, minutes)
-python scripts/run_localize.py    --config config/config_local.yaml
-
-# Stage 5 — repair, 18 strategies         (~2-4 h; batched + deduplicated)
-python scripts/run_repair.py      --config config/config_local.yaml
-
-# Stage 6 — tables, stats, figures        (CPU, minutes)
-python scripts/run_eval.py        --config config/config_local.yaml
+make -C paper iclr-draft
 ```
 
-**Total: roughly one overnight run (~6–10 h) for the full 7,405 questions.**
+The PDF is written to `output/pdf/agent-repair-iclr2027-draft.pdf`.
+The official style needs packages including `eso-pic` and `fancyhdr`, and
+Times, Helvetica, and Courier fonts. Use your distribution's package manager
+if the build reports a missing package. Do not replace the official style
+or change margins to fit the paper.
 
-### Run it unattended
-```bash
-tmux new -s repair
-nohup python scripts/run_generate.py --config config/config_local.yaml \
-      > outputs/logs/gen.out 2>&1 &
-# detach with Ctrl-b d ; reattach with: tmux attach -t repair
-```
-Progress + ETA are logged to `outputs/logs/`.
+## Inspect the Intended Matrix
 
----
-
-## 3. The one manual step (do it any time after Stage 3)
-
-Hand-label 50 failed trajectories to validate the judge. Interactive, resumable
-(Ctrl-C any time — progress is saved):
+This command does not load models or download datasets. It creates the
+configured directories and an experiment log:
 
 ```bash
-python scripts/label_human.py --config config/config_local.yaml
+python scripts/run_experiment.py \
+  --config config/config_experiment.yaml \
+  --model qwen2.5-32b --dataset hotpotqa --dry-run
 ```
 
-It prints judge↔human agreement at the end and writes
-`outputs/tables/judge_human_agreement.json`.
+Inspect other QA dataset names with `--dataset musique` or
+`--dataset 2wikimultihopqa`. Omitting filters lists the catalog, including
+unvalidated FEVER and planned model configurations. A catalog entry or a
+successful dry run is not a completed experiment.
 
----
+The 32B catalog entry now resolves; empty filter matches raise an error.
+A non-dry matrix run requires `--run-id` and writes isolated absolute paths
+for raw/processed data, model caches, checkpoints, and outputs. An existing
+resolved configuration cannot be changed in place.
 
-## 4. Smoke test first (strongly recommended)
+## Before Running Models
 
-Before committing to the full run, do a tiny pass to confirm the GPU + model work:
+The GPU stack in [requirements.txt](requirements.txt) uses version ranges,
+including `vllm>=0.19.0`; it is not a pinned reproduction environment.
+The previous instructions for vLLM 0.6.3 and a fixed overnight runtime were
+stale. Validate a compatible serving environment on the actual GPU, record
+its exact package versions, and measure a pilot before estimating run time.
+No real GPU smoke test has been completed in the current preparation pass.
+
+The [study protocol](docs/iclr2027_study_protocol.md#implementation-gates-before-gpu-runs)
+contains implementation requirements for a confirmatory ICLR run. Do not
+start the unfiltered full matrix as that experiment. In particular:
+
+- Generation and repair manifests reject changed inputs/configuration/code
+  and incompatible legacy outputs. Stage-2 scoring and judge checkpoints
+  still require fresh paths when their code or settings change. Preserve
+  old outputs; do not remove manifests to force an incompatible resume.
+- `--limit` truncates a stage's input list. It is not a train/test split,
+  and limiting initial questions is different from limiting failed repairs.
+- Profile dataset values now override catalog defaults. Confirmatory
+  `dataset.split: test` requires `id_manifest` and `exclude_ids_manifest`:
+  JSON lists of unique IDs (or objects with an `ids` list). Their overlap is
+  rejected. The excluded list must contain every explored question; the
+  software cannot establish that it is complete.
+- The repair CLI executes all configured multipliers. Set
+  `repair.step_budget_mode: new` and `repair.match_restart_hint: true` for
+  the primary controlled comparison; defaults retain historical semantics.
+- Exact model/tokenizer revisions and serving packages still need pinning.
+  Model-name/cache checks are not revision pinning. Do not use the direct
+  stage `--model` flags to switch experiments; put the model in a new profile.
+- Do not silently fall back to a different agent, judge, or quantization.
+  Record the model actually loaded, its revision, and the saved cache.
+- FEVER needs real evidence and task-specific prompting before any result
+  from it is usable. Inspect notebook cleanup cells before executing them.
+
+## Pipeline Entry Points
+
+Each script accepts `--config` and `--limit`; inspect its help without
+loading a model:
 
 ```bash
-for s in run_generate run_uncertainty run_annotate run_localize run_repair run_eval; do
-  python scripts/$s.py --config config/config_local.yaml --limit 20 || break
-done
+python scripts/run_generate.py --help
+python scripts/run_repair.py --help
+python scripts/run_eval.py --help
 ```
-`--limit 20` processes only 20 items per stage. If that completes and writes
-figures to `outputs/figures/`, remove `--limit` and launch the real run.
 
----
+Run stages only after an isolated, validated run configuration is available:
 
-## 5. If you hit out-of-memory
+| Order | Script | Requires |
+| --- | --- | --- |
+| 0 | `scripts/run_setup.py` | Dataset access and correct evidence loader |
+| 1 | `scripts/run_generate.py` | Frozen IDs, agent, tools, and initial decoding |
+| 2 | `scripts/run_uncertainty.py` | Failed trajectories and stored log probabilities |
+| 3 | `scripts/run_annotate.py` | Reference answers, evidence, and declared judge |
+| 4 | `scripts/run_localize.py` | Uncertainty records and reference annotations |
+| 5 | `scripts/run_repair.py` | Failed pool, origins, matched prompts and allowances |
+| Analysis | `scripts/run_paired_analysis.py` | Complete raw repair rows and adjacent manifests |
 
-Lower the batch sizes in `config/config_local.yaml`:
+A pilot should include several distinct token budgets and trajectories with
+retained prefixes. Check actual generated tokens, restored tool state,
+answer scoring, model identity, and seed coverage before scaling up.
+Synthetic unit tests do not test model quality, memory use, or GPU batching.
 
-```yaml
-runtime:
-  gen_batch_size: 32        # from 64
-  repair_batch_size: 32     # from 64
-  uncertainty_batch_size: 16
-  judge_batch_size: 16
+## Controlled Development Pilot
+
+For a portable Jupyter workflow, use [run_iclr2027.ipynb](run_iclr2027.ipynb)
+with its matching [code bundle](output/notebooks/agent-repair-iclr2027-code.zip).
+The [cloud guide](CLOUD_GPU_SETUP.md) explains GPU choices and launch steps.
+The notebook adds snapshot pinning, environment/configuration locks, a
+repair-count guard, paired analysis and raw-evidence export; it defaults
+to plan-only mode and does not rent or provision a GPU.
+
+The new [pilot profile](config/config_iclr_pilot.yaml) requests 30 initial
+HotpotQA questions, three repair seeds, every eligible origin, and 0.5x/1x
+generated-token caps. This is development-only, not a confirmatory sample
+size or a selected uncertainty method. At eight eligible steps it requests
+at most `48 * N_failed` repair executions across the two caps, plus initial
+generation. It uses only stored-token uncertainty, with no judge calls.
+No commands below have been run on a real GPU during this review.
+
+On the intended GPU, after validating and recording its environment:
+
+```bash
+python scripts/run_setup.py --config config/config_iclr_pilot.yaml
+python scripts/run_generate.py --config config/config_iclr_pilot.yaml
+python scripts/run_uncertainty.py --config config/config_iclr_pilot.yaml
+python scripts/run_repair.py --config config/config_iclr_pilot.yaml --dry-run
+python scripts/run_repair.py --config config/config_iclr_pilot.yaml
 ```
-The 72B judge (Stage 3) is the memory-heaviest; it needs ~40 GB at 4-bit and fits
-an 80 GB H100 comfortably. If the GPU is smaller, it auto-falls back to a 32B judge.
 
----
+The repair dry run needs the real generated pool, failures, saved model
+identity, trajectories, and uncertainty files. It checks planning without
+loading a model or writing repair results; it does not synthesize missing
+data. Steps 3/4 (judge/localization) are unnecessary for these primary
+conditions. Do not use legacy `run_eval.py` as their confirmatory analysis;
+it assumes the older broad grid and reference annotations.
 
-## What's different from the Colab version
+After complete results exist, a development-only analysis is:
 
-| | Colab | **Local (this)** |
-|---|---|---|
-| Interface | 7 notebooks | 8 CLI scripts |
-| Execution | 1 question at a time | **batched (64 in flight)** |
-| Dataset | 500–1,000 sampled | **full dev: 7,405** |
-| Seeds | 1 | **3** (proper confidence intervals) |
-| Storage | Google Drive | local `outputs/` |
-| Stage 1 time | ~3 h for 500 | **~1–2 h for 7,405** |
+```bash
+python scripts/run_paired_analysis.py \
+  --results runs/iclr2027/hotpotqa/qwen32b/pilot-v1/outputs/repairs/results.jsonl \
+  --strategy unc__perplexity__argmax \
+  --baselines full_restart random_step --seeds 0 1 2 --multiplier 1 \
+  --output runs/iclr2027/hotpotqa/qwen32b/pilot-v1/outputs/tables/paired_pilot.json
+```
 
-Outputs land in `outputs/tables/` (8 tables) and `outputs/figures/` (4 figures),
-exactly as before.
+The JSON contains paired mean effects, intervals, explicit sign-flip
+assumptions, Holm-adjusted macro contrasts, and per-dataset EM/F1
+sensitivities. Effects are fractions; multiply by 100 for percentage points.
+The one-dataset pilot output is not a QA3 confirmatory result. For that
+study, supply one complete file per QA dataset from the frozen policy and
+same model, with separately audited disjoint cohorts. Policy choice and
+planned sample size must be frozen before viewing test outcomes.
+
+Unique raw executions live in `outputs/repairs/executions/` beneath the run;
+`origins.jsonl` covers the sweep and `results.jsonl` maps policies to shared
+executions. Sum physical costs by unique execution ID, not copied strategy
+rows. Acquisition fields with `null` are unknown costs, not free calls.
+Record model/tokenizer snapshot hashes separately. Inspect missing logprob
+rates and origin-zero fallback rates before interpreting any signal.
+
+## Human Validation
+
+`scripts/label_human.py` collects one human labeling record per trajectory
+and writes `_human_labels.json` under the configured annotations directory.
+It writes `judge_human_agreement.json` under the tables directory when
+labels are available. Inspect its help with:
+
+```bash
+python scripts/label_human.py --help
+```
+
+Run interactive labeling only against the correct frozen pool. The current
+CLI does not implement blinded multi-annotator assignment or adjudication;
+those are specified in the study protocol and remain to be prepared.
+Configuring a sample size does not mean the labels have been collected.
+
+## Required Result Package
+
+Keep the resolved configuration, Git revision, environment export, hardware
+record, split IDs and hashes, evidence snapshot, model revisions, initial
+trajectories, uncertainty acquisitions, reference and human annotations,
+unique repair execution records, checkpoints, and analysis outputs together.
+The [readiness audit](docs/iclr2027_readiness.md#files-needed-from-google-drive)
+lists the raw artifacts missing from the current repository snapshot.
