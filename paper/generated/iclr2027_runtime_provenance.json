@@ -15,9 +15,9 @@
     "tables/iclr2027_runtime_contrasts.tex": "b58d501e4b0442009877ca1e859a70ba02669c472c03d8ca3c678ddb4399ddb6",
     "tables/iclr2027_runtime_latency.tex": "d0ae5f780943dc80ee54d12e13cddb91ee26a8c51bd8228fab6e06fe38cb644c",
     "tables/iclr2027_runtime_results.tex": "41199dd12d5820be20e81e86f6953956daed62994ffce6c294939d1a697ecc27",
-    "figures/iclr2027_runtime_latency.pdf": "309c6a1dd92359a33d4ab41ed026d56fd45e15c545eb953210e6e3688183b681",
-    "figures/iclr2027_runtime_latency.png": "e3f1a9d0e1ffef52736e1ef084f7eb5fdc62a35816f516340ceecfb482f5c977",
-    "figures/iclr2027_runtime_success.pdf": "121a79a2f7048bc96991b0ecb8812e6551c299d1ba1afdd329be582783c48c8b",
+    "figures/iclr2027_runtime_latency.pdf": "1ce97cc978be620bf85b6b35673f23207e37f2f8c409b87db54eff726bccc61b",
+    "figures/iclr2027_runtime_latency.png": "f4ac6ca3e79e5f1f3abd1f75c6f32c3eb431a2e8eae20f172078858eeadab4fd",
+    "figures/iclr2027_runtime_success.pdf": "17847e35f74a4dd0d65c409e0fb58f692cd1b756141452e5e68ff5c420ed0f47",
     "figures/iclr2027_runtime_success.png": "7bd7fe35c7605f74ddafdcb6257988a6c7f90071b4f055d8b622e8c63233e761"
   }
 }

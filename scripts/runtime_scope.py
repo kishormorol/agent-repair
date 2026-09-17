@@ -106,12 +106,12 @@ def latency_figure(out, scope, rows):
             ax.step(latency, 100 * fraction, where="post", color=colour, linestyle=style,
                     linewidth=1.8, label=LABELS[strategy])
         ax.axvline(10, color="#8c8c8c", linewidth=.8, linestyle="--", zorder=0)
-        ax.text(10.15, 8, "10 s primary", fontsize=8, color="#666666")
+        ax.text(10.15, 4, "10 s primary", fontsize=8, color="#666666")
         ax.set(xlabel="Measured time per attempt (seconds)",
                ylabel="Attempts at or below (%)", xlim=(0, None), ylim=(0, 104))
         ax.grid(axis="y", color="#e4e7ea", linewidth=.6)
         ax.set_axisbelow(True)
-        ax.legend(loc="lower right", frameon=False, fontsize=8, handlelength=2.4)
+        ax.legend(loc="upper left", frameon=False, fontsize=8, handlelength=2.4)
         for extension in ["pdf", "png"]:
             fig.savefig(Path(out) / "figures" / f"iclr2027_runtime_latency.{extension}", dpi=300)
         plt.close(fig)
