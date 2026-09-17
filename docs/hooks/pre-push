@@ -1,0 +1,24 @@
+#!/bin/sh
+# Refuse a force-push to main.
+#
+# The manuscript is shared with Overleaf and with two reviewers. A normal push
+# cannot destroy their commits: if they pushed first, git rejects mine as
+# non-fast-forward and I merge. A force-push is the one operation that can
+# silently discard work that is already on the remote, so it is blocked here.
+#
+# If you genuinely need it, run the push with --no-verify and know what you
+# are discarding.
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in */main) ;; *) continue ;; esac
+  # A zero remote sha is branch creation or deletion; nothing to lose.
+  case "$remote_sha" in *[!0]*) ;; *) continue ;; esac
+  if ! git merge-base --is-ancestor "$remote_sha" "$local_sha" 2>/dev/null; then
+    echo "pre-push: refusing to force-push main." >&2
+    echo "  $remote_sha on the remote is not an ancestor of what you are pushing," >&2
+    echo "  so this would discard commits that are already there - possibly an" >&2
+    echo "  Overleaf sync or a reviewer's work. Fetch and merge instead:" >&2
+    echo "    git fetch origin && git merge origin/main" >&2
+    exit 1
+  fi
+done
+exit 0

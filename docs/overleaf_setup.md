@@ -108,3 +108,38 @@ and the repository is already well within Overleaf's limits. Delete the stub
 Tell me once the link exists and I will verify the Overleaf copy compiles to the
 same 40-page, 9-page-main-text PDF the repository produces, so we know the two
 sides genuinely agree before anyone starts editing.
+
+## Not losing someone else's edits
+
+Emam or Muna may edit `paper/iclr2027.tex` in Overleaf. Two different things
+protect that work, and one gap is not covered by either.
+
+**A normal push cannot delete their commits.** If their change reached GitHub
+first, git rejects any push built on an older history as non-fast-forward. The
+fix is to fetch and merge, never to force. The one operation that *would*
+discard their work is a force-push, so a `pre-push` hook now refuses it on
+`main`. Git does not track hooks, so reinstall it after a fresh clone:
+
+```bash
+cp docs/hooks/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+```
+
+Use `--no-verify` only when you have decided what you are discarding.
+
+**The gap is Overleaf's side, and no hook can close it.** Overleaf does not
+push on its own. An edit made there exists *only in Overleaf* until someone
+opens Menu -> GitHub -> "Push Overleaf changes to GitHub". Until that moment
+the work is invisible to this repository, and to anyone reading it. Tell
+whoever edits in Overleaf to push when they stop working, and pull before they
+start. The longer both sides drift, the worse the eventual conflict.
+
+**Before editing the manuscript here**, always:
+
+```bash
+git fetch origin && git log --oneline HEAD..origin/main -- paper/
+```
+
+If that prints anything, merge it before touching the file. Edit the `.tex`
+in place rather than regenerating it wholesale; a surgical edit merges cleanly
+against someone else's change to another section, and a rewritten file does
+not.
