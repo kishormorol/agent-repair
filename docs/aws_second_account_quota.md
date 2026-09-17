@@ -25,6 +25,38 @@ one instance. Do **not** request P instances. The September 10 pilot found no
 `p5.4xlarge` capacity in any London zone and fell back to `g7e.2xlarge`; asking
 for a family you will not use weakens the case and slows review.
 
+## Verified account state (September 17, 2026)
+
+Read from the configured AWS CLI profiles on the author's machine. No
+mutation was performed.
+
+| Profile | Account | On-Demand G and VT, `eu-west-2` |
+| --- | --- | --- |
+| `agent-repair-aws119` | 692430448570 | 8.0 - the account that ran every experiment |
+| `alexa-hackathon` | 304118843563 | **0.0** - the second account holding the credit |
+| `alexa-ai` | - | cannot assume its role; not usable |
+
+`alexa-hackathon` is the only usable second account and its GPU quota is zero,
+which matches the expectation for an account that has never run one. The quota
+`L-DB2E81BA` is adjustable and regional, and the change history is empty, so a
+request would not duplicate an existing case.
+
+## The command to file it
+
+The Service Quotas API has no justification field, so a request filed this way
+carries the numbers but not the use case below. For a zero-to-eight GPU
+increase on an account with no billing history, expect AWS to ask for the use
+case in the support case the request opens. Have the text ready.
+
+```bash
+aws service-quotas request-service-quota-increase \
+  --service-code ec2 --quota-code L-DB2E81BA --desired-value 8 \
+  --region eu-west-2 --profile alexa-hackathon
+```
+
+Filing through the console instead attaches the use case up front, which is
+the better path if the deadline allows it.
+
 ## Use-case text
 
 > This is a short, single-instance research inference run for a paper on
