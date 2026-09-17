@@ -1,0 +1,82 @@
+% AI Use Statement. Kept in its own file so it can be revised without touching
+% the manuscript body while collaborators are editing it.
+%
+% ICLR 2027 policy: https://iclr.cc/Conferences/2027/AIPolicyForAuthors
+% This section is mandatory and does NOT count toward the page limit, so it is
+% written at length deliberately. The policy requires disclosure of, among
+% other uses, formulating mathematical claims, designing research methodology
+% or experiments, implementing methods, and interpreting results. Each is
+% addressed below.
+\section*{AI Use Statement}
+
+\paragraph{Language models as the object of study.}
+Language models are the subject of this work, not only a tool used to produce
+it. Qwen2.5-32B-Instruct-AWQ and Mistral-Nemo-Instruct act as the ReAct agents
+whose failed trajectories are repaired, and a same-model prompt supplies the
+diagnosis/replay comparator. Their versions, revisions, quantisation and
+decoding settings are pinned in each frozen protocol and reported in the
+appendices.
+
+\paragraph{Generative AI assistance in producing this work.}
+An AI coding assistant was used extensively, and we prefer to be specific about
+its scope rather than gesture at it. It contributed to: proposing and refining
+the hypotheses tested here; the design of the length-matched swap control and
+of the exact sign-flip analysis applied to it; the formulation of the
+resolution-floor claim that an exact two-sided sign-flip test over $m$ non-zero
+blocks cannot report a $p$-value below $2/2^{m}$, together with the
+brute-force enumeration used to check it; implementation of the experiment
+runners, auditors, statistical code and paper-asset builders; orchestration of
+the cloud experiments, including budget gating, monitoring and result
+retrieval; reformatting and cleaning of per-trial records for analysis; the
+statistical diagnostics reported in the appendices; generation of the figures;
+literature lookup and related-work analysis; interpretation of results; and the
+drafting and revision of manuscript text, including sections of this
+manuscript and the appendix reporting the swap study. The accompanying test
+suite was likewise written with AI assistance. No synthetic dataset was
+generated: HotpotQA, 2WikiMultiHopQA and MuSiQue are used as published, and
+the trajectories analysed here are experimental measurements of the agents
+under study rather than fabricated data.
+
+\paragraph{What the safeguards do and do not establish.}
+The safeguards in this project are structural rather than discretionary. Every
+numerical claim in this paper is generated from audited records by a build
+step rather than transcribed by hand, and the manuscript fails to build if a
+cited quantity has no generating source. Each study is frozen by checksum
+before execution and re-analysed independently afterwards, and every reported
+cell reproduces with zero mismatches between the on-instance and local
+analyses. A supplement reproduces all primary test families from an isolated
+extraction. These safeguards constrain arithmetic and provenance tightly. They
+establish nothing about whether the design answers the question posed, whether
+the estimands are the right ones, or whether a null result is framed fairly.
+Much of the design and analysis was produced with AI assistance and then
+checked largely by the same process that produced it; self-consistency is not
+correctness.
+
+\paragraph{Errors introduced during AI-assisted work.}
+Five errors reached execution and were caught before affecting any reported
+result: a budget gate wired into two of three call sites, which refused a
+controller two minutes into a paid GPU session; an incorrect prediction that
+additional matched pairs would lower the resolution floor, when the tie rate
+binds instead; an edit that invalidated the checksum provenance of an
+already-completed study package; three figures shipped with labels obscured by
+legends, found only by inspecting the rendered images; and tests written
+against one pandas version that failed on the instance's version, aborting a
+run at preflight. Each was found by continued checking rather than by any
+process that guarantees detection. We report them because they bear on how
+much independent verification a reader should expect of work produced this
+way.
+
+\paragraph{Independent verification.}
+[AUTHORS: state here what you verified independently, and by what means. Be
+specific --- which analyses you re-derived yourself, which code you read line
+by line, and which claims you checked against the raw records rather than
+against generated summaries. Do not describe checking that did not happen.]
+
+\paragraph{Review.}
+[AUTHORS: state here who reviewed the work, what each reviewer checked, and
+what remained unverified at submission. Name explicitly anything that was not
+re-verified, including earlier material carried forward.]
+
+\paragraph{Responsibility.}
+The authors take full responsibility for all content of this submission,
+including any error introduced by AI assistance.
