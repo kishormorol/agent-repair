@@ -9,8 +9,8 @@ import pytest
 from scripts.build_combined_supplement import FORBIDDEN, STUDIES, build
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED = {"main": (4, 2034), "diagnosis": (6, 3186),
-            "replication": (24, 8016), "position_pairs": (2, 738)}
+EXPECTED = {"main": (4, 2034), "diagnosis": (6, 3186), "replication": (24, 8016),
+            "position_pairs_qwen": (2, 738), "position_pairs_mistral": (2, 1098)}
 
 
 @pytest.fixture(scope="module")
@@ -40,7 +40,7 @@ def run_reproduce(bundle):
                           capture_output=True, text=True)
 
 
-def test_isolated_extraction_reproduces_all_four_primary_families(isolated):
+def test_isolated_extraction_reproduces_every_primary_family(isolated):
     run = run_reproduce(isolated)
     assert run.returncode == 0, run.stdout + run.stderr
     report = json.loads((isolated / "verification.json").read_text())
@@ -89,13 +89,13 @@ def test_reproduce_detects_an_altered_reference_statistic(tmp_path):
     bundle = tmp_path / "iso" / "combined-supplement"
     with zipfile.ZipFile(archive) as stream:
         stream.extractall(tmp_path / "iso")
-    analysis = json.loads((bundle / "position_pairs" / "analysis.json").read_text())
+    analysis = json.loads((bundle / "position_pairs_qwen" / "analysis.json").read_text())
     analysis["primary_comparisons"][0]["delta"] += 0.05
-    (bundle / "position_pairs" / "analysis.json").write_text(json.dumps(analysis))
+    (bundle / "position_pairs_qwen" / "analysis.json").write_text(json.dumps(analysis))
     manifest = json.loads((bundle / "manifest.json").read_text())
     import hashlib
-    manifest["sha256"]["position_pairs/analysis.json"] = hashlib.sha256(
-        (bundle / "position_pairs" / "analysis.json").read_bytes()).hexdigest()
+    manifest["sha256"]["position_pairs_qwen/analysis.json"] = hashlib.sha256(
+        (bundle / "position_pairs_qwen" / "analysis.json").read_bytes()).hexdigest()
     (bundle / "manifest.json").write_text(json.dumps(manifest))
     run = run_reproduce(bundle)
     assert run.returncode != 0, "a changed delta must not pass reproduction"

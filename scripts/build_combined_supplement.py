@@ -37,10 +37,16 @@ STUDIES = {
                     "analysis": AWS / "2026-09-15-extension-completion/pooled-analysis-local.json",
                     "contrasts": "primary_comparisons", "family": 24, "rows": 8016,
                     "title": "Two-model, three-dataset replication"},
-    "position_pairs": {"trials": AWS / "2026-09-16-position-pairs/analysis-local.trials.csv",
-                       "analysis": AWS / "2026-09-16-position-pairs/analysis-local.json",
-                       "contrasts": "primary_comparisons", "family": 2, "rows": 738,
-                       "title": "Exactly balanced length-matched swap"},
+    # One entry per model cell: the two share a question cohort, so they are a
+    # descriptive contrast and are never pooled.
+    "position_pairs_qwen": {"trials": AWS / "2026-09-16-position-pairs/analysis-local.trials.csv",
+                            "analysis": AWS / "2026-09-16-position-pairs/analysis-local.json",
+                            "contrasts": "primary_comparisons", "family": 2, "rows": 738,
+                            "title": "Length-matched swap, Qwen"},
+    "position_pairs_mistral": {"trials": AWS / "2026-09-16-position-pairs/analysis-local-mistral.trials.csv",
+                               "analysis": AWS / "2026-09-16-position-pairs/analysis-local-mistral.json",
+                               "contrasts": "primary_comparisons", "family": 2, "rows": 1098,
+                               "title": "Length-matched swap, Mistral"},
 }
 # Identifiers that must never leave the working tree.
 FORBIDDEN = ["kishormorol", "/Users/", "692430448570", "i-03b33e00c47b11be6",
