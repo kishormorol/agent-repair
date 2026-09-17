@@ -25,6 +25,27 @@ one instance. Do **not** request P instances. The September 10 pilot found no
 `p5.4xlarge` capacity in any London zone and fell back to `g7e.2xlarge`; asking
 for a family you will not use weakens the case and slows review.
 
+## Filed
+
+**September 17, 2026, 12:38 EDT.** Request
+`e570d5c3e2914bf0be1a57829de005b9ovi7x8gi`, account `304118843563`,
+`eu-west-2`, On-Demand G and VT to 8 vCPUs. Status **PENDING**.
+
+Filed from the CLI, so **no use case is attached**. The text below still has
+to reach AWS through the support case this request opens. A zero-to-eight GPU
+increase on an account with no billing history is unlikely to clear on the
+numbers alone.
+
+Check status:
+
+```bash
+aws service-quotas get-requested-service-quota-change \
+  --request-id e570d5c3e2914bf0be1a57829de005b9ovi7x8gi \
+  --region eu-west-2 --profile alexa-hackathon
+```
+
+Filing does not authorize launching an instance or spending the credit.
+
 ## Verified account state (September 17, 2026)
 
 Read from the configured AWS CLI profiles on the author's machine. No
