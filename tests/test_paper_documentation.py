@@ -163,3 +163,36 @@ def test_paper_scope_is_bounded_to_the_policy_actually_tested():
     conclusion = prose.split(r"\section{Conclusion}", 1)[1].split(r"\section*", 1)[0]
     assert "One fixed selector" in conclusion
     assert "not test" in conclusion and "method class" in conclusion
+
+
+def test_no_overleaf_share_token_is_committed():
+    """An overleaf.com/<token> link grants access; this repository is public.
+
+    The project URL (overleaf.com/project/<id>) only identifies the project and
+    is safe to record. A bare token path is an access grant and is not.
+    """
+    import subprocess
+    tracked = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True,
+                             text=True, check=True).stdout.split()
+    # git.overleaf.com/<id> is the authenticated git remote and grants nothing
+    # on its own; overleaf.com/<token> is an access grant.
+    token_link = re.compile(r"(?<!git\.)overleaf\.com/(?!project/|learn|docs)[A-Za-z0-9]{12,}")
+    # Built by concatenation so no token-shaped literal exists in this file for
+    # the scan below to find. The real token must not live here either, which is
+    # exactly what this guard prevents.
+    sample = "https://www.overleaf.com/" + "abcd1234efgh" + "5678ijkl"
+    assert token_link.search(sample), "the guard must still catch a share token"
+    assert not token_link.search("https://git.overleaf.com/6aabd6e1c7ddbb2652123f49")
+    assert not token_link.search("https://www.overleaf.com/project/6aabd6e1c7ddbb2652123f49")
+    offenders = []
+    for name in tracked:
+        path = ROOT / name
+        if path.suffix.lower() not in {".md", ".tex", ".py", ".txt", ".json", ".yaml", ".yml"}:
+            continue
+        try:
+            text = path.read_text(errors="ignore")
+        except OSError:
+            continue
+        for hit in token_link.findall(text):
+            offenders.append(f"{name}: overleaf.com/{hit}")
+    assert not offenders, f"Overleaf share tokens must not be committed: {offenders}"

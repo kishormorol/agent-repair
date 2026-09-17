@@ -1,8 +1,14 @@
 # Overleaf ↔ GitHub sync
 
-Project: `6aabd6e1c7ddbb2652123f49` ("ICLR"), currently holding only a stub
+Project: [https://www.overleaf.com/project/6aabd6e1c7ddbb2652123f49](https://www.overleaf.com/project/6aabd6e1c7ddbb2652123f49) ("ICLR"), currently holding only a stub
 `main.tex`. The account is on **Overleaf Premium**, so both Git access and
 GitHub Sync are available.
+
+**The share link is deliberately not recorded here.** An Overleaf link of the
+form `overleaf.com/<token>` grants access to anyone who holds it, and this
+repository is public, so committing one would hand the project to the internet.
+The URL above is the project id: it identifies the project but grants nothing,
+and collaborators still need an invitation or the share link sent privately.
 
 The upload bundle is ready at `output/overleaf/agent-repair-paper.zip`
 (70 files, 0.3 MB): `iclr2027.tex`, the conference style and bibliography,
