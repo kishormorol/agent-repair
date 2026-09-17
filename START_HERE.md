@@ -1,6 +1,40 @@
 # The $119 AWS Agent Repair Study
 
-## Current Extension and Completed Studies
+## Position-Pair Follow-up: Complete, and the Allocation Is Spent
+
+The September 15 review listed six gaps. All six are closed, and the one that
+needed an experiment rather than better wording now has evidence across two
+model families.
+
+Two separately frozen cells, one per model, share the same 200 fresh questions.
+Failed questions are paired by **exact** original trajectory length, and each is
+given its partner's uncertainty-chosen origin, so the two arms carry identical
+origin multisets **by construction** rather than by fitting. That is precisely
+what the replication's development-fitted position control could not provide.
+
+| Model | Dataset | Failures | Pairs | Delta (pp) | Holm | Floor |
+| --- | --- | --- | --- | --- | --- | --- |
+| Qwen | HotpotQA | 47 | 23 | +3.62 | 0.250 | 0.125 |
+| Qwen | 2Wiki | 40 | 18 | -3.70 | 0.500 | 0.031 |
+| Mistral | HotpotQA | 71 | 33 | +1.01 | 1.000 | 0.125 |
+| Mistral | 2Wiki | 60 | 28 | -1.79 | 1.000 | 0.062 |
+
+No cell shows an advantage after adjustment, and the sign follows the dataset
+rather than the model. Both cells reproduce locally with zero mismatches. The
+cells share question identifiers, so they support a descriptive contrast only.
+
+**Precision, not effect size, is the limit.** Most pairs tie, and an exact
+two-sided sign-flip test cannot report below 2/2^m for m non-zero blocks. Two
+cells sit above 0.05 on that floor and could not have reached significance
+whatever the data showed. More pairs did not help: the 33-pair Mistral
+HotpotQA cell has the same 0.125 floor as the 23-pair Qwen cell, because 29 of
+its 33 pairs tied.
+
+**The $119 allocation is exhausted**: about $17.6 spent, roughly $0.75 of
+EC2-eligible credit left. Any further experiment needs a new allocation
+decision.
+
+## Earlier Extension and Completed Studies
 
 The [replication and runtime extension](docs/aws_extension_2026-09-14.md)
 is complete. Its final continuation finished on **September 15 at 18:00 UTC**:

@@ -7,7 +7,7 @@ trajectory should recovery retain? This repository studies suffix
 regeneration, full restart, and uncertainty-based selection of repair origins
 in ReAct-style agents with question-specific offline evidence.
 
-> **ICLR 2027 preparation, September 15, 2026:** the six-condition AWS
+> **ICLR 2027 preparation, September 17, 2026:** the six-condition AWS
 > HotpotQA study and the separate diagnosis/replay follow-up are complete and
 > audited. Neither found a clear uncertainty-repair advantage. The manuscript
 > reports both completed studies alongside historical
@@ -21,6 +21,17 @@ in ReAct-style agents with question-specific offline evidence.
 > own two-comparison family. All archives are recovered and EC2 is independently
 > verified stopped with its GPU configuration restored. The extension remains
 > within the authorized $50 cap and the original $119 allocation.
+>
+> A length-matched swap follow-up now closes the review's experimental gap.
+> Two frozen cells, one per model family, share 200 fresh questions: failed
+> questions are paired by *exact* original trajectory length and each is given
+> its partner's uncertainty-chosen origin, so both arms carry identical origin
+> multisets by construction rather than by fitting. Across 102 pairs and 1,133
+> unique repairs, no cell shows an advantage after adjustment, and the sign
+> follows the dataset rather than the model. Precision is the binding limit:
+> most pairs tie, and two of four cells sit above 0.05 on the smallest p their
+> exact test could attain. The cells share question identifiers, so no pooled
+> confirmatory statistic is reported. The $119 allocation is now exhausted.
 > Human validation remains incomplete.
 > This is not a completed or accepted submission. FEVER
 > results are excluded.

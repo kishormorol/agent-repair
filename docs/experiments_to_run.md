@@ -23,6 +23,35 @@ not a request to repeat the completed HotpotQA comparison or pilot.
 
 ## Current Execution
 
+**All six September 15 review gaps are closed, and the review's experimental
+gap now has evidence across two model families.** The position-pair follow-up
+ran on September 16 and 17: two separately frozen cells, one per model, on the
+same 200 fresh questions. Failed questions are paired by *exact* original
+trajectory length and each is given its partner's uncertainty-chosen origin,
+so the two arms carry identical origin multisets by construction rather than by
+fitting. That is what the replication's development-fitted position control
+could not provide.
+
+Across 400 model/question evaluations, 218 failures, 102 pairs and 1,133 unique
+repairs, no cell shows an advantage after adjustment, and the sign follows the
+dataset rather than the model: positive on HotpotQA and negative on 2Wiki for
+both families. Both cells reproduce locally with zero mismatches. The cells
+share question identifiers, so they support a descriptive contrast only and no
+pooled confirmatory statistic.
+
+Precision, not effect size, is the binding limit. Most pairs tie, and an exact
+two-sided sign-flip test cannot report below 2/2^m for m non-zero blocks. Two
+of the four cells sit above 0.05 on that floor, so they could not have reached
+significance whatever the data showed. More pairs did not help: the 33-pair
+Mistral HotpotQA cell has the same 0.125 floor as the 23-pair Qwen cell,
+because 29 of its 33 pairs tied.
+
+**The $119 allocation is now exhausted.** About $17.6 was spent in total, with
+roughly $0.75 of EC2-eligible credit remaining. No further session is
+affordable, so any additional experiment needs a new allocation decision.
+
+## Completed Replication
+
 The [September 14 extension](aws_extension_2026-09-14.md) completed its
 separately frozen two-model, three-dataset comparison on September 15 at
 18:00 UTC. All six cells, 600 main evaluations, 4,323 unique repairs and
