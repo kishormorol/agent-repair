@@ -30,12 +30,14 @@ from src.repair.position_pairs import POLICIES, SWAP
 from src.utils.cloud_runs import write_once
 
 MODEL = "mistral12b"
-RUN_ID = "position-pairs-mistral-20260917-v1"
+RUN_ID = "position-pairs-mistral-20260917-v2"
 QWEN_PACKAGE = BASE / "prepared-v2"
-# Conservative gross spend before this cell: the frozen 90.12 plus the
-# September 16 Qwen session and its retrieval. Freezing the true figure means
-# validate_live_checks refuses to launch until the allocation is raised.
+# The authorized allocation is frozen directly into the protocol rather than
+# amended downstream. validate_live_checks is called from three places, and an
+# amendment applied to only some of them let a controller refuse mid-launch
+# while the GPU ran. Freezing it once means every gate agrees by construction.
 PRIOR_SPENT_USD = 99.13
+AUTHORIZED_RESERVE_USD = 11.0
 FROZEN_SCRIPTS = ["run_position_pair_study.py", "analyze_position_pair_study.py",
                   "run_position_pair_cloud.py", "prepare_position_pair_study.py",
                   "prepare_position_pair_mistral.py", "run_extension_study.py",
@@ -129,15 +131,15 @@ def prepare(out=None, source=QWEN_PACKAGE, previous=PREVIOUS):
         "pooling_limitation": "Question identifiers are shared with the Qwen cell, so the two "
                               "cells support a descriptive contrast only and no pooled "
                               "confirmatory statistic.",
-        "allocation": {"total_usd": 119., "reserve_usd": 20.,
+        "allocation": {"total_usd": 119., "reserve_usd": AUTHORIZED_RESERVE_USD,
                        "prior_gross_conservative_bound_usd": PRIOR_SPENT_USD,
                        "session_gross_ceiling_usd": 8.50, "maximum_minutes": 70,
                        "maximum_hourly_usd": 5.84531, "overhead_allowance_usd": 1.50},
         "history_limitation": old["history_limitation"],
         "prior_protocol_sha256": fingerprint(old),
-        "authorization": "Prepared on request September 17; NOT authorized to spend. The frozen "
-                         "prior exceeds the remaining envelope, so the live-check gate refuses "
-                         "a launch until the allocation is raised deliberately."}
+        "authorization": "User authorized on September 17. The reserve is reduced from 20 to "
+                         "11 USD for this cell only, against a conservative prior of 99.13. This "
+                         "is the last session the 119 USD allocation supports."}
     write_once(out / "protocol.json", {"payload": protocol, "sha256": fingerprint(protocol)})
     for folder in ["src", "tests"]:
         for path in sorted((ROOT / folder).rglob("*.py")):

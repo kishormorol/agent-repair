@@ -35,10 +35,10 @@ def test_loader_accepts_only_a_complete_exactly_balanced_analysis(evidence):
 def test_loader_rejects_incomplete_or_mismatched_analysis(tmp_path, defect):
     base = tmp_path / "run"
     (base / "prepared-v2").mkdir(parents=True)
-    (base / "retrieved/results").mkdir(parents=True)
+    (base / "retrieved-qwen32b/results").mkdir(parents=True)
     source = ROOT / "output/aws-experiment/2026-09-16-position-pairs"
     (base / "prepared-v2/protocol.json").write_text((source / "prepared-v2/protocol.json").read_text())
-    (base / "retrieved/results/analysis.json").write_text((source / "retrieved/results/analysis.json").read_text())
+    (base / "retrieved-qwen32b/results/analysis.json").write_text((source / "retrieved-qwen32b/results/analysis.json").read_text())
     analysis = json.loads((source / "analysis-local.json").read_text())
     analysis.update(defect)
     (base / "analysis-local.json").write_text(json.dumps(analysis))
@@ -50,9 +50,9 @@ def test_loader_rejects_incomplete_or_mismatched_analysis(tmp_path, defect):
 def test_loader_rejects_an_analysis_that_lost_exact_balance(tmp_path, field):
     base = tmp_path / "run"
     (base / "prepared-v2").mkdir(parents=True)
-    (base / "retrieved/results").mkdir(parents=True)
+    (base / "retrieved-qwen32b/results").mkdir(parents=True)
     source = ROOT / "output/aws-experiment/2026-09-16-position-pairs"
-    for name in ["prepared-v2/protocol.json", "retrieved/results/analysis.json"]:
+    for name in ["prepared-v2/protocol.json", "retrieved-qwen32b/results/analysis.json"]:
         (base / name).write_text((source / name).read_text())
     analysis = json.loads((source / "analysis-local.json").read_text())
     analysis["audits"][0]["balance"][field] = False

@@ -43,7 +43,7 @@ def load_position_pairs(base=BASE, run_id=RUN_ID):
     require(analysis["primary_family_size"] == protocol["payload"]["primary_family_size"],
             "Primary family size differs from the frozen protocol")
 
-    remote = json.loads((base / "retrieved/results/analysis.json").read_text())
+    remote = json.loads((base / "retrieved-qwen32b/results/analysis.json").read_text())
     require(remote["protocol_sha256"] == analysis["protocol_sha256"],
             "On-instance analysis describes a different protocol")
 
@@ -195,8 +195,8 @@ def results_figure(out, analysis, primary):
 
 def provenance(base, protocol, analysis):
     base = Path(base)
-    sources = ["analysis-local.json", "retrieved/results/analysis.json",
-               "retrieved/results/analysis.trials.csv", "prepared-v2/protocol.json",
+    sources = ["analysis-local.json", "retrieved-qwen32b/results/analysis.json",
+               "retrieved-qwen32b/results/analysis.trials.csv", "prepared-v2/protocol.json",
                "retrieval-verification.json"]
     return {"run_id": protocol["run_id"], "protocol_sha256": analysis["protocol_sha256"],
             "scope": protocol["scope"], "precision_note": protocol["precision_note"],
