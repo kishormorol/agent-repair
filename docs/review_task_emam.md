@@ -19,8 +19,13 @@ trustworthy or merely underpowered.
 ```bash
 git clone https://github.com/kishormorol/agent-repair.git
 cd agent-repair && pip install -r requirements.txt
-python -m pytest -q            # expect 415 passed
+python -m pytest tests/test_position_pairs.py \
+  tests/test_position_matched.py tests/test_run_monitor.py -q   # expect 29 passed
 ```
+
+Those are the self-contained logic tests. **Do not run the whole suite** — most of
+it replays raw experiment records too large to commit, so it fails on a clone by
+design. Ask the author if you need those records.
 
 Manuscript: `paper/iclr2027.tex`, built PDF at
 `output/pdf/agent-repair-iclr2027-draft.pdf`. The relevant appendix is H.

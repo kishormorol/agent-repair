@@ -121,7 +121,7 @@
   support the conclusion. Muna judges whether the conclusion traces back to real evidence.
   Roughly half a day apiece.</p>
   <div class="meta">
-    <span class="tag live">416 tests passing</span>
+    <span class="tag live">29 tests on a clone · 416 with records</span>
     <a class="tag" href="https://github.com/kishormorol/agent-repair/raw/main/output/pdf/agent-repair-iclr2027-draft.pdf" style="text-decoration:none">read the paper (PDF) ↗</a>
     <span class="tag">Budget exhausted · no new runs possible</span>
     <a class="tag" href="https://github.com/kishormorol/agent-repair" style="text-decoration:none">kishormorol/agent-repair @ main ↗</a>
@@ -136,11 +136,14 @@
     repository — no cloud access, no credentials, nothing to request.</p>
     <pre>git clone https://github.com/kishormorol/agent-repair.git
 cd agent-repair &amp;&amp; pip install -r requirements.txt
-python -m pytest -q          <span style="opacity:.6"># expect: 416 passed</span></pre>
-    <p style="margin:14px 0 0; font-size:13.5px; color:var(--muted)">If that last line says anything other
-    than 416 passed, stop and tell the author — it means you are not looking at what he thinks you are.
-    The paper itself is <code>paper/iclr2027.tex</code>; the built PDF is linked at the top of this page,
-    and the experiment is Appendix H.</p>
+python -m pytest tests/test_position_pairs.py \
+  tests/test_position_matched.py tests/test_run_monitor.py -q
+                             <span style="opacity:.6"># expect: 29 passed</span></pre>
+    <p style="margin:14px 0 0; font-size:13.5px; color:var(--muted)">Those are the self-contained logic
+    tests, including the exact sign-flip test checked against brute-force enumeration. <b>Do not run the
+    whole suite</b> — most of it replays raw experiment records that are far too large for the repository,
+    so it fails on a clone by design. Ask the author if you need those records. The paper is
+    <code>paper/iclr2027.tex</code>, its PDF is linked above, and the experiment is Appendix H.</p>
   </div>
 </section>
 
