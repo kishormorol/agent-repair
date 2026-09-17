@@ -9,11 +9,19 @@
 
 \title{A Length-Matched Control Erases the Apparent Benefit of Perplexity-Guided Trajectory Repair}
 \author{Anonymous authors}
-% This local working copy has not been submitted; leave the official style file intact.
+% This copy is labelled a working draft so an unsubmitted PDF can never be
+% mistaken for a submission. Set \submissiontrue (or build with
+% `make submission`) to restore the official ICLR labels for an actual
+% submission, including the free LLM review service. Leave the style file
+% itself intact either way.
+\newif\ifsubmission
+\submissionfalse
+\ifsubmission\else
 \makeatletter
 \patchcmd{\@maketitle}{Paper under double-blind review}{Working draft; not submitted}{}
   {\PackageError{agent-repair}{Working-draft label patch failed}{Check the title macro.}}
 \makeatother
+\fi
 \input{generated/iclr2027_numbers}
 \input{generated/iclr2027_position_pairs}
 \input{generated/iclr2027_replication_diagnostics}
@@ -24,7 +32,14 @@
 
 \begin{document}
 \maketitle
-\fancyhead[L]{Working draft: audited QA repair studies}
+% The style file sets \lhead inside \@maketitle's \vbox, so the assignment is
+% group-local and never survives. Set the running header here instead, which
+% leaves the official style file untouched.
+\ifsubmission
+  \fancyhead[L]{Under review as a conference paper at ICLR 2027}
+\else
+  \fancyhead[L]{Working draft: audited QA repair studies}
+\fi
 
 \begin{abstract}
 Recovery from a failed agent trajectory can restart the task or preserve
