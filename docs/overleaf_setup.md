@@ -20,7 +20,13 @@ route consumes is already prepared and committed.
 
 ## Route A — GitHub Sync (recommended: this is the actual two-way sync)
 
-In the Overleaf project: **Menu → Sync → GitHub**.
+In the Overleaf project, open the **Integrations** panel: the third icon down
+the narrow left rail, below the file-tree and search icons. It lists GitHub,
+Git, Dropbox, ReadCube, Zotero and Mendeley. Click **GitHub — "Sync with a
+GitHub repository"**.
+
+(This is not under the File menu; that menu only has New file, Upload, Copy,
+History, Word count, Submit, Download and Settings.)
 
 1. Authorize Overleaf to access GitHub when prompted.
 2. Choose **link to an existing repository** and select
@@ -58,8 +64,8 @@ git remote add overleaf https://git.overleaf.com/6aabd6e1c7ddbb2652123f49
 git subtree push --prefix=paper overleaf master     # first push
 ```
 
-You will be asked for an Overleaf Git token — generate it under **Account →
-Settings → Git integration**.
+The **Git** entry in that same Integrations panel ("Git clone this project")
+shows the remote URL and the token prompt.
 
 `git subtree` pushes only `paper/`, so Overleaf gets a clean paper-only project
 with `iclr2027.tex` at the root and no main-document setting needed. The cost is
