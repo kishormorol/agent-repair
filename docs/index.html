@@ -128,6 +128,22 @@
   </div>
 </header>
 
+
+<section>
+  <h2>Start here</h2>
+  <div class="card">
+    <p style="margin-bottom:0">Same three commands for both of you. Everything you need is in the
+    repository — no cloud access, no credentials, nothing to request.</p>
+    <pre>git clone https://github.com/kishormorol/agent-repair.git
+cd agent-repair &amp;&amp; pip install -r requirements.txt
+python -m pytest -q          <span style="opacity:.6"># expect: 416 passed</span></pre>
+    <p style="margin:14px 0 0; font-size:13.5px; color:var(--muted)">If that last line says anything other
+    than 416 passed, stop and tell the author — it means you are not looking at what he thinks you are.
+    The paper itself is <code>paper/iclr2027.tex</code>; the built PDF is linked at the top of this page,
+    and the experiment is Appendix H.</p>
+  </div>
+</section>
+
 <section>
   <h2>What the paper claims</h2>
   <p class="lede">An agent answering a question takes steps: search, look up, answer. Sometimes it
@@ -314,6 +330,14 @@
     </ol>
     <pre>unzip output/supplement/agent-repair-combined-supplement.zip
 cd combined-supplement &amp;&amp; python reproduce.py</pre>
+    <p style="margin:14px 0 4px; font-size:13.5px"><b>For item 3</b> — check the balance claim yourself:</p>
+    <pre>import pandas as pd
+for cell in ["position_pairs_qwen", "position_pairs_mistral"]:
+    t = pd.read_csv(f"{cell}/trials.csv")
+    for ds, sub in t.groupby("dataset"):
+        a = sorted(sub[sub.strategy == "unc__perplexity__argmax__bt2"].origin)
+        b = sorted(sub[sub.strategy == "length_matched_swap"].origin)
+        print(cell, ds, a == b)      <span style="opacity:.6"># all four must print True</span></pre>
     <p style="margin:12px 0 0; font-size:13.5px">Full brief: <a href="https://github.com/kishormorol/agent-repair/blob/main/docs/review_task_muna.md">review_task_muna.md ↗</a> · <a href="https://github.com/kishormorol/agent-repair/raw/main/output/supplement/agent-repair-combined-supplement.zip">download the supplement ↗</a></p>
   </section>
 </div>
@@ -336,6 +360,30 @@ cd combined-supplement &amp;&amp; python reproduce.py</pre>
   <p style="margin-top:14px">State what you checked, how, what you found, and <strong>what you did not
   check</strong>. A named gap is far safer than one silently assumed covered. A verdict without a method is
   hard to act on.</p>
+  <div class="card" style="margin-top:16px; border-left:3px solid var(--ok)">
+    <h3>Finding nothing wrong is a real result</h3>
+    <p style="margin-bottom:0">Please do not manufacture objections. "I checked X by doing Y and it holds"
+    is exactly as valuable as finding a flaw, and it is what lets the author state in the paper that this
+    was independently checked. The one thing that helps nobody is a verdict with no method behind it.</p>
+  </div>
+</section>
+
+<section>
+  <h2>When you are done</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Write it up</h3>
+      <p style="margin-bottom:0">Add a file to the repository — <code>docs/review_emam_2026-09.md</code> or
+      <code>docs/review_muna_2026-09.md</code> — with one short entry per numbered item: what you checked,
+      how, what you found, and what you left unchecked.</p>
+    </div>
+    <div class="card">
+      <h3>Flag blockers out loud</h3>
+      <p style="margin-bottom:0">Anything that would change a claim in the paper is <strong>blocking</strong>.
+      Tell the author directly as soon as you find it, not only in the file — it may change what the paper
+      can say, and that is better known early than late.</p>
+    </div>
+  </div>
 </section>
 
 <footer>
