@@ -9,7 +9,7 @@ failure gate and recovery policies.
 
 ## Title
 
-A Controlled Test of Perplexity-Based Trajectory Repair: Two Model Families, Three QA Datasets, and an Exactly Balanced Origin Control
+A Length-Matched Control Erases the Apparent Benefit of Perplexity-Guided Trajectory Repair
 
 ## Abstract
 Recovery from a failed agent trajectory can restart the task or preserve a prefix and

@@ -148,11 +148,17 @@ def test_paper_scope_is_bounded_to_the_policy_actually_tested():
     title = manuscript.split(r"\title{", 1)[1].split("}", 1)[0]
     standalone = (ROOT / "paper_title_abstract.md").read_text()
 
-    # The old title asked about the whole stored-token uncertainty family.
+    # Two earlier titles: a question about the whole stored-token uncertainty
+    # family, then a scope inventory that credited the balanced control with
+    # three datasets when it ran on two. The title now states the finding.
     assert "Does Stored-Token Uncertainty" not in manuscript
-    assert "Perplexity-Based Trajectory Repair" in title
-    assert "Perplexity-Based Trajectory Repair" in standalone
-    assert "pdftitle={A Controlled Test of Perplexity-Based" in manuscript
+    assert "Controlled Test of" not in manuscript
+    assert "Three QA Datasets" not in manuscript and "Three QA Datasets" not in standalone
+    assert "A Length-Matched Control Erases the Apparent Benefit" in title
+    assert "A Length-Matched Control Erases the Apparent Benefit" in standalone
+    assert "pdftitle={A Length-Matched Control Erases" in manuscript
+    # One line: OpenReview takes plain text and ICLR titles do not carry subtitles.
+    assert "\\\\" not in title and "\\large" not in title
 
     contributions = prose.split("We make three contributions", 1)[1].split(r"\end{enumerate}", 1)[0]
     assert "one fixed selector" in contributions
