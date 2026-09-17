@@ -48,3 +48,6 @@ Thumbs.db
 # audits, pooled analyses — is force-added and tracked; the bulk is not.
 output/
 tmp/
+
+# Local working memory: operational and billing detail, not for a public repo
+MEMORY.md
