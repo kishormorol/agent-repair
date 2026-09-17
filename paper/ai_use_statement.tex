@@ -67,15 +67,38 @@ much independent verification a reader should expect of work produced this
 way.
 
 \paragraph{Independent verification.}
-[AUTHORS: state here what you verified independently, and by what means. Be
-specific --- which analyses you re-derived yourself, which code you read line
-by line, and which claims you checked against the raw records rather than
-against generated summaries. Do not describe checking that did not happen.]
+The author checked the assisted work by four means. He ran the reproduction
+supplement himself, from its own extraction rather than from the working tree,
+and confirmed that each packaged study returns the primary test counts and
+trial counts reported here. He read the core analysis implementation, which
+performs the length pairing, asserts exact balance of the two arms' origin
+multisets and evaluates the exact sign-flip null, closely enough to judge
+whether it does what this paper says it does. He traced reported quantities
+back to trial-level records rather than to the generated macros that place
+them in the text. He inspected the rendered figures against the numbers they
+report, a check that had already caught three figures whose labels were
+obscured by their legends.
+
+The limits of that checking should be stated plainly. It was performed by the
+author who also directed the AI assistance, so it is verification rather than
+independent replication, and it shares whatever blind spots shaped the work.
+It was concentrated on the recent audited experiments. The historical material
+in the appendices and the pre-September results were not re-derived and should
+be read as unverified alongside the rest.
 
 \paragraph{Review.}
-[AUTHORS: state here who reviewed the work, what each reviewer checked, and
-what remained unverified at submission. Name explicitly anything that was not
-re-verified, including earlier material carried forward.]
+Two independent reviewers were commissioned before submission, one to examine
+the statistical argument --- in particular whether the resolution-floor bound
+is correct and whether it is used fairly rather than to excuse an underpowered
+design --- and one to examine whether each claim traces to evidence and
+whether the reproduction bundle is genuinely self-contained. Both briefs are
+public in the project repository, as is the guidance that each reviewer record
+what they did \emph{not} check.
+
+At the time of submission those reviews were underway and not complete. No
+finding from either reviewer is reflected in this version of the manuscript,
+and no claim here should be read as having been independently confirmed by
+them. Anything they report will be addressed in revision.
 
 \paragraph{Responsibility.}
 The authors take full responsibility for all content of this submission,

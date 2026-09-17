@@ -19,13 +19,13 @@ iclr-draft:
 # restores the official ICLR labels. Use it for an actual submission and for
 # the LLM review service. The generated .tex is an artifact, not a source.
 submission: iclr-draft
-	sed 's/^\\submissionfalse$$/\\submissiontrue/' iclr2027.tex > build/iclr2027_submission.tex
-	cp -f *.bib *.bst *.sty build/ 2>/dev/null || true
+	sed 's/^\\submissionfalse$$/\\submissiontrue/' iclr2027.tex > iclr2027_submission.tex
 	latexmk -pdf -interaction=nonstopmode -halt-on-error \
-	  -outdir=build/submission -cd build/iclr2027_submission.tex
+	  -outdir=build/submission iclr2027_submission.tex
 	mkdir -p ../output/pdf
 	cp build/submission/iclr2027_submission.pdf \
 	  ../output/pdf/agent-repair-iclr2027-submission.pdf
+	rm -f iclr2027_submission.tex
 	@pdftotext -layout ../output/pdf/agent-repair-iclr2027-submission.pdf - \
 	  | grep -q 'Under review as a conference paper at ICLR 2027' \
 	  && echo "submission build OK: official header present" \
