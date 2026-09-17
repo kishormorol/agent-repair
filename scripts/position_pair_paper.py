@@ -1,9 +1,13 @@
-"""Turn the completed position-pair study into paper assets, never hand-typed.
+"""Turn the completed position-pair cells into paper assets, never hand-typed.
 
 The swap control gives each paired question its partner's uncertainty-chosen
 origin, so the two arms carry identical origin multisets by construction. This
 loader refuses any analysis that does not carry that exact balance, that is
 incomplete, or whose audits report a mismatch.
+
+Two model cells share one question cohort. That makes them a direct contrast
+and, for the same reason, forbids a pooled confirmatory statistic: the
+identifiers are not independent between cells.
 """
 from __future__ import annotations
 
@@ -26,24 +30,37 @@ from src.repair.diagnosis import TREATMENT
 from src.repair.position_pairs import DEV_CONTROL, SWAP
 
 BASE = ROOT / "output/aws-experiment/2026-09-16-position-pairs"
-RUN_ID = "position-pairs-20260916-v2"
-LABELS = {"hotpotqa": "HotpotQA", "2wikimultihopqa": "2Wiki"}
+DATASETS = {"hotpotqa": "HotpotQA", "2wikimultihopqa": "2Wiki"}
+# Retrieval directories are scoped by model: both cells emit an identically
+# named analysis and logs, so one shared directory would collide.
+CELLS = {
+    "qwen32b": {"label": "Qwen", "prefix": "PairQwen", "package": "prepared-v2",
+                "analysis": "analysis-local.json",
+                "remote": "retrieved-qwen32b/results/analysis.json",
+                "trials": "retrieved-qwen32b/results/analysis.trials.csv",
+                "run_id": "position-pairs-20260916-v2"},
+    "mistral12b": {"label": "Mistral", "prefix": "PairMistral", "package": "prepared-mistral12b",
+                   "analysis": "analysis-local-mistral.json",
+                   "remote": "retrieved/results/analysis.json",
+                   "trials": "retrieved/results/analysis.trials.csv",
+                   "run_id": "position-pairs-mistral-20260917-v2"},
+}
 
 
-def load_position_pairs(base=BASE, run_id=RUN_ID):
-    """Read the local independent reproduction and verify it against the package."""
-    base = Path(base)
-    protocol = json.loads((base / "prepared-v2/protocol.json").read_text())
+def load_cell(model_key, base=BASE):
+    """Read one cell's independent reproduction and verify it against its package."""
+    base, spec = Path(base), CELLS[model_key]
+    protocol = json.loads((base / spec["package"] / "protocol.json").read_text())
     require(protocol["sha256"] == fingerprint(protocol["payload"]), "Protocol checksum mismatch")
-    require(protocol["payload"]["run_id"] == run_id, "Protocol is not this run")
-    analysis = json.loads((base / "analysis-local.json").read_text())
+    require(protocol["payload"]["run_id"] == spec["run_id"], f"Protocol is not {spec['run_id']}")
+    require(protocol["payload"]["model_key"] == model_key, "Protocol names a different model")
+    analysis = json.loads((base / spec["analysis"]).read_text())
     require(analysis["protocol_sha256"] == protocol["sha256"],
             "Analysis does not describe the frozen protocol")
     require(analysis["complete"], "Analysis is incomplete; partial runs are not reportable")
     require(analysis["primary_family_size"] == protocol["payload"]["primary_family_size"],
             "Primary family size differs from the frozen protocol")
-
-    remote = json.loads((base / "retrieved-qwen32b/results/analysis.json").read_text())
+    remote = json.loads((base / spec["remote"]).read_text())
     require(remote["protocol_sha256"] == analysis["protocol_sha256"],
             "On-instance analysis describes a different protocol")
 
@@ -71,7 +88,20 @@ def load_position_pairs(base=BASE, run_id=RUN_ID):
     for result in secondary.values():
         require(result["strategy_b"] == DEV_CONTROL and result["p_value_holm"] is None,
                 "Secondary comparison must stay descriptive")
-    return protocol["payload"], analysis, primary, secondary
+    return {**spec, "model_key": model_key, "protocol": protocol["payload"],
+            "analysis": analysis, "primary": primary, "secondary": secondary,
+            "audits": {a["dataset"]: a for a in analysis["audits"]},
+            "paths": {k: spec[k] for k in ["analysis", "remote", "trials", "package"]}}
+
+
+def load_position_pairs(base=BASE):
+    """Load every cell and confirm they share one question cohort."""
+    cells = {key: load_cell(key, base) for key in CELLS}
+    cohorts = [tuple(sorted(c["protocol"]["cohorts"][d]["main_ids"]))
+               for c in cells.values() for d in sorted(DATASETS)]
+    require(len(set(cohorts)) == len(DATASETS),
+            "Cells must face identical question cohorts, one per dataset")
+    return cells
 
 
 def resolution_floor(result):
@@ -79,16 +109,22 @@ def resolution_floor(result):
     return sign_flip_resolution_floor(result["positive_blocks"] + result["negative_blocks"])
 
 
-def results_table(analysis, primary, secondary):
-    audits = {a["dataset"]: a for a in analysis["audits"]}
-    rows = [r"\begin{tabular}{@{}lrrrrrrrr@{}}", r"\toprule",
-            r"Dataset & $N_f$ & Pairs & $U$ & $S$ & $\Delta$ & 95\% CI & $p$ & $p_H$ \\",
+def ordered_rows(cells):
+    for key in CELLS:
+        cell = cells[key]
+        for dataset in DATASETS:
+            if dataset in cell["primary"]:
+                yield cell, dataset, cell["primary"][dataset], cell["audits"][dataset]
+
+
+def results_table(cells):
+    rows = [r"\begin{tabular}{@{}llrrrrrrrr@{}}", r"\toprule",
+            r"Model & Dataset & $N_f$ & Pairs & $U$ & $S$ & $\Delta$ & 95\% CI & $p$ & $p_H$ \\",
             r"\midrule"]
-    for dataset in sorted(audits, key=lambda d: LABELS.get(d, d)):
-        audit, result = audits[dataset], primary[dataset]
+    for cell, dataset, result, audit in ordered_rows(cells):
         rows.append(
-            f"{LABELS.get(dataset, dataset)} & {audit['main_failures']} & {result['n_pairs']} & "
-            f"{100 * result['mean_a']:.2f} & {100 * result['mean_b']:.2f} & "
+            f"{cell['label']} & {DATASETS[dataset]} & {audit['main_failures']} & "
+            f"{result['n_pairs']} & {100 * result['mean_a']:.2f} & {100 * result['mean_b']:.2f} & "
             f"{100 * result['delta']:+.2f} & "
             f"[{100 * result['delta_lo']:+.2f}, {100 * result['delta_hi']:+.2f}] & "
             f"{result['p_value']:.3f} & {result['p_value_holm']:.3f} " + r"\\")
@@ -96,95 +132,51 @@ def results_table(analysis, primary, secondary):
     return "\n".join(rows) + "\n"
 
 
-def blocks_table(primary):
-    rows = [r"\begin{tabular}{@{}lrrrrr@{}}", r"\toprule",
-            r"Dataset & Pairs & $+$ & $-$ & $0$ & Floor \\", r"\midrule"]
-    for dataset in sorted(primary, key=lambda d: LABELS.get(d, d)):
-        result = primary[dataset]
+def blocks_table(cells):
+    rows = [r"\begin{tabular}{@{}llrrrrr@{}}", r"\toprule",
+            r"Model & Dataset & Pairs & $+$ & $-$ & $0$ & Floor \\", r"\midrule"]
+    for cell, dataset, result, _ in ordered_rows(cells):
         rows.append(
-            f"{LABELS.get(dataset, dataset)} & {result['n_pairs']} & {result['positive_blocks']} & "
-            f"{result['negative_blocks']} & {result['zero_blocks']} & "
-            f"{resolution_floor(result):.3f} " + r"\\")
+            f"{cell['label']} & {DATASETS[dataset]} & {result['n_pairs']} & "
+            f"{result['positive_blocks']} & {result['negative_blocks']} & "
+            f"{result['zero_blocks']} & {resolution_floor(result):.3f} " + r"\\")
     rows += [r"\bottomrule", r"\end{tabular}"]
     return "\n".join(rows) + "\n"
 
 
-def macros(protocol, analysis, primary, secondary):
-    audits = {a["dataset"]: a for a in analysis["audits"]}
-    values = {
-        "PairRunID": protocol["run_id"].replace("_", r"\_"),
-        "PairQuestions": sum(a["main_questions"] for a in analysis["audits"]),
-        "PairFailures": sum(a["main_failures"] for a in analysis["audits"]),
-        "PairPairs": sum(a["pairs"] for a in analysis["audits"]),
-        "PairMatched": sum(a["matched_questions"] for a in analysis["audits"]),
-        "PairUnmatched": sum(a["unmatched_failures"] for a in analysis["audits"]),
-        "PairRepairs": sum(a["unique_repairs"] for a in analysis["audits"]),
-        "PairRows": sum(a["trial_rows"] for a in analysis["audits"]),
-        "PairSeeds": len(protocol["seeds"]),
-        "PairFamily": analysis["primary_family_size"],
-    }
-    lines = [r"\newcommand{\%s}{%s}" % (name, value) for name, value in values.items()]
-    for dataset, prefix in [("hotpotqa", "PairHotpot"), ("2wikimultihopqa", "PairTwoWiki")]:
-        if dataset not in primary:
-            continue
-        audit, result, other = audits[dataset], primary[dataset], secondary[dataset]
-        emit = {
-            "Failures": f"{audit['main_failures']}",
-            "Pairs": f"{result['n_pairs']}",
-            "Treatment": f"{100 * result['mean_a']:.2f}",
-            "Swap": f"{100 * result['mean_b']:.2f}",
-            "Delta": f"{100 * result['delta']:+.2f}",
-            "Low": f"{100 * result['delta_lo']:+.2f}",
-            "High": f"{100 * result['delta_hi']:+.2f}",
-            "P": f"{result['p_value']:.3f}",
-            "Holm": f"{result['p_value_holm']:.3f}",
-            "Positive": f"{result['positive_blocks']}",
-            "Negative": f"{result['negative_blocks']}",
-            "Zero": f"{result['zero_blocks']}",
-            "Floor": f"{resolution_floor(result):.3f}",
-            "Shared": f"{audit['balance']['shared_execution_pairs']}",
-            "Attempts": f"{audit['balance']['paired_attempts']}",
-            "SharedPct": f"{100 * audit['balance']['shared_execution_fraction']:.1f}",
-            "SecondaryDelta": f"{100 * other['delta']:+.2f}",
-            "SecondaryP": f"{other['p_value']:.3f}",
-        }
-        lines += [r"\newcommand{\%s%s}{%s}" % (prefix, name, value) for name, value in emit.items()]
-    return lines
-
-
-def results_figure(out, analysis, primary):
+def results_figure(out, cells):
     """Paired effect with its interval, beside the block composition that bounds it."""
-    order = sorted(primary, key=lambda d: LABELS.get(d, d))
-    labels = [LABELS.get(d, d) for d in order]
-    deltas = [100 * primary[d]["delta"] for d in order]
-    low = [100 * (primary[d]["delta"] - primary[d]["delta_lo"]) for d in order]
-    high = [100 * (primary[d]["delta_hi"] - primary[d]["delta"]) for d in order]
+    rows = list(ordered_rows(cells))
+    labels = [f"{c['label']}/{DATASETS[d]}" for c, d, _, _ in rows]
+    deltas = [100 * r["delta"] for _, _, r, _ in rows]
+    low = [100 * (r["delta"] - r["delta_lo"]) for _, _, r, _ in rows]
+    high = [100 * (r["delta_hi"] - r["delta"]) for _, _, r, _ in rows]
     with plt.rc_context({"font.size": 9, "axes.spines.top": False, "axes.spines.right": False,
                          "pdf.fonttype": 42, "ps.fonttype": 42}):
-        fig, axes = plt.subplots(1, 2, figsize=(6.4, 2.5), layout="constrained")
-        y = np.arange(len(order))
+        fig, axes = plt.subplots(1, 2, figsize=(6.4, 2.9), layout="constrained")
+        y = np.arange(len(rows))
         axes[0].errorbar(deltas, y, xerr=[low, high], fmt="o", color="#2b6cb0",
                          ecolor="#8aa9c9", elinewidth=2, capsize=3, markersize=5)
         axes[0].axvline(0, color="#8c8c8c", linewidth=.8, zorder=0)
-        axes[0].set_yticks(y, labels)
+        axes[0].set_yticks(y, labels, fontsize=8)
+        axes[0].invert_yaxis()
         axes[0].set_xlabel("Uncertainty minus swapped origin (pp)")
         axes[0].grid(axis="x", color="#e4e7ea", linewidth=.6)
 
-        widths = {key: [primary[d][f"{key}_blocks"] for d in order]
-                  for key in ["positive", "negative", "zero"]}
-        left = np.zeros(len(order))
+        left = np.zeros(len(rows))
         for key, colour, label in [("positive", "#2b6cb0", "Higher"),
                                    ("negative", "#c05621", "Lower"), ("zero", "#cbd5e0", "Tied")]:
-            axes[1].barh(y, widths[key], left=left, color=colour, label=label, height=.6)
-            left += np.asarray(widths[key], dtype=float)
-        for index, dataset in enumerate(order):
-            axes[1].text(left[index] + .4, index, f"floor {resolution_floor(primary[dataset]):.3f}",
+            values = np.array([r[f"{key}_blocks"] for _, _, r, _ in rows], dtype=float)
+            axes[1].barh(y, values, left=left, color=colour, label=label, height=.6)
+            left += values
+        for index, (_, _, result, _) in enumerate(rows):
+            axes[1].text(left[index] + .6, index, f"floor {resolution_floor(result):.3f}",
                          va="center", fontsize=7, color="#666666")
-        axes[1].set_yticks(y, labels)
-        axes[1].set_xlim(0, max(left) * 1.42)
-        # Keep headroom above the top bar so the legend cannot overlap it.
-        axes[1].set_ylim(-0.7, len(order) - 1 + 1.1)
-        axes[1].set_xlabel("Pairs by sign of the paired difference")
+        axes[1].set_yticks(y, labels, fontsize=8)
+        axes[1].invert_yaxis()
+        axes[1].set_xlim(0, max(left) * 1.38)
+        axes[1].set_ylim(len(rows) - 0.4, -1.1)
+        axes[1].set_xlabel("Pairs by sign of difference")
         axes[1].legend(fontsize=7, frameon=False, ncol=3, loc="upper center", columnspacing=1.1)
         for ax in axes:
             ax.set_axisbelow(True)
@@ -193,41 +185,83 @@ def results_figure(out, analysis, primary):
         plt.close(fig)
 
 
-def provenance(base, protocol, analysis):
+def macros(cells):
+    audits = [a for c in cells.values() for a in c["analysis"]["audits"]]
+    values = {
+        "PairCells": len(cells),
+        "PairQuestions": sum(a["main_questions"] for a in audits),
+        "PairCohort": sum(a["main_questions"] for a in cells["qwen32b"]["analysis"]["audits"]),
+        "PairFailures": sum(a["main_failures"] for a in audits),
+        "PairPairs": sum(a["pairs"] for a in audits),
+        "PairMatched": sum(a["matched_questions"] for a in audits),
+        "PairUnmatched": sum(a["unmatched_failures"] for a in audits),
+        "PairRepairs": sum(a["unique_repairs"] for a in audits),
+        "PairRows": sum(a["trial_rows"] for a in audits),
+        "PairFamily": cells["qwen32b"]["analysis"]["primary_family_size"],
+    }
+    lines = [r"\newcommand{\%s}{%s}" % item for item in values.items()]
+    for cell, dataset, result, audit in ordered_rows(cells):
+        prefix = cell["prefix"] + ("Hotpot" if dataset == "hotpotqa" else "TwoWiki")
+        emit = {
+            "Failures": f"{audit['main_failures']}", "Pairs": f"{result['n_pairs']}",
+            "Treatment": f"{100 * result['mean_a']:.2f}", "Swap": f"{100 * result['mean_b']:.2f}",
+            "Delta": f"{100 * result['delta']:+.2f}",
+            "Low": f"{100 * result['delta_lo']:+.2f}", "High": f"{100 * result['delta_hi']:+.2f}",
+            "P": f"{result['p_value']:.3f}", "Holm": f"{result['p_value_holm']:.3f}",
+            "Positive": f"{result['positive_blocks']}", "Negative": f"{result['negative_blocks']}",
+            "Zero": f"{result['zero_blocks']}", "Floor": f"{resolution_floor(result):.3f}",
+            "Shared": f"{audit['balance']['shared_execution_pairs']}",
+            "Attempts": f"{audit['balance']['paired_attempts']}",
+            "SharedPct": f"{100 * audit['balance']['shared_execution_fraction']:.1f}",
+            "SecondaryDelta": f"{100 * cell['secondary'][dataset]['delta']:+.2f}",
+        }
+        lines += [r"\newcommand{\%s%s}{%s}" % (prefix, name, value) for name, value in emit.items()]
+    return lines
+
+
+def provenance(base, cells):
     base = Path(base)
-    sources = ["analysis-local.json", "retrieved-qwen32b/results/analysis.json",
-               "retrieved-qwen32b/results/analysis.trials.csv", "prepared-v2/protocol.json",
-               "retrieval-verification.json"]
-    return {"run_id": protocol["run_id"], "protocol_sha256": analysis["protocol_sha256"],
-            "scope": protocol["scope"], "precision_note": protocol["precision_note"],
-            "primary_family": protocol["primary_family"],
-            "resampling_unit": protocol["resampling_unit"],
+    record = {"cells": {}, "pooling_limitation":
+              "The two cells share question identifiers, so they support a descriptive "
+              "contrast only and no pooled confirmatory statistic.",
+              "code_sha256": {name: file_fingerprint(ROOT / name) for name in
+                              ["scripts/position_pair_paper.py",
+                               "scripts/analyze_position_pair_study.py",
+                               "src/repair/position_pairs.py"]}}
+    for key, cell in cells.items():
+        paths = cell["paths"]
+        sources = [paths["analysis"], paths["remote"], paths["trials"],
+                   f"{paths['package']}/protocol.json"]
+        record["cells"][key] = {
+            "run_id": cell["run_id"], "protocol_sha256": cell["analysis"]["protocol_sha256"],
+            "scope": cell["protocol"]["scope"], "precision_note": cell["protocol"]["precision_note"],
+            "primary_family": cell["protocol"]["primary_family"],
             "source_sha256": {name: file_fingerprint(base / name) for name in sources
-                              if (base / name).is_file()},
-            "code_sha256": {name: file_fingerprint(ROOT / name) for name in
-                            ["scripts/position_pair_paper.py", "scripts/analyze_position_pair_study.py",
-                             "src/repair/position_pairs.py"]}}
+                              if (base / name).is_file()}}
+    return record
 
 
-def build(base=BASE, out=ROOT / "paper/generated", run_id=RUN_ID):
+def build(base=BASE, out=ROOT / "paper/generated"):
     out = Path(out)
     (out / "tables").mkdir(parents=True, exist_ok=True)
     (out / "figures").mkdir(parents=True, exist_ok=True)
-    protocol, analysis, primary, secondary = load_position_pairs(base, run_id)
-    results_figure(out, analysis, primary)
-    (out / "tables/iclr2027_position_pairs.tex").write_text(results_table(analysis, primary, secondary))
-    (out / "tables/iclr2027_position_pair_blocks.tex").write_text(blocks_table(primary))
+    cells = load_position_pairs(base)
+    (out / "tables/iclr2027_position_pairs.tex").write_text(results_table(cells))
+    (out / "tables/iclr2027_position_pair_blocks.tex").write_text(blocks_table(cells))
+    results_figure(out, cells)
     (out / "iclr2027_position_pairs.tex").write_text(
-        "% Generated by scripts/position_pair_paper.py from the audited position-pair study.\n"
-        + "\n".join(macros(protocol, analysis, primary, secondary)) + "\n")
-    record = provenance(base, protocol, analysis)
+        "% Generated by scripts/position_pair_paper.py from the audited position-pair cells.\n"
+        + "\n".join(macros(cells)) + "\n")
+    record = provenance(base, cells)
     (out / "iclr2027_position_pairs_provenance.json").write_text(
         json.dumps(record, indent=2, allow_nan=False) + "\n")
-    return protocol, analysis, primary, secondary, record
+    return cells, record
 
 
 if __name__ == "__main__":
-    _, analysis, primary, _, _ = build()
-    print(json.dumps({"run_id": RUN_ID, "cells": len(analysis["audits"]),
-                      "pairs": sum(a["pairs"] for a in analysis["audits"]),
-                      "holm": {d: r["p_value_holm"] for d, r in primary.items()}}, indent=2))
+    cells, _ = build()
+    print(json.dumps({"cells": list(cells),
+                      "pairs": sum(a["pairs"] for c in cells.values()
+                                   for a in c["analysis"]["audits"]),
+                      "holm": {f"{c['label']}/{d}": r["p_value_holm"]
+                               for c, d, r, _ in ordered_rows(cells)}}, indent=2))

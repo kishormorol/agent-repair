@@ -1,8 +1,10 @@
-\begin{tabular}{@{}lrrrrrrrr@{}}
+\begin{tabular}{@{}llrrrrrrrr@{}}
 \toprule
-Dataset & $N_f$ & Pairs & $U$ & $S$ & $\Delta$ & 95\% CI & $p$ & $p_H$ \\
+Model & Dataset & $N_f$ & Pairs & $U$ & $S$ & $\Delta$ & 95\% CI & $p$ & $p_H$ \\
 \midrule
-2Wiki & 40 & 18 & 15.74 & 19.44 & -3.70 & [-11.11, +3.70] & 0.500 & 0.500 \\
-HotpotQA & 47 & 23 & 13.77 & 10.14 & +3.62 & [+0.72, +7.25] & 0.125 & 0.250 \\
+Qwen & HotpotQA & 47 & 23 & 13.77 & 10.14 & +3.62 & [+0.72, +7.25] & 0.125 & 0.250 \\
+Qwen & 2Wiki & 40 & 18 & 15.74 & 19.44 & -3.70 & [-11.11, +3.70] & 0.500 & 0.500 \\
+Mistral & HotpotQA & 71 & 33 & 9.60 & 8.59 & +1.01 & [-2.02, +4.04] & 0.750 & 1.000 \\
+Mistral & 2Wiki & 60 & 28 & 9.52 & 11.31 & -1.79 & [-6.55, +1.79] & 0.688 & 1.000 \\
 \bottomrule
 \end{tabular}

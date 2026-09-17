@@ -460,11 +460,11 @@ and 26.19 on Qwen 2Wiki. This imbalance limits isolation of uncertainty
 information from positional preferences; Appendix~\ref{app:position_balance}
 reports full distributions and execution overlap. A separately frozen
 follow-up removes that imbalance by construction rather than by fitting: on
-\PairQuestions{} fresh questions it pairs failures by exact original length and
+\PairCohort{} fresh questions it pairs failures by exact original length and
 gives each question its partner's uncertainty-chosen origin, so the two arms
-carry \emph{identical} origin multisets. The comparison stays null, with
-Holm-adjusted $p$-values of \PairHotpotHolm{} and \PairTwoWikiHolm{} and the
-two datasets pointing in \emph{opposite} directions
+carry \emph{identical} origin multisets. Both model families stay null across
+\PairPairs{} pairs, and in each the sign follows the dataset rather than the
+model, positive on HotpotQA and negative on 2Wiki
 (Appendix~\ref{app:position_pairs}). All policy outcomes, costs and contrasts
 appear in Appendix~\ref{app:extension_protocol}.
 
@@ -1826,14 +1826,16 @@ clear gain.
 
 \subsection{Length-Matched Swap: Design and Block Composition}
 \label{app:position_pairs}
-Run \PairRunID{} draws \PairQuestions{} fresh Qwen questions, excluding every
-identifier used by the earlier studies, and reuses those earlier questions only
-as development data for the secondary comparator. Of \PairFailures{} initial
-failures, \PairMatched{} pair by exact original length and \PairUnmatched{}
-remain as odd stratum remainders. The frozen design fixes
-\PairSeeds{} repair seeds, three policies and a \PairFamily{}-test primary
+Two separately frozen cells, one per model family, draw the same \PairCohort{}
+fresh questions, excluding every identifier used by the earlier studies and
+reusing those earlier questions only as development data for the secondary
+comparator. Across both cells, \PairQuestions{} model/question evaluations
+yield \PairFailures{} failures, of which \PairMatched{} pair by exact original
+length and \PairUnmatched{} remain as odd stratum remainders. Each cell fixes
+three repair seeds, three policies and its own \PairFamily{}-test primary
 family; execution produced \PairRepairs{} unique repairs and \PairRows{} trial
-rows. All originals are generated before any repair, and pairing consumes only
+rows. The cells share a cohort, which makes them a direct contrast and, for the
+same reason, forbids a pooled confirmatory statistic. All originals are generated before any repair, and pairing consumes only
 identifiers and lengths, so no recovery outcome can influence which questions
 are compared or which origins they receive.
 
@@ -1850,16 +1852,18 @@ allowances to match, and execution sharing to track the selected origin. Both
 the on-instance and an independent local reproduction report zero mismatches.
 Because both arms keep the same seeds, hints and allowances, two policies that
 agree on an origin share one physical execution:
-\PairHotpotShared{}/\PairHotpotAttempts{} paired attempts on HotpotQA and
-\PairTwoWikiShared{}/\PairTwoWikiAttempts{} on 2Wiki. Shared attempts do not
-imply equal outcomes elsewhere. The descriptive secondary comparison against
-development-fitted random, now fitted on a much larger development failure
-sample, agrees with the primary result: \PairHotpotSecondaryDelta{} points on
-HotpotQA and \PairTwoWikiSecondaryDelta{} on 2Wiki.
+\PairQwenHotpotShared{}/\PairQwenHotpotAttempts{} and
+\PairQwenTwoWikiShared{}/\PairQwenTwoWikiAttempts{} paired attempts for Qwen,
+and \PairMistralHotpotShared{}/\PairMistralHotpotAttempts{} and
+\PairMistralTwoWikiShared{}/\PairMistralTwoWikiAttempts{} for Mistral. Shared
+attempts do not imply equal outcomes elsewhere. The descriptive secondary
+comparison against development-fitted random, now fitted on a much larger
+development failure sample, agrees with the primary result in every cell.
 
 \begin{table}[htbp]
 \centering\footnotesize
-\caption{Length-matched swap experiment on \PairQuestions{} fresh questions.
+\caption{Length-matched swap experiment, two model families on the same
+\PairCohort{} fresh questions.
 $N_f$ is the main-failure count and Pairs the number of length-matched blocks.
 $U$ and $S$ are mean per-seed success percentages for uncertainty and the
 swapped-origin control. $\Delta=U-S$ with a percentile interval over resampled
@@ -1892,14 +1896,16 @@ a cell cannot report below its floor whatever the outcomes.}
 
 Under exact positional balance the comparison remains null
 (Table~\ref{tab:position_pairs}): Holm-adjusted $p$-values of
-\PairHotpotHolm{} and \PairTwoWikiHolm{}, with the datasets pointing in
-\emph{opposite} directions, \PairHotpotDelta{} percentage points on HotpotQA
-and \PairTwoWikiDelta{} on 2Wiki.
+\PairQwenHotpotHolm{}, \PairQwenTwoWikiHolm{}, \PairMistralHotpotHolm{} and
+\PairMistralTwoWikiHolm{}. The sign follows the dataset, not the model:
+\PairQwenHotpotDelta{} and \PairMistralHotpotDelta{} percentage points on
+HotpotQA against \PairQwenTwoWikiDelta{} and \PairMistralTwoWikiDelta{} on
+2Wiki. Mistral's effects are about half the size of Qwen's.
 
 The HotpotQA percentile interval excludes zero but should not be read as a
-positive effect: only \PairHotpotPositive{} of \PairHotpotPairs{} pairs are
-non-zero blocks, and an exact two-sided sign-flip test cannot report below
-$2/2^{m}$ for $m$ non-zero blocks, a floor of \PairHotpotFloor{} here. That
+positive effect: only \PairQwenHotpotPositive{} of \PairQwenHotpotPairs{} pairs
+are non-zero blocks, and an exact two-sided sign-flip test cannot report below
+$2/2^{m}$ for $m$ non-zero blocks, a floor of \PairQwenHotpotFloor{} here. That
 cell could not have reached significance whatever the data showed, so the exact
 test does not corroborate the interval.
 
