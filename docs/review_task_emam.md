@@ -72,6 +72,18 @@ underpowered, what would fix it? Note that more questions demonstrably would
 *not*: the cell with the most pairs (33) shares the highest floor with a
 23-pair cell, because its extra pairs were ties.
 
+## If you edit the manuscript in Overleaf
+
+The Overleaf project is linked to this repository, but **Overleaf never pushes
+on its own**. An edit you make there exists only in Overleaf until someone
+presses *Menu -> GitHub -> Push Overleaf changes to GitHub* — invisible to the
+repository, to the author, and to each other.
+
+**Pull before you start, push when you stop.** The longer the two sides drift,
+the worse the eventual merge. Nothing you push can be overwritten from the
+author's side; a force-push to `main` is refused by a hook. Work left sitting
+in the Overleaf window is not protected, and no setting can protect it.
+
 ## Please also record
 
 - What you did **not** check. A named gap is safer than one assumed covered.

@@ -145,6 +145,15 @@ python -m pytest tests/test_position_pairs.py \
     so it fails on a clone by design. Ask the author if you need those records. The paper is
     <code>paper/iclr2027.tex</code>, its PDF is linked above, and the experiment is Appendix H.</p>
   </div>
+  <div class="card" style="margin-top:14px">
+    <h3>If you edit the manuscript in Overleaf</h3>
+    <p style="margin-bottom:0">The project is linked to this repository, but <b>Overleaf never pushes on its
+    own</b>. An edit you make there exists only in Overleaf until someone presses
+    <i>Menu &rarr; GitHub &rarr; Push Overleaf changes to GitHub</i> — invisible to the repository, to the
+    author, and to each other. So: <b>pull before you start, push when you stop.</b> The longer both sides
+    drift apart, the worse the merge. Nothing you push can be overwritten from the author's side; that is
+    guarded. Work lost in the Overleaf window is not, and no setting can guard it.</p>
+  </div>
 </section>
 
 <section>
@@ -395,8 +404,10 @@ for cell in ["position_pairs_qwen", "position_pairs_mistral"]:
   constrain arithmetic and provenance tightly — and reasoning not at all. Much of the design and analysis
   was produced with AI assistance and then checked largely by the same process that produced it.
   Self-consistency is not correctness.</p>
-  <p><strong>Two constraints.</strong> The compute budget is exhausted (~$0.75 credit), so a question that
-  needs new inference cannot be answered without a new allocation — saying so is a legitimate conclusion.
+  <p><strong>Two constraints.</strong> The compute budget is exhausted (~$0.75 credit), so nothing you ask for
+  can be run today. A further allocation has been requested and may not arrive. So if your answer is "this
+  needs more data", say <i>how much</i> and <i>of what</i> — that is now an actionable answer rather than a
+  dead end, and a bare "underpowered" is not.
   And do not sign the <a href="https://github.com/kishormorol/agent-repair/blob/main/docs/ai_use_statement_draft.md">AI-use statement ↗</a>: its bracketed attestations belong to the author. Do tell him whether
   its account of AI involvement matches what you find in the commit history.</p>
   <p style="margin-bottom:0"><strong>Reporting.</strong> Write to <code>docs/review_emam_2026-09.md</code> and

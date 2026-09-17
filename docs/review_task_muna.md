@@ -88,6 +88,18 @@ that nothing elsewhere implies more was verified than was.
 **not** re-verified alongside the recent work. Treat them as unreviewed and say
 so explicitly rather than letting silence imply coverage.
 
+## If you edit the manuscript in Overleaf
+
+The Overleaf project is linked to this repository, but **Overleaf never pushes
+on its own**. An edit you make there exists only in Overleaf until someone
+presses *Menu -> GitHub -> Push Overleaf changes to GitHub* — invisible to the
+repository, to the author, and to each other.
+
+**Pull before you start, push when you stop.** The longer the two sides drift,
+the worse the eventual merge. Nothing you push can be overwritten from the
+author's side; a force-push to `main` is refused by a hook. Work left sitting
+in the Overleaf window is not protected, and no setting can protect it.
+
 ## Please also record
 
 - What you did **not** check.
