@@ -79,7 +79,12 @@ def test_active_paper_records_completed_main_study_and_deferred_scope():
     parameters = next(cell.source for cell in nb.cells if "parameters" in cell.metadata.get("tags", []))
     assert "ORIGIN_SWEEP = False" in parameters and "INCLUDE_DIAGNOSTICS = False" in parameters
     assert "MULTIPLIERS = [1.0]" in parameters
-    assert r"\section{Archived Results}" in manuscript
+    # Historical bookkeeping was demoted from a section to a paragraph to free
+    # main-text space; what matters is that it is still disclosed and pointed
+    # at its appendix, not the heading level it carries.
+    assert r"\label{sec:archived}" in manuscript
+    assert "Older HotpotQA, MuSiQue and 2WikiMultiHopQA summaries" in manuscript
+    assert r"Appendix~\ref{app:historical_results}" in manuscript
     assert r"\section{Controlled Repair Results}" in manuscript
     assert "Working draft: audited QA repair studies" in manuscript
     assert "It has not been executed" not in manuscript

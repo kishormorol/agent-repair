@@ -503,7 +503,8 @@ Median measured time is \RuntimeUncMedian{}, \RuntimeRestartMedian{} and
 and~\ref{app:extension_protocol} give the latency distribution, termination
 counts, thresholds and audit details.
 
-\section{Archived Results}
+\section{Analysis and Discussion}
+\paragraph{Archived historical summaries.}
 \label{sec:archived}
 Older HotpotQA, MuSiQue and 2WikiMultiHopQA summaries cover \TotalFailed{}
 failures, but retain prompt/budget confounds, retrospective policy selection
@@ -512,7 +513,7 @@ replications of the controlled result. Appendix~\ref{app:historical_results}
 contains their rates and diagnostics; these summaries support neither a
 causal error-cascade claim nor an established length-based recovery rule.
 
-\section{Analysis and Discussion}
+\paragraph{Review-stage diagnostics.}
 The following trace, cost and cohort diagnostics were added during manuscript
 review after the primary results were known. They are exploratory and do not
 replace the frozen four-comparison family. Their inputs were checked against
@@ -606,9 +607,11 @@ equal instead. A nonsignificant difference is not evidence of equivalence, and
 bootstrap intervals lack simultaneous coverage. Sign-flip inference assumes
 within-question exchangeability, and shared seeds or executions add no
 independent questions. Precision, not effect size, binds these nulls:
-\PairBlockedCells{} of \PairTotalCells{} swap cells could not have reached a
-conventional level whatever their outcomes
-(Appendix~\ref{app:position_pairs}).
+\PairTiedPairs{} of \PairPairs{} swap pairs tie, so \PairBlockedCells{} of
+\PairTotalCells{} swap cells and two of six replication cells could not have
+reached a conventional level whatever their outcomes. More questions alone
+would not fix it: the cell with the most pairs shares the highest floor because
+its extra pairs were ties (Appendix~\ref{app:position_pairs}).
 
 \paragraph{Historical and replay boundaries.}
 Historical summaries retain prompt/budget confounds, incomplete raw trials
