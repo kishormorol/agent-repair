@@ -48,6 +48,8 @@ If uncertainty carries information beyond position, the real assignment should
 beat the swapped one. It does not, in any of four cells (two models × two
 datasets). **This is the central claim to scrutinise.**
 
+Note that 83 of the 102 pairs tie, which is what limits the test's resolution.
+
 ## 4. Why an independent review
 
 Every number is generated from audited records, each study is frozen by
@@ -97,8 +99,8 @@ practice. That is why they need you.
 sign-flip test over $m$ non-zero blocks cannot report $p$ below $2/2^{m}$,
 because only two of the $2^m$ sign assignments are as extreme as possible. It
 concludes that cells with few non-zero blocks *could not have reached
-significance whatever the data showed*. Two of four position-pair cells and two
-of six replication cells sit above 0.05 on this floor.
+significance whatever the data showed*. Three of four position-pair cells and
+two of six replication cells sit above 0.05 on this floor.
 
 Check: is the bound correct? Is it applied where it belongs? And is it doing
 more rhetorical work than it should — does "could not have reached

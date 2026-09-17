@@ -598,13 +598,17 @@ establish an advantage at equal end-to-end latency, FLOPs or deployment cost.
 
 \paragraph{Exclusions and statistical precision.}
 Test IDs are frozen and disjoint from reconstructed exclusions, but the
-original historical pool was not downloaded or compared and undocumented
-runs cannot be ruled out. Position controls fit 24 main-study development
-failures and 6--19 per replication cell; realized replication imbalance
-limits attribution to uncertainty beyond position. A nonsignificant
-difference is not evidence of equivalence. Bootstrap intervals lack
-simultaneous family-wise coverage; sign-flip inference requires within-question
-exchangeability. Shared seeds or executions do not add independent questions.
+original historical pool was not downloaded or compared and undocumented runs
+cannot be ruled out. Fitted position controls use 24 main-study and 6--19
+per-cell development failures, and their realized imbalance limits attribution
+beyond position; the length-matched swap holds origin distributions exactly
+equal instead. A nonsignificant difference is not evidence of equivalence, and
+bootstrap intervals lack simultaneous coverage. Sign-flip inference assumes
+within-question exchangeability, and shared seeds or executions add no
+independent questions. Precision, not effect size, binds these nulls:
+\PairBlockedCells{} of \PairTotalCells{} swap cells could not have reached a
+conventional level whatever their outcomes
+(Appendix~\ref{app:position_pairs}).
 
 \paragraph{Historical and replay boundaries.}
 Historical summaries retain prompt/budget confounds, incomplete raw trials
@@ -650,7 +654,21 @@ environments stay separate and are labelled as such in the bundle:
 statistical reproduction is included, while raw replay with reference
 scoring and GPU regeneration of trajectories are not, since those need the
 frozen raw trajectories and the pinned weights respectively. Human
-annotations and unrecovered historical raw trials are not supplied. Appendix~\ref{app:availability} distinguishes verification from
+annotations and unrecovered historical raw trials are not supplied.
+
+What remains outstanding is stated here rather than left implicit. Independent
+verification is assigned but not complete: one reviewer is examining the
+statistical argument, in particular whether the resolution floor is used fairly
+and whether these nulls are rigorous or underpowered, and a second is
+independently reproducing the packaged statistics and tracing reported claims
+back to records. Their findings are not yet incorporated. The historical
+appendix and pre-September material were not re-verified alongside the recent
+work and should be read as carrying their original, weaker guarantees. Human
+error-step annotation remains unavailable, which bounds this work to answer
+scoring rather than error localization. The compute allocation is exhausted, so
+any question this review raises that needs new inference requires a new
+resource decision rather than a continuation. The AI use statement is a draft
+pending author attestation; assisted content is not yet author-verified. Appendix~\ref{app:availability} distinguishes verification from
 release availability; author review and disclosure remain pending.
 
 \section*{AI Use Statement}
@@ -1909,8 +1927,12 @@ $2/2^{m}$ for $m$ non-zero blocks, a floor of \PairQwenHotpotFloor{} here. That
 cell could not have reached significance whatever the data showed, so the exact
 test does not corroborate the interval.
 
-Most pairs tie (Table~\ref{tab:position_pair_blocks}), which is the binding
-precision limit rather than the effect size. The exact test's resolution is
+Most pairs tie: \PairTiedPairs{} of \PairPairs{} across the two cells
+(Table~\ref{tab:position_pair_blocks}). That, not the effect size, is the
+binding precision limit, and \PairBlockedCells{} of \PairTotalCells{} cells
+sit above 0.05 on their own floor. More questions alone would not fix it: the
+cell with the most pairs shares the highest floor, because its extra pairs were
+ties. The exact test's resolution is
 governed by the non-zero block count, so both cells are underpowered by
 construction: a reader should treat these as bounded diagnostics and not as
 evidence of equivalence. Retaining every tied pair in the point estimate and

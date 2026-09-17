@@ -157,3 +157,27 @@ def test_manuscript_reports_both_cells_without_overclaiming():
     assert "establishes neither equivalence" in prose
     assert "not a policy anyone could run online" in prose
     assert "forbids a pooled confirmatory statistic" in prose
+
+
+def test_precision_limit_macros_are_generated_not_asserted(cells):
+    """The count of cells below their own test's resolution must be derived."""
+    emitted = dict(re.findall(r"\\newcommand\{\\(\w+)\}\{([^}]*)\}", "\n".join(macros(cells))))
+    blocked = [r for _, _, r, _ in ordered_rows(cells) if resolution_floor(r) > 0.05]
+    assert emitted["PairBlockedCells"] == str(len(blocked))
+    assert emitted["PairTotalCells"] == str(sum(1 for _ in ordered_rows(cells)))
+    assert emitted["PairTiedPairs"] == str(sum(r["zero_blocks"] for _, _, r, _ in ordered_rows(cells)))
+    # Recorded so the count cannot drift back to an earlier, wrong value.
+    assert emitted["PairBlockedCells"] == "3", "three of four cells sit above the 0.05 floor"
+
+
+def test_manuscript_states_what_remains_outstanding():
+    prose = " ".join(MANUSCRIPT.read_text().split())
+    assert "Precision, not effect size, binds these nulls" in prose
+    assert "binding precision limit" in prose
+    assert r"\PairBlockedCells{}" in MANUSCRIPT.read_text()
+    for pending in ["Independent verification is assigned but not complete",
+                    "not yet incorporated",
+                    "were not re-verified",
+                    "allocation is exhausted",
+                    "pending author attestation"]:
+        assert pending in prose, pending

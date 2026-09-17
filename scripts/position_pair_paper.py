@@ -198,6 +198,11 @@ def macros(cells):
         "PairRepairs": sum(a["unique_repairs"] for a in audits),
         "PairRows": sum(a["trial_rows"] for a in audits),
         "PairFamily": cells["qwen32b"]["analysis"]["primary_family_size"],
+        # Cells whose exact test could not have reached a conventional level,
+        # whatever the data showed, because too few blocks are non-zero.
+        "PairBlockedCells": sum(resolution_floor(r) > 0.05 for _, _, r, _ in ordered_rows(cells)),
+        "PairTotalCells": sum(1 for _ in ordered_rows(cells)),
+        "PairTiedPairs": sum(r["zero_blocks"] for _, _, r, _ in ordered_rows(cells)),
     }
     lines = [r"\newcommand{\%s}{%s}" % item for item in values.items()]
     for cell, dataset, result, audit in ordered_rows(cells):

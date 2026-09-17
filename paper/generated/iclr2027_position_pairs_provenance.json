@@ -29,7 +29,7 @@
   },
   "pooling_limitation": "The two cells share question identifiers, so they support a descriptive contrast only and no pooled confirmatory statistic.",
   "code_sha256": {
-    "scripts/position_pair_paper.py": "d79e409f7bb439777e771d49a7fb599b0916f53074c01d602a33ce69c456b2c8",
+    "scripts/position_pair_paper.py": "2f2a66262f030b279bd3746038d6343ba8e7d7a13f224eeb016a457f2a862e20",
     "scripts/analyze_position_pair_study.py": "254df58f1f4dd72ae31194d104dc6a16980930309ce5d8ea3c78a56161f6f1f8",
     "src/repair/position_pairs.py": "f5e4c33893bdd223fe80224b60c307f39529501370d13efc6c0c607542730143"
   }
