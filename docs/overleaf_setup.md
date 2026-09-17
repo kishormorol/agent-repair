@@ -1,8 +1,11 @@
 # Overleaf ↔ GitHub sync
 
-Project: [https://www.overleaf.com/project/6aabd6e1c7ddbb2652123f49](https://www.overleaf.com/project/6aabd6e1c7ddbb2652123f49) ("ICLR"), currently holding only a stub
-`main.tex`. The account is on **Overleaf Premium**, so both Git access and
-GitHub Sync are available.
+Project: [https://www.overleaf.com/project/6aabddbb2fd2d7027c78b548](https://www.overleaf.com/project/6aabddbb2fd2d7027c78b548)
+("agent-repair"), linked to `kishormorol/agent-repair` on `main`.
+
+**Status: live and verified.** The Overleaf copy compiles to 40 pages with
+0 errors, identical to the local build. Its only warning is a cosmetic float
+specifier; the 17 info messages are underfull boxes.
 
 **The share link is deliberately not recorded here.** An Overleaf link of the
 form `overleaf.com/<token>` grants access to anyone who holds it, and this
@@ -23,6 +26,13 @@ I do, even with your permission, so the steps below are yours. Everything either
 route consumes is already prepared and committed.
 
 ---
+
+## How it was linked, and the trap to remember
+
+Overleaf's **Export to GitHub** only ever *creates* a new repository, so it
+fails against a repo that already exists. The working direction is **New
+Project → Import from GitHub**, which produces an Overleaf project already
+linked to the existing repository. If this ever has to be redone, start there.
 
 ## Route A — GitHub Sync (recommended: this is the actual two-way sync)
 
@@ -66,7 +76,7 @@ the property which caught a miscounted figure earlier.
 Overleaf exposes each project as a git remote. From the repo:
 
 ```bash
-git remote add overleaf https://git.overleaf.com/6aabd6e1c7ddbb2652123f49
+git remote add overleaf https://git.overleaf.com/6aabddbb2fd2d7027c78b548
 git subtree push --prefix=paper overleaf master     # first push
 ```
 

@@ -1,7 +1,7 @@
 # The $119 AWS Agent Repair Study
 
 Manuscript drafting happens in Overleaf at
-[https://www.overleaf.com/project/6aabd6e1c7ddbb2652123f49](https://www.overleaf.com/project/6aabd6e1c7ddbb2652123f49), synced to this repository; see
+[https://www.overleaf.com/project/6aabddbb2fd2d7027c78b548](https://www.overleaf.com/project/6aabddbb2fd2d7027c78b548), synced to this repository; see
 [the sync setup](docs/overleaf_setup.md). Access is by invitation, so ask the
 author rather than looking for a link here. Files under `paper/generated/` are
 machine-written and must not be edited in Overleaf; the next build overwrites
