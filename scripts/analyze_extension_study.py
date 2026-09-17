@@ -21,6 +21,8 @@ from src.repair.controlled import fingerprint
 from src.repair.diagnosis import TREATMENT, DIAGNOSIS_STRATEGY, diagnose_original, parse_diagnosis
 from src.repair.position_matched import fit_position_profile
 
+UNCERTAINTY_ABS_TOLERANCE = 1e-12
+
 
 def require(condition, message):
     if not condition:
@@ -98,6 +100,26 @@ def stable_jobs(jobs):
     return result
 
 
+def compare_uncertainty(stored, recomputed):
+    """Allow numerical roundoff while requiring the same steps and signals."""
+    message = "Stored uncertainty differs from sampled log probabilities"
+    require(isinstance(stored, list) and len(stored) == len(recomputed), message)
+    differing, maximum = 0, 0.
+    for actual, expected in zip(stored, recomputed):
+        require(isinstance(actual, dict) and actual.keys() == expected.keys()
+                and type(actual["index"]) is int and actual["index"] == expected["index"], message)
+        values = actual["uncertainty"]
+        require(isinstance(values, dict) and values.keys() == expected["uncertainty"].keys(), message)
+        for key, value in values.items():
+            calculated = expected["uncertainty"][key]
+            require(type(value) in (int, float) and math.isfinite(value) and math.isfinite(calculated)
+                    and math.isclose(value, calculated, rel_tol=0, abs_tol=UNCERTAINTY_ABS_TOLERANCE), message)
+            error = abs(value - calculated)
+            differing += error != 0
+            maximum = max(maximum, error)
+    return differing, maximum
+
+
 def audit_cell(package, output, model_key, dataset):
     package, output = Path(package), Path(output)
     protocol, digest = verify_package(package)
@@ -118,7 +140,8 @@ def audit_cell(package, output, model_key, dataset):
             and not set(ids) & set(cohort["excluded_ids"]), "Frozen cohort mismatch")
     official = official_functions(package / "references" / f"{dataset}.py", dataset)
     originals, uncertainties, raw_repairs, diagnoses, rows = {}, {}, {}, {}, []
-    counts = {"trajectories": 0, "observations": 0, "prefix_steps": 0, "new_steps": 0}
+    counts = {"trajectories": 0, "observations": 0, "prefix_steps": 0, "new_steps": 0,
+              "uncertainty_values_with_roundoff": 0, "uncertainty_max_abs_error": 0.}
     for role in ["development", "main"]:
         require({p.stem for p in (cell / role / "originals").glob("*.json")} == set(cohort[role+"_ids"]), "Incomplete original cohort")
         require({p.stem for p in (cell / role / "uncertainty").glob("*.json")} == set(cohort[role+"_ids"]), "Incomplete uncertainty cohort")
@@ -131,10 +154,15 @@ def audit_cell(package, output, model_key, dataset):
             for key, value in detail.items(): counts[key] += value
             uncertainty = load_envelope(cell / role / "uncertainty" / f"{qid}.json",
                                          {**trace_identity, "original_sha256": fingerprint(original)})
-            require(uncertainty["steps"] == uncertainty_record(original)["steps"], "Stored uncertainty differs from sampled log probabilities")
+            recomputed = uncertainty_record(original)
+            differing, maximum = compare_uncertainty(uncertainty["steps"], recomputed["steps"])
+            counts["uncertainty_values_with_roundoff"] += differing
+            counts["uncertainty_max_abs_error"] = max(counts["uncertainty_max_abs_error"], maximum)
             require(math.isfinite(uncertainty["acquisition_wall_latency_s"]) and uncertainty["acquisition_wall_latency_s"] >= 0,
                     "Invalid uncertainty acquisition latency")
-            uncertainties[qid] = uncertainty
+            # Rebuild profiles and policy origins from the independently
+            # recomputed values; accepting roundoff must not change a decision.
+            uncertainties[qid] = {**uncertainty, "steps": recomputed["steps"]}
     failed_dev = [originals[q] for q in cohort["development_ids"] if not originals[q]["success"]]
     expected_profile = (fit_position_profile(failed_dev, uncertainties, source_ids=cohort["development_ids"], dataset=dataset,
                          strategy=TREATMENT, source_phase="development", source_run_id=protocol["run_id"], model=signature,
@@ -200,7 +228,8 @@ def audit_cell(package, output, model_key, dataset):
              "initial_success": sum(t["success"] for t in initial)/len(initial),
              "initial_em": sum(t["em"] for t in initial)/len(initial), "initial_f1": sum(t["f1"] for t in initial)/len(initial),
              "unique_repairs": len(raw_repairs), "diagnoses": len(diagnoses), "diagnosis_fallbacks": sum(d["fallback"] for d in diagnoses.values()),
-             "trial_rows": len(rows), "runtime_questions": len(runtime_ids), "mismatches": 0, **counts,
+             "trial_rows": len(rows), "runtime_questions": len(runtime_ids), "mismatches": 0,
+             "uncertainty_abs_tolerance": UNCERTAINTY_ABS_TOLERANCE, **counts,
              "physical_repair_generated_tokens": sum(t["meta"]["recovery_gen_tokens"] for t in raw_repairs.values()),
              "physical_diagnosis_generated_tokens": sum(d["selection_gen_tokens"] for d in diagnoses.values())}
     return audit, pd.DataFrame(rows)

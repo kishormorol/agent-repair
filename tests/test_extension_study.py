@@ -10,7 +10,7 @@ from src.llm.vllm_client import GenerationResult, TokenInfo
 from src.repair.controlled import fingerprint, file_fingerprint
 from src.repair.diagnosis import DIAGNOSIS_SETTINGS, TREATMENT, DIAGNOSIS_STRATEGY
 from scripts.prepare_extension_study import HINT, MODELS, STRATEGIES
-from scripts.run_extension_study import run_model, trial_rows
+from scripts.run_extension_study import load_envelope, run_model, save_envelope, trial_rows
 from scripts.analyze_extension_study import audit_cell, analyze
 
 
@@ -28,7 +28,34 @@ class ExtensionClient:
             text = "Thought: Answer.\nAction: finish\nAction Input: Rome"
         else:
             text = "Thought: Search.\nAction: search\nAction Input: Paris"
-        return [GenerationResult(text, [1], [TokenInfo(1, "token", -1., {1: -1., 2: -2.})], prompt_tokens=100)]
+        return [GenerationResult(text, [1], [TokenInfo(1, "token", -1., {1: -1., 2: -2., 10: -3.})], prompt_tokens=100)]
+
+
+def test_extension_envelope_restores_integer_token_keys_and_preserves_checksums(tmp_path):
+    path = tmp_path / "original.json"
+    identity = {"qid": "q"}
+    generation = GenerationResult("Answer", [2], [TokenInfo(2, "Answer", -1., {2: -1., 10: -2.})])
+    payload = {"steps": [{"generation": generation.to_dict()}], "metadata": {"2": "two", "10": "ten"}}
+    save_envelope(path, payload, identity)
+    saved = json.loads(path.read_text())
+    assert saved["sha256"] != fingerprint(saved["payload"])
+    assert load_envelope(path, identity) == payload
+    # Saving an identical execution after a restart must also be idempotent.
+    before = path.read_bytes()
+    save_envelope(path, payload, identity)
+    assert path.read_bytes() == before
+
+
+def test_extension_envelope_still_rejects_modified_token_probabilities(tmp_path):
+    path = tmp_path / "original.json"
+    identity = {"qid": "q"}
+    payload = {"generation": GenerationResult("Answer", [2], [TokenInfo(2, "Answer", -1., {2: -1., 10: -2.})]).to_dict()}
+    save_envelope(path, payload, identity)
+    saved = json.loads(path.read_text())
+    saved["payload"]["generation"]["tokens"][0]["top_logprobs"]["10"] = -3.
+    path.write_text(json.dumps(saved))
+    with pytest.raises(ValueError, match="identity/checksum mismatch"):
+        load_envelope(path, identity)
 
 
 @pytest.fixture
@@ -87,6 +114,46 @@ def test_extension_executes_audits_and_resumes(extension_run, tmp_path):
     assert client.calls == before + 3  # warmup only; completed trials stay cached
     report = analyze(package, output, tmp_path/"analysis.json")
     assert report["complete"] and len(report["runtime_comparisons"]) == 6
+
+
+@pytest.mark.parametrize("difference,accepted", [(2e-15, True), (1e-4, False)])
+def test_extension_recomputes_uncertainty_with_roundoff_only(extension_run, monkeypatch, difference, accepted):
+    import scripts.analyze_extension_study as auditor
+
+    package, output, _, _ = extension_run
+    original_function = auditor.uncertainty_record
+
+    def with_roundoff(original):
+        result = original_function(original)
+        for step in result["steps"]:
+            step["uncertainty"]["perplexity"] += difference
+        return result
+
+    monkeypatch.setattr(auditor, "uncertainty_record", with_roundoff)
+    if accepted:
+        audit, _ = auditor.audit_cell(package, output, "qwen32b", "hotpotqa")
+        assert audit["mismatches"] == 0
+        assert audit["uncertainty_values_with_roundoff"] > 0
+        assert 0 < audit["uncertainty_max_abs_error"] <= 1e-12
+    else:
+        with pytest.raises(ValueError, match="Stored uncertainty differs"):
+            auditor.audit_cell(package, output, "qwen32b", "hotpotqa")
+
+
+def test_extension_rejects_roundoff_that_changes_a_repair_origin(extension_run, monkeypatch):
+    import scripts.analyze_extension_study as auditor
+
+    package, output, _, _ = extension_run
+    original_function = auditor.uncertainty_record
+
+    def break_tie(original):
+        result = original_function(original)
+        result["steps"][-1]["uncertainty"]["perplexity"] += 5e-13
+        return result
+
+    monkeypatch.setattr(auditor, "uncertainty_record", break_tie)
+    with pytest.raises(ValueError, match="Policy origins"):
+        auditor.audit_cell(package, output, "qwen32b", "hotpotqa")
 
 
 @pytest.mark.parametrize("defect", ["observation", "missing_trial", "selection_cost", "budget", "score", "input"])

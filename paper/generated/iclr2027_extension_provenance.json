@@ -1,0 +1,35 @@
+{
+  "protocol_sha256": "be6f3170150ca7541cf5a4cb3d8742dddb7582d1ec995293959a7b76b2fc305c",
+  "checks": "Complete independent reproduction, frozen cohorts, policy/seed and deadline coverage, measured policy means; position diagnostics verify raw identities, dev-only profiles, and frozen origins/executions",
+  "source_sha256": {
+    "pooled-analysis-local.json": "0f5cd73390fabc12840436b458961858ababb8d5887b8ee1bbe47c28a8c3f726",
+    "pooled-analysis-local.trials.csv": "5d2ae508bd5f3db068d672307d75eb8377f7404dd08866020c826730a8a1e9d0",
+    "remote-pooled-analysis.json": "431c413919b5c9522e49dd2fe42c79c0652f979e9e0b0f9a952ffc4a91ec7524",
+    "remote-pooled-analysis.trials.csv": "5d2ae508bd5f3db068d672307d75eb8377f7404dd08866020c826730a8a1e9d0",
+    "retrieved/package/protocol.json": "796e3b9d9c924eec77648dcd7a067b4cb65e46d90a26062a98c72ca9f1c38165",
+    "analysis-reproduction-check.json": "8bbe5c9b3ff554787352f5b5e7606bad4feae78bb2c65f9ea72759202797ce17"
+  },
+  "reporting_code_sha256": {
+    "scripts/build_extension_paper.py": "82f9b886265f1e4acb3d7e88e3def11c54b47b2e849d417f4bdc832bdc8e144b",
+    "scripts/extension_position_balance.py": "44de02f986369375e324e8b3d7209ae78c4cda4118aa3fc7b408a83e36098ea2"
+  },
+  "asset_sha256": {
+    "tables/iclr2027_extension_initial.tex": "a6604e8f1ec4b4e34c349a9eae954949adcde1627150ba9d78c9e09dc9e8c367",
+    "tables/iclr2027_extension_mistral12b_contrasts.tex": "e1d3093301c97d9349830aa004d8c980473282f2dc86613595c493fdf24caf8e",
+    "tables/iclr2027_extension_mistral12b_costs.tex": "e6840046b74fe2c21fbcb3173d29907d6a3dbefc956f1a82d84746bd7eca54b1",
+    "tables/iclr2027_extension_mistral12b_results.tex": "0e6c906326d5b73213f6b1cd677cdcd020ca8777fc0feb7066186988edd38548",
+    "tables/iclr2027_extension_overview.tex": "528945b73fda986403b13ceedbc9c4c873b6a8aa0dd02b3164955f1c41c892a4",
+    "tables/iclr2027_extension_position_balance.tex": "cfb67cb83045d3e62435c1959f94bd0369eeb22ebff3381c14f057d2b7128168",
+    "tables/iclr2027_extension_qwen32b_contrasts.tex": "6d0c859cd73ca4058628dbb26706a89cea4ab65f42cd11768aa6307236c0fd54",
+    "tables/iclr2027_extension_qwen32b_costs.tex": "49b6084a96d4700bfc1ee5cf23bb640a4ea60da727d42e49c08c4f59094fe7dd",
+    "tables/iclr2027_extension_qwen32b_results.tex": "e74815480318a5085ae2803d09b27868c0977cb28d6892ce1c9b5e3333c9e9f7",
+    "tables/iclr2027_extension_runtime.tex": "41199dd12d5820be20e81e86f6953956daed62994ffce6c294939d1a697ecc27",
+    "tables/iclr2027_extension_runtime_contrasts.tex": "b58d501e4b0442009877ca1e859a70ba02669c472c03d8ca3c678ddb4399ddb6",
+    "figures/iclr2027_extension_contrasts.pdf": "1fc82507f59f8f52247f79feb9a7287d098a2bd60b0a977b13c00456f1b2a632",
+    "figures/iclr2027_extension_contrasts.png": "81dd107f87b58329af5b7208d22ba1db622c7ce21af847ac5da2b3b34d381cdf",
+    "figures/iclr2027_extension_position_ecdf.pdf": "879da895bc8d172d00987a3ed7daba198dc81a581b2f11b3e45af60747f112b6",
+    "figures/iclr2027_extension_position_ecdf.png": "a8a03b0f037385c344114f8a8f9dde363c38e63157ce8445dc703e933042d675",
+    "iclr2027_extension_position_balance.json": "3feadb9691ee656180f0cc408de7dbb4520b3a246f200b09e682b935f55459bd",
+    "iclr2027_extension_position_rows.csv": "b1c6f32cb72a539936cbe7567b5b17095cf9a85ea44615300d6ff6f4f48a3ee1"
+  }
+}

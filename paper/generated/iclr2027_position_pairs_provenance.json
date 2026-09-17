@@ -1,0 +1,20 @@
+{
+  "run_id": "position-pairs-20260916-v2",
+  "protocol_sha256": "9dba9b2b5b0e95b18a7916456c8f2c32c5861ce2b7a6e8d42a8558a85c247072",
+  "scope": "Prospective origin-assignment diagnostic on a fresh length-matched failure cohort; the swap control uses its partner's uncertainty and is not a standalone deployable selector",
+  "precision_note": "Resource-bounded diagnostic, no equivalence or power claim. Report all equal-origin and zero-difference pairs.",
+  "primary_family": "Two exact two-sided pair-block sign-flip tests (one per dataset), Holm adjusted; within-block exchangeability assumption explicit",
+  "resampling_unit": "Resample whole two-question pairs and retain all three seeds; individual 95% percentile intervals are not simultaneous",
+  "source_sha256": {
+    "analysis-local.json": "eb9b4e551638b16b9f12896c36a4e21a73389ced1aa2bc4a40aad493c3df3377",
+    "retrieved/results/analysis.json": "d9006370bcdfa611040da6adfbe6be91ecaefa4ab85def18392d0bb004d5e747",
+    "retrieved/results/analysis.trials.csv": "1e8b74ae936200c42bb402bba8992fcaf9847c80234aa2a5011164a7325b0069",
+    "prepared-v2/protocol.json": "a7b2e5f2f8e1afd5f3bede6a7737561db2153e8b76912eec5dd6ba072bc97780",
+    "retrieval-verification.json": "749b24580422fba180cfa1fb6d1e9e37dca08eb6a06dd14256c26ba2e9c65d1e"
+  },
+  "code_sha256": {
+    "scripts/position_pair_paper.py": "fed135224d05dfe53eb3498e0c391bf0bd75a9dd00a008b570d2ced3753389d2",
+    "scripts/analyze_position_pair_study.py": "254df58f1f4dd72ae31194d104dc6a16980930309ce5d8ea3c78a56161f6f1f8",
+    "src/repair/position_pairs.py": "f5e4c33893bdd223fe80224b60c307f39529501370d13efc6c0c607542730143"
+  }
+}

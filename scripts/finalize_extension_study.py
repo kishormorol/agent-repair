@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import datetime as dt
 import hashlib
 import json
+import math
 from pathlib import Path
 import subprocess
 import sys
@@ -16,7 +18,28 @@ import pandas as pd
 from scripts.build_followup_paper import compare_values
 from src.repair.controlled import fingerprint
 
-BASE = ROOT / "output/aws-experiment/2026-09-14-extension"
+BASE = ROOT / "output/aws-experiment/2026-09-15-extension-completion"
+
+
+def split_audit_roundoff(analysis):
+    """Validate platform-dependent audit diagnostics without changing evidence."""
+    result, diagnostics = copy.deepcopy(analysis), []
+    fields = {"uncertainty_values_with_roundoff", "uncertainty_max_abs_error"}
+    for audit in result["audits"]:
+        present = fields & audit.keys()
+        if not present:
+            continue
+        if present != fields or audit.get("uncertainty_abs_tolerance") != 1e-12:
+            raise ValueError("Incomplete or changed uncertainty roundoff tolerance")
+        count, error = audit["uncertainty_values_with_roundoff"], audit["uncertainty_max_abs_error"]
+        if not (type(count) is int and count >= 0 and type(error) in (int, float)
+                and math.isfinite(error) and 0 <= error <= 1e-12 and (count == 0) == (error == 0)):
+            raise ValueError("Invalid or excessive uncertainty roundoff diagnostics")
+        diagnostics.append({"model_key": audit["model_key"], "dataset": audit["dataset"],
+                            "count": count, "maximum_absolute_error": error, "absolute_tolerance": 1e-12})
+        for field in fields:
+            del audit[field]
+    return result, diagnostics
 
 
 def compare_exports(local_json, remote_json):
@@ -24,7 +47,11 @@ def compare_exports(local_json, remote_json):
     local, remote = [json.loads(p.read_text()) for p in [local_json, remote_json]]
     if local.get("complete") is not True or remote.get("complete") is not True:
         raise ValueError("The frozen extension remains incomplete")
-    compare_values(local, remote)
+    local_evidence, local_roundoff = split_audit_roundoff(local)
+    remote_evidence, remote_roundoff = split_audit_roundoff(remote)
+    compare_values(local_evidence, remote_evidence)
+    if [(r["model_key"], r["dataset"]) for r in local_roundoff] != [(r["model_key"], r["dataset"]) for r in remote_roundoff]:
+        raise ValueError("Changed uncertainty roundoff diagnostic coverage")
     keys = ["model_key", "dataset", "qid", "mode", "strategy", "seed"]
     frames = []
     for path in [local_json, remote_json]:
@@ -37,7 +64,10 @@ def compare_exports(local_json, remote_json):
     except AssertionError as error:
         raise ValueError("Local and remote extension trial exports differ") from error
     return {"matched": True, "absolute_tolerance": 1e-12,
-            "trial_rows_compared": len(frames[0]), "trial_columns_compared": len(frames[0].columns)}
+            "trial_rows_compared": len(frames[0]), "trial_columns_compared": len(frames[0].columns),
+            "uncertainty_roundoff_diagnostics": {
+                "note": "Validated separately per platform; all other analysis fields and trial columns are compared. Raw audits require identical recomputed profiles and policy origins.",
+                "local": local_roundoff, "remote": remote_roundoff}}
 
 
 def finalize(base=BASE):
@@ -65,7 +95,7 @@ def finalize(base=BASE):
         archive_hashes[name] = digest
 
     destination = base / "pooled-analysis-local.json"
-    # Execute the original auditor with its own source and package checks.
+    # Execute the downloaded auditor with its own source and package checks.
     command = [sys.executable, str(package / "code/scripts/analyze_extension_study.py"),
                "--package", str(package), "--output", str(base / "retrieved/results"),
                "--destination", str(destination)]

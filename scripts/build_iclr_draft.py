@@ -274,9 +274,9 @@ def build_review_assets(out, report):
             contrast = row["secondary_outcomes"][metric]
             cells.append(f"{100 * contrast['delta']:+.2f} [{100 * contrast['delta_lo']:+.2f}, {100 * contrast['delta_hi']:+.2f}]")
         sensitivity_rows.append(cells)
-    write_table(out / "iclr2027_review_overlap.tex",
+    write_table(out / "tables" / "iclr2027_review_overlap.tex",
                 ["Control", "Shared / 339", "Different q. / 113", "Wins / losses / ties"], overlap_rows)
-    write_table(out / "iclr2027_review_sensitivity.tex",
+    write_table(out / "tables" / "iclr2027_review_sensitivity.tex",
                 ["Control", "EM delta [95\\% CI], pp", "100$\\Delta$F1 [95\\% CI]"], sensitivity_rows)
     cost_rows, population_rows = [], []
     for name, row in report["policy_accounting"].items():
@@ -288,9 +288,9 @@ def build_review_assets(out, report):
         overall = row["reference_gated_full_cohort"]
         population_rows.append([MAIN_STRATEGIES[name], f"{100 * overall['success']['mean']:.2f}",
             f"{100 * overall['em']['mean']:.2f}", f"{overall['f1']['mean']:.4f}"])
-    write_table(out / "iclr2027_review_costs.tex",
+    write_table(out / "tables" / "iclr2027_review_costs.tex",
                 ["Condition", "Output tokens", "Prompt tokens", "Requests", "Tool calls", "F / B / S"], cost_rows)
-    write_table(out / "iclr2027_review_population.tex",
+    write_table(out / "tables" / "iclr2027_review_population.tex",
                 ["Recovery condition", "Gate success (\\%)", "EM (\\%)", "F1"], population_rows)
     case_text = []
     titles = {"treatment_higher": "Higher treatment seed mean", "restart_higher": "Higher restart seed mean",
@@ -310,10 +310,12 @@ def build_review_assets(out, report):
                 "/".join(f"{r['f1']:.2f}" for r in rows), answers]) + r" \\")
         case_text += [r"\bottomrule\end{tabular}\end{center}",
             r"Question ID: \texttt{%s}." % case["qid"], r"\end{minipage}\par"]
-    (out / "iclr2027_review_cases.tex").write_text("\n".join(case_text) + "\n")
+    (out / "tables" / "iclr2027_review_cases.tex").write_text("\n".join(case_text) + "\n")
 
 
 def build_main_assets(out, records):
+    out = Path(out)
+    (out / "figures").mkdir(parents=True, exist_ok=True)
     summary = records["main-summary.json"]
     contrasts = records["pooled-analysis-local.json"]["primary_contrasts"]
     rows = []
@@ -322,20 +324,20 @@ def build_main_assets(out, records):
         rows.append([label, f"{row['successful_seed_trials']}/{row['seed_trials']}",
                      f"{100 * row['success_rate']:.2f}", f"{100 * row['exact_match_rate']:.2f}",
                      f"{row['mean_f1']:.4f}", f"{100 * row['restart_origin_fraction']:.2f}"])
-    write_table(out / "iclr2027_main_results.tex",
+    write_table(out / "tables" / "iclr2027_main_results.tex",
                 ["Condition", "Successes", "Success (\\%)", "EM (\\%)", "F1", "$k'=0$ (\\%)"], rows)
     rows = [[MAIN_STRATEGIES[name], f"{100 * row['delta']:+.2f}",
              f"[{100 * row['delta_lo']:+.2f}, {100 * row['delta_hi']:+.2f}]",
              f"{row['p_value']:.3f}", f"{row['p_value_holm']:.3f}"]
             for name, row in contrasts.items()]
-    write_table(out / "iclr2027_main_contrasts.tex",
+    write_table(out / "tables" / "iclr2027_main_contrasts.tex",
                 ["Control", "Delta (pp)", "95\\% interval (pp)", "Raw $p$", "Holm $p$"], rows)
     audit_rows = []
     for i in range(1, 6):
         audit = records[f"audits/batch{i:02}.json"]
         audit_rows.append([str(i), str(audit["initial_questions"]), str(audit["failed_questions"]),
                            str(audit["unique_repair_executions"]), str(audit["strategy_seed_rows"]), "0"])
-    write_table(out / "iclr2027_main_audit.tex",
+    write_table(out / "tables" / "iclr2027_main_audit.tex",
                 ["Batch", "Initial", "Failed", "Unique repairs", "Condition/seed rows", "Violations"], audit_rows)
     cost = records["cost-estimate.json"]
     cost_labels = {
@@ -345,7 +347,7 @@ def build_main_assets(out, records):
         "retained_ebs_from_main_start_through_report_usd": "Retained storage through report cutoff",
         "public_ipv4_full_elapsed_interval_upper_estimate_usd": "Conservative public IPv4 allowance",
     }
-    write_table(out / "iclr2027_main_cost.tex", ["Component", "Estimated USD"],
+    write_table(out / "tables" / "iclr2027_main_cost.tex", ["Component", "Estimated USD"],
                 [[label, f"{cost['components_usd'][key]:.3f}"] for key, label in cost_labels.items()] +
                 [["Total before credits, tax and transfer", f"{cost['estimated_total_usd']:.2f}"]])
     fig, ax = plt.subplots(figsize=(7.2, 2.45), layout="constrained")
@@ -361,7 +363,7 @@ def build_main_assets(out, records):
     ax.set_xlabel("Treatment minus control in repair success (percentage points)")
     ax.grid(axis="x", alpha=0.2)
     for extension in ("pdf", "png"):
-        fig.savefig(out / f"iclr2027_main_contrasts.{extension}", dpi=300)
+        fig.savefig(out / "figures" / f"iclr2027_main_contrasts.{extension}", dpi=300)
     plt.close(fig)
 
 
@@ -432,6 +434,8 @@ def load_notebook_summaries(aggregate_rows):
 
 
 def write_table(path, header, rows):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
     columns = "l" + "r" * (len(header) - 1)
     lines = [r"\begin{tabular}{@{}" + columns + r"@{}}", r"\toprule",
              " & ".join(header) + r" \\", r"\midrule"]
@@ -441,6 +445,8 @@ def write_table(path, header, rows):
 
 
 def build_restored_assets(out, summaries, aggregate_rows, localization_rows):
+    out = Path(out)
+    (out / "figures").mkdir(parents=True, exist_ok=True)
     costs, nudges = [], []
     for strategy, label in BASELINES.items():
         values = []
@@ -448,7 +454,7 @@ def build_restored_assets(out, summaries, aggregate_rows, localization_rows):
             row = summaries[dataset][strategy]
             values += [f"{row['avg_tokens']:.0f}", f"{row['avg_tool_calls']:.2f}"]
         costs.append([label, *values])
-    write_table(out / "iclr2027_costs.tex",
+    write_table(out / "tables" / "iclr2027_costs.tex",
                 ["Strategy", "HP tokens", "HP tools", "MS tokens", "MS tools",
                  "2W tokens", "2W tools"], costs)
     for dataset in DATASETS:
@@ -457,7 +463,7 @@ def build_restored_assets(out, summaries, aggregate_rows, localization_rows):
             informed = summaries[dataset][strategy + "__informed"]["fixed_%"]
             nudges.append([dataset, str(bt), f"{generic:.1f}", f"{informed:.1f}",
                            f"{informed - generic:+.1f}"])
-    write_table(out / "iclr2027_nudges.tex",
+    write_table(out / "tables" / "iclr2027_nudges.tex",
                 ["Dataset", "Backtrack", "Generic (\\%)", "Informed (\\%)", "Delta (pp)"], nudges)
 
     metric_labels = ["Action disagreement", "Token entropy", "Sampled-token complement",
@@ -475,7 +481,8 @@ def build_restored_assets(out, summaries, aggregate_rows, localization_rows):
             ax.text(j, i, f"{value:.3f}", ha="center", va="center",
                     color="white" if value < 0.25 else "black")
     fig.colorbar(heatmap, ax=ax, label="Exact judge agreement", shrink=0.9)
-    fig.savefig(out / "iclr2027_localization_heatmap.png", dpi=300)
+    for extension in ["pdf", "png"]:
+        fig.savefig(out / "figures" / f"iclr2027_localization_heatmap.{extension}", dpi=300)
     plt.close(fig)
 
     fig, axes = plt.subplots(1, 3, figsize=(9, 2.8), sharey=True, layout="constrained")
@@ -494,7 +501,8 @@ def build_restored_assets(out, summaries, aggregate_rows, localization_rows):
         ax.grid(alpha=0.2)
     axes[0].set_ylabel("Mean repair success (%)")
     axes[0].legend(fontsize=8, loc="upper left", frameon=False)
-    fig.savefig(out / "iclr2027_cost_success.png", dpi=300)
+    for extension in ["pdf", "png"]:
+        fig.savefig(out / "figures" / f"iclr2027_cost_success.{extension}", dpi=300)
     plt.close(fig)
 
     fig, axes = plt.subplots(1, 2, figsize=(9, 2.8), layout="constrained")
@@ -520,7 +528,8 @@ def build_restored_assets(out, summaries, aggregate_rows, localization_rows):
     for ax in axes:
         ax.set_axisbelow(True)
         ax.grid(axis="y", alpha=0.2)
-    fig.savefig(out / "iclr2027_origin_hint_deltas.png", dpi=300)
+    for extension in ["pdf", "png"]:
+        fig.savefig(out / "figures" / f"iclr2027_origin_hint_deltas.{extension}", dpi=300)
     plt.close(fig)
 
 
@@ -539,6 +548,8 @@ def main() -> None:
     review = load_review_diagnostics(main_records)
     out = ROOT / "paper/generated"
     out.mkdir(parents=True, exist_ok=True)
+    (out / "tables").mkdir(exist_ok=True)
+    (out / "figures").mkdir(exist_ok=True)
 
     macros = ["% Generated by scripts/build_iclr_draft.py; Main* macros are audited HotpotQA results."]
     for dataset, prefix in DATASETS.items():
@@ -567,7 +578,7 @@ def main() -> None:
         values = [f"{100 * float(rows[dataset][key]):.1f}" for dataset in DATASETS]
         table.append(label + " & " + " & ".join(values) + r" \\")
     table += [r"\bottomrule", r"\end{tabular}"]
-    (out / "iclr2027_results.tex").write_text("\n".join(table) + "\n")
+    (out / "tables" / "iclr2027_results.tex").write_text("\n".join(table) + "\n")
 
     labels = {
         "self_consistency": "Action disagreement",
@@ -582,7 +593,7 @@ def main() -> None:
         values = [f"{float(row[dataset]):.3f}" for dataset in DATASETS]
         table.append(labels[row["metric"]] + " & " + " & ".join(values) + r" \\")
     table += [r"\bottomrule", r"\end{tabular}"]
-    (out / "iclr2027_localization.tex").write_text("\n".join(table) + "\n")
+    (out / "tables" / "iclr2027_localization.tex").write_text("\n".join(table) + "\n")
 
     plt.rcParams.update({"font.size": 10, "axes.spines.top": False,
                          "axes.spines.right": False, "font.family": "DejaVu Sans"})
@@ -599,7 +610,8 @@ def main() -> None:
         ax.set_axisbelow(True)
         ax.grid(axis="y", alpha=0.2)
     axes[0].set_ylabel("Mean repair success (%)")
-    fig.savefig(out / "iclr2027_repair_rates.png", dpi=300)
+    for extension in ["pdf", "png"]:
+        fig.savefig(out / "figures" / f"iclr2027_repair_rates.{extension}", dpi=300)
     plt.close(fig)
     build_restored_assets(out, summaries, rows, localization_rows)
     build_main_assets(out, main_records)

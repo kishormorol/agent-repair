@@ -1,0 +1,651 @@
+{
+  "source": "completed replication, token mode",
+  "status": "descriptive extension; primary Holm outputs unchanged",
+  "pooled_confirmatory_claim": false,
+  "pooled_note": "Question identifiers are shared across model cells, so no pooled confirmatory statistic is reported.",
+  "treatment": "unc__perplexity__argmax__bt2",
+  "treatment_rows": 1113,
+  "treatment_limit_stopped": 621,
+  "nonzero_question_range": [
+    3,
+    23
+  ],
+  "source_sha256": {
+    "pooled-analysis-local.json": "0f5cd73390fabc12840436b458961858ababb8d5887b8ee1bbe47c28a8c3f726",
+    "pooled-analysis-local.trials.csv": "5d2ae508bd5f3db068d672307d75eb8377f7404dd08866020c826730a8a1e9d0",
+    "analysis-reproduction-check.json": "8bbe5c9b3ff554787352f5b5e7606bad4feae78bb2c65f9ea72759202797ce17"
+  },
+  "code_sha256": {
+    "scripts/replication_diagnostics.py": "f9f11c36917d424c7fc618fa1c3824874b388ac86083ad5e839234ef1f602e1d",
+    "scripts/paper_stats.py": "a095364aa3d545d5fbba7e99f9939ff7208f025d05106d10f1eb1bebed318951"
+  },
+  "cells": [
+    {
+      "model_key": "mistral12b",
+      "dataset": "2wikimultihopqa",
+      "termination": {
+        "rows": 201,
+        "limit_stopped": 91,
+        "limit_fraction": 0.4527363184079602,
+        "by_reason": {
+          "budget": 81,
+          "error": 4,
+          "finished": 106,
+          "max_steps": 10
+        }
+      },
+      "contrasts": [
+        {
+          "control": "diagnosis_replay",
+          "wins": 11,
+          "losses": 8,
+          "ties": 48,
+          "questions": 67,
+          "nonzero": 19,
+          "resolution_floor": 3.814697265625e-06,
+          "overlap": {
+            "attempts": 201,
+            "shared_attempts": 39,
+            "shared_fraction": 0.19402985074626866,
+            "questions_with_any_differing_execution": 54,
+            "questions": 67
+          },
+          "delta": 0.014925373134328361,
+          "delta_lo": -0.03482587064676616,
+          "delta_hi": 0.06467661691542288,
+          "p_value": 0.692930706929307,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "full_restart",
+          "wins": 9,
+          "losses": 8,
+          "ties": 50,
+          "questions": 67,
+          "nonzero": 17,
+          "resolution_floor": 1.52587890625e-05,
+          "overlap": {
+            "attempts": 201,
+            "shared_attempts": 120,
+            "shared_fraction": 0.5970149253731343,
+            "questions_with_any_differing_execution": 27,
+            "questions": 67
+          },
+          "delta": -0.009950248756218904,
+          "delta_lo": -0.06965174129353233,
+          "delta_hi": 0.04477611940298507,
+          "p_value": 0.869013098690131,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "position_matched_random",
+          "wins": 5,
+          "losses": 10,
+          "ties": 52,
+          "questions": 67,
+          "nonzero": 15,
+          "resolution_floor": 6.103515625e-05,
+          "overlap": {
+            "attempts": 201,
+            "shared_attempts": 87,
+            "shared_fraction": 0.43283582089552236,
+            "questions_with_any_differing_execution": 56,
+            "questions": 67
+          },
+          "delta": -0.01990049751243781,
+          "delta_lo": -0.05970149253731343,
+          "delta_hi": 0.019900497512437814,
+          "p_value": 0.4884511548845116,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "unc__perplexity__argmax",
+          "wins": 11,
+          "losses": 5,
+          "ties": 51,
+          "questions": 67,
+          "nonzero": 16,
+          "resolution_floor": 3.0517578125e-05,
+          "overlap": {
+            "attempts": 201,
+            "shared_attempts": 66,
+            "shared_fraction": 0.3283582089552239,
+            "questions_with_any_differing_execution": 45,
+            "questions": 67
+          },
+          "delta": 0.01990049751243781,
+          "delta_lo": -0.03482587064676616,
+          "delta_hi": 0.06965174129353233,
+          "p_value": 0.5971402859714029,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        }
+      ]
+    },
+    {
+      "model_key": "mistral12b",
+      "dataset": "hotpotqa",
+      "termination": {
+        "rows": 234,
+        "limit_stopped": 131,
+        "limit_fraction": 0.5598290598290598,
+        "by_reason": {
+          "budget": 111,
+          "error": 1,
+          "finished": 102,
+          "max_steps": 20
+        }
+      },
+      "contrasts": [
+        {
+          "control": "diagnosis_replay",
+          "wins": 9,
+          "losses": 6,
+          "ties": 63,
+          "questions": 78,
+          "nonzero": 15,
+          "resolution_floor": 6.103515625e-05,
+          "overlap": {
+            "attempts": 234,
+            "shared_attempts": 63,
+            "shared_fraction": 0.2692307692307692,
+            "questions_with_any_differing_execution": 57,
+            "questions": 78
+          },
+          "delta": 0.029914529914529912,
+          "delta_lo": -0.012820512820512818,
+          "delta_hi": 0.07264957264957266,
+          "p_value": 0.2545745425457454,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "full_restart",
+          "wins": 5,
+          "losses": 2,
+          "ties": 71,
+          "questions": 78,
+          "nonzero": 7,
+          "resolution_floor": 0.015625,
+          "overlap": {
+            "attempts": 234,
+            "shared_attempts": 159,
+            "shared_fraction": 0.6794871794871795,
+            "questions_with_any_differing_execution": 25,
+            "questions": 78
+          },
+          "delta": 0.008547008547008544,
+          "delta_lo": -0.02564102564102564,
+          "delta_hi": 0.04273504273504273,
+          "p_value": 0.8098190180981902,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "position_matched_random",
+          "wins": 6,
+          "losses": 7,
+          "ties": 65,
+          "questions": 78,
+          "nonzero": 13,
+          "resolution_floor": 0.000244140625,
+          "overlap": {
+            "attempts": 234,
+            "shared_attempts": 123,
+            "shared_fraction": 0.5256410256410257,
+            "questions_with_any_differing_execution": 57,
+            "questions": 78
+          },
+          "delta": -0.008547008547008548,
+          "delta_lo": -0.05128205128205127,
+          "delta_hi": 0.029914529914529912,
+          "p_value": 0.834016598340166,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "unc__perplexity__argmax",
+          "wins": 12,
+          "losses": 11,
+          "ties": 55,
+          "questions": 78,
+          "nonzero": 23,
+          "resolution_floor": 2.384185791015625e-07,
+          "overlap": {
+            "attempts": 234,
+            "shared_attempts": 36,
+            "shared_fraction": 0.15384615384615385,
+            "questions_with_any_differing_execution": 66,
+            "questions": 78
+          },
+          "delta": 0.017094017094017092,
+          "delta_lo": -0.03418803418803419,
+          "delta_hi": 0.06837606837606837,
+          "p_value": 0.6313368663133687,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        }
+      ]
+    },
+    {
+      "model_key": "mistral12b",
+      "dataset": "musique",
+      "termination": {
+        "rows": 249,
+        "limit_stopped": 151,
+        "limit_fraction": 0.606425702811245,
+        "by_reason": {
+          "budget": 124,
+          "error": 2,
+          "finished": 96,
+          "max_steps": 27
+        }
+      },
+      "contrasts": [
+        {
+          "control": "diagnosis_replay",
+          "wins": 2,
+          "losses": 5,
+          "ties": 76,
+          "questions": 83,
+          "nonzero": 7,
+          "resolution_floor": 0.015625,
+          "overlap": {
+            "attempts": 249,
+            "shared_attempts": 48,
+            "shared_fraction": 0.1927710843373494,
+            "questions_with_any_differing_execution": 67,
+            "questions": 83
+          },
+          "delta": -0.01606425702811245,
+          "delta_lo": -0.04417670682730923,
+          "delta_hi": 0.008032128514056224,
+          "p_value": 0.3564643535646435,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "full_restart",
+          "wins": 2,
+          "losses": 5,
+          "ties": 76,
+          "questions": 83,
+          "nonzero": 7,
+          "resolution_floor": 0.015625,
+          "overlap": {
+            "attempts": 249,
+            "shared_attempts": 135,
+            "shared_fraction": 0.5421686746987951,
+            "questions_with_any_differing_execution": 38,
+            "questions": 83
+          },
+          "delta": -0.012048192771084338,
+          "delta_lo": -0.032128514056224904,
+          "delta_hi": 0.008032128514056224,
+          "p_value": 0.46055394460553944,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "position_matched_random",
+          "wins": 4,
+          "losses": 5,
+          "ties": 74,
+          "questions": 83,
+          "nonzero": 9,
+          "resolution_floor": 0.00390625,
+          "overlap": {
+            "attempts": 249,
+            "shared_attempts": 82,
+            "shared_fraction": 0.3293172690763052,
+            "questions_with_any_differing_execution": 75,
+            "questions": 83
+          },
+          "delta": -0.004016064257028112,
+          "delta_lo": -0.028112449799196783,
+          "delta_hi": 0.020080321285140562,
+          "p_value": 1.0,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "unc__perplexity__argmax",
+          "wins": 2,
+          "losses": 2,
+          "ties": 79,
+          "questions": 83,
+          "nonzero": 4,
+          "resolution_floor": 0.125,
+          "overlap": {
+            "attempts": 249,
+            "shared_attempts": 45,
+            "shared_fraction": 0.18072289156626506,
+            "questions_with_any_differing_execution": 68,
+            "questions": 83
+          },
+          "delta": 0.0,
+          "delta_lo": -0.01606425702811245,
+          "delta_hi": 0.01606425702811245,
+          "p_value": 1.0,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        }
+      ]
+    },
+    {
+      "model_key": "qwen32b",
+      "dataset": "2wikimultihopqa",
+      "termination": {
+        "rows": 84,
+        "limit_stopped": 28,
+        "limit_fraction": 0.3333333333333333,
+        "by_reason": {
+          "budget": 17,
+          "finished": 56,
+          "max_steps": 11
+        }
+      },
+      "contrasts": [
+        {
+          "control": "diagnosis_replay",
+          "wins": 6,
+          "losses": 4,
+          "ties": 18,
+          "questions": 28,
+          "nonzero": 10,
+          "resolution_floor": 0.001953125,
+          "overlap": {
+            "attempts": 84,
+            "shared_attempts": 24,
+            "shared_fraction": 0.2857142857142857,
+            "questions_with_any_differing_execution": 20,
+            "questions": 28
+          },
+          "delta": 0.047619047619047616,
+          "delta_lo": -0.03571428571428572,
+          "delta_hi": 0.14285714285714285,
+          "p_value": 0.47095290470952905,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "full_restart",
+          "wins": 4,
+          "losses": 0,
+          "ties": 24,
+          "questions": 28,
+          "nonzero": 4,
+          "resolution_floor": 0.125,
+          "overlap": {
+            "attempts": 84,
+            "shared_attempts": 51,
+            "shared_fraction": 0.6071428571428571,
+            "questions_with_any_differing_execution": 11,
+            "questions": 28
+          },
+          "delta": 0.05952380952380952,
+          "delta_lo": 0.011904761904761904,
+          "delta_hi": 0.11904761904761905,
+          "p_value": 0.13108689131086892,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "position_matched_random",
+          "wins": 5,
+          "losses": 1,
+          "ties": 22,
+          "questions": 28,
+          "nonzero": 6,
+          "resolution_floor": 0.03125,
+          "overlap": {
+            "attempts": 84,
+            "shared_attempts": 45,
+            "shared_fraction": 0.5357142857142857,
+            "questions_with_any_differing_execution": 17,
+            "questions": 28
+          },
+          "delta": 0.05952380952380952,
+          "delta_lo": 0.0,
+          "delta_hi": 0.13095238095238096,
+          "p_value": 0.19568043195680432,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "unc__perplexity__argmax",
+          "wins": 3,
+          "losses": 3,
+          "ties": 22,
+          "questions": 28,
+          "nonzero": 6,
+          "resolution_floor": 0.03125,
+          "overlap": {
+            "attempts": 84,
+            "shared_attempts": 18,
+            "shared_fraction": 0.21428571428571427,
+            "questions_with_any_differing_execution": 22,
+            "questions": 28
+          },
+          "delta": -0.011904761904761904,
+          "delta_lo": -0.08333333333333334,
+          "delta_hi": 0.05952380952380952,
+          "p_value": 1.0,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        }
+      ]
+    },
+    {
+      "model_key": "qwen32b",
+      "dataset": "hotpotqa",
+      "termination": {
+        "rows": 129,
+        "limit_stopped": 62,
+        "limit_fraction": 0.4806201550387597,
+        "by_reason": {
+          "budget": 45,
+          "finished": 67,
+          "max_steps": 17
+        }
+      },
+      "contrasts": [
+        {
+          "control": "diagnosis_replay",
+          "wins": 4,
+          "losses": 3,
+          "ties": 36,
+          "questions": 43,
+          "nonzero": 7,
+          "resolution_floor": 0.015625,
+          "overlap": {
+            "attempts": 129,
+            "shared_attempts": 36,
+            "shared_fraction": 0.27906976744186046,
+            "questions_with_any_differing_execution": 31,
+            "questions": 43
+          },
+          "delta": 0.007751937984496124,
+          "delta_lo": -0.062015503875969,
+          "delta_hi": 0.07751937984496124,
+          "p_value": 1.0,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "full_restart",
+          "wins": 1,
+          "losses": 2,
+          "ties": 40,
+          "questions": 43,
+          "nonzero": 3,
+          "resolution_floor": 0.25,
+          "overlap": {
+            "attempts": 129,
+            "shared_attempts": 81,
+            "shared_fraction": 0.627906976744186,
+            "questions_with_any_differing_execution": 16,
+            "questions": 43
+          },
+          "delta": -0.023255813953488372,
+          "delta_lo": -0.07751937984496124,
+          "delta_hi": 0.015503875968992248,
+          "p_value": 0.7443255674432556,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "position_matched_random",
+          "wins": 4,
+          "losses": 6,
+          "ties": 33,
+          "questions": 43,
+          "nonzero": 10,
+          "resolution_floor": 0.001953125,
+          "overlap": {
+            "attempts": 129,
+            "shared_attempts": 65,
+            "shared_fraction": 0.5038759689922481,
+            "questions_with_any_differing_execution": 29,
+            "questions": 43
+          },
+          "delta": -0.023255813953488372,
+          "delta_lo": -0.07751937984496124,
+          "delta_hi": 0.031007751937984496,
+          "p_value": 0.5867413258674132,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "unc__perplexity__argmax",
+          "wins": 8,
+          "losses": 3,
+          "ties": 32,
+          "questions": 43,
+          "nonzero": 11,
+          "resolution_floor": 0.0009765625,
+          "overlap": {
+            "attempts": 129,
+            "shared_attempts": 21,
+            "shared_fraction": 0.16279069767441862,
+            "questions_with_any_differing_execution": 36,
+            "questions": 43
+          },
+          "delta": 0.031007751937984496,
+          "delta_lo": -0.0310077519379845,
+          "delta_hi": 0.08527131782945736,
+          "p_value": 0.43945605439456054,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        }
+      ]
+    },
+    {
+      "model_key": "qwen32b",
+      "dataset": "musique",
+      "termination": {
+        "rows": 216,
+        "limit_stopped": 158,
+        "limit_fraction": 0.7314814814814815,
+        "by_reason": {
+          "budget": 89,
+          "finished": 58,
+          "max_steps": 69
+        }
+      },
+      "contrasts": [
+        {
+          "control": "diagnosis_replay",
+          "wins": 3,
+          "losses": 8,
+          "ties": 61,
+          "questions": 72,
+          "nonzero": 11,
+          "resolution_floor": 0.0009765625,
+          "overlap": {
+            "attempts": 216,
+            "shared_attempts": 48,
+            "shared_fraction": 0.2222222222222222,
+            "questions_with_any_differing_execution": 56,
+            "questions": 72
+          },
+          "delta": -0.027777777777777776,
+          "delta_lo": -0.07407407407407407,
+          "delta_hi": 0.01851851851851852,
+          "p_value": 0.3655634436556344,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "full_restart",
+          "wins": 3,
+          "losses": 8,
+          "ties": 61,
+          "questions": 72,
+          "nonzero": 11,
+          "resolution_floor": 0.0009765625,
+          "overlap": {
+            "attempts": 216,
+            "shared_attempts": 72,
+            "shared_fraction": 0.3333333333333333,
+            "questions_with_any_differing_execution": 48,
+            "questions": 72
+          },
+          "delta": -0.03240740740740741,
+          "delta_lo": -0.07407407407407408,
+          "delta_hi": 0.009259259259259262,
+          "p_value": 0.21837816218378162,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "position_matched_random",
+          "wins": 2,
+          "losses": 8,
+          "ties": 62,
+          "questions": 72,
+          "nonzero": 10,
+          "resolution_floor": 0.001953125,
+          "overlap": {
+            "attempts": 216,
+            "shared_attempts": 48,
+            "shared_fraction": 0.2222222222222222,
+            "questions_with_any_differing_execution": 69,
+            "questions": 72
+          },
+          "delta": -0.018518518518518514,
+          "delta_lo": -0.05555555555555555,
+          "delta_hi": 0.023148148148148154,
+          "p_value": 0.5205479452054794,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        },
+        {
+          "control": "unc__perplexity__argmax",
+          "wins": 4,
+          "losses": 8,
+          "ties": 60,
+          "questions": 72,
+          "nonzero": 12,
+          "resolution_floor": 0.00048828125,
+          "overlap": {
+            "attempts": 216,
+            "shared_attempts": 15,
+            "shared_fraction": 0.06944444444444445,
+            "questions_with_any_differing_execution": 67,
+            "questions": 72
+          },
+          "delta": -0.018518518518518514,
+          "delta_lo": -0.06018518518518518,
+          "delta_hi": 0.023148148148148154,
+          "p_value": 0.5462453754624538,
+          "p_value_holm": 1.0,
+          "inference_note": "frozen primary output; floor is a design property"
+        }
+      ]
+    }
+  ]
+}

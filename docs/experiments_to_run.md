@@ -7,9 +7,10 @@ is `output/pdf/agent-repair-iclr2027-draft.pdf`. The original full manuscript,
 revision. The expanded ICLR working draft now restores the substantive
 sections, with main text, statements, references and technical appendices.
 The [September 9 section review](paper_section_review.md) records the earlier
-section revisions, literature and evidence checks. The broader scientific
-study is incomplete, but the September 12 AWS HotpotQA experiment now has
-new independently audited results. The working manuscript now includes the
+section revisions, literature and evidence checks. The authorized main,
+diagnosis, replication and runtime experiments are complete and independently
+audited; human validation and broader optional extensions remain separate.
+The working manuscript now includes the
 six-condition results, paired intervals, audit counts, cost estimate and
 historical-ID limitations, with a synchronized abstract and conclusion.
 The longer historical exploratory analyses are preserved in the appendix.
@@ -22,17 +23,24 @@ not a request to repeat the completed HotpotQA comparison or pilot.
 
 ## Current Execution
 
-The [September 14 extension](aws_extension_2026-09-14.md) is executing a
-separately frozen two-model, three-dataset comparison and a measured runtime
-study. It fixes 100 main and 20 development questions per dataset, seven
-policies, three repair seeds, a 24-comparison primary family and a $35
-session ceiling inside the original allocation. Completion requires all
-frozen records, independent audits and verified retrieval. Its pending
-outcomes do not support paper claims yet.
+The [September 14 extension](aws_extension_2026-09-14.md) completed its
+separately frozen two-model, three-dataset comparison on September 15 at
+18:00 UTC. All six cells, 600 main evaluations, 4,323 unique repairs and
+8,016 trial rows pass independent audits and local/remote reproduction
+with zero mismatches. All 24 primary Holm-adjusted p-values are 1.000.
+The final recovery verified both archives and all inherited records;
+AWS independently confirmed stopped with its GPU configuration restored.
+The resource-only amendment kept the $50 extension cap inside the original
+$119 allocation and $20 reserve. The reconciled extension estimate is
+$43.90 and combined retrieval is bounded by $1.22, subject to the report's
+shutdown assumptions and tax/transfer exclusions.
 
-The completed diagnosis follow-up is now integrated into the manuscript,
-including all allowance results, paired comparisons and full diagnosis
-charges. The standalone abstract matches the manuscript.
+The frozen design retains 100 main and 20 development questions per dataset,
+seven policies, three repair seeds and one 24-comparison primary family.
+Full replication reporting now includes all six audits and matching local/remote exports.
+The completed 25-question runtime component is separately reportable under
+its prespecified two-comparison ten-second family and is now in the paper,
+alongside the completed diagnosis follow-up. The abstract matches the manuscript.
 
 ## Active Budget Constraint
 
@@ -44,8 +52,9 @@ rows are downloaded and audited. Uncertainty repair succeeded on 9.73% of
 failed-question seed trials versus 11.21% for restart; no primary comparison
 showed a clear advantage. Estimated infrastructure usage is $9.16 before
 credits, tax and transfer. Historical exclusions are reconstructed, with
-the original full-file comparison still unavailable. The broader multi-dataset
-work and nearest-method comparison remain incomplete. Human validation
+the original full-file comparison still unavailable. Multi-dataset replication
+and the same-model diagnosis/replay adaptation are complete; reproducing
+the full trained prior method remains outside the executed scope. Human validation
 remains necessary if making judge-localization or mechanism claims; it is
 not needed to calculate the main deterministic answer metric.
 
@@ -136,17 +145,19 @@ The [September 14 follow-up](aws_diagnosis_2026-09-14.md) completed the
 same-model diagnosis/replay adaptation and 0.5×, 1× and 2× allowances on a
 separate 250-question cohort. All five batches, 3,186 trial rows and paired
 comparisons are independently audited; uncertainty showed no clear advantage
-in the six primary contrasts. A full trained-method reproduction and a
-matched total-runtime comparison remain untested.
+in the six primary contrasts. The extension completed all six replication
+cells and a 25-question measured-runtime comparison. Active deadline
+cancellation, full end-to-end cost and a full trained-method reproduction
+remain untested.
 Any further additions require implementation, an affordable allocation and
 a new frozen condition manifest before test outcomes. Report the completed
 six-condition comparison and the separate diagnosis follow-up with their limitations.
 
 | Priority | Experiment | Concrete design | Evidence it should produce |
 | --- | --- | --- | --- |
-| 1 | Cost-aware recovery comparison | The gold-free diagnosis/replay adaptation, three allowances and measured prompt/output/request/tool costs are complete. Add a matched total-runtime comparison. Freeze and charge any final-answer selector for a repeated-restart extension. | Current diagnosis and allowance results are in the September 14 report. Label adaptations explicitly. |
-| 2 | Generality of the controlled comparison | HotpotQA is complete. Generate a second-model failure cohort and replicate a small frozen core on MuSiQue or 2WikiMultiHopQA as the measured budget permits. | Model/dataset-specific repair rates and paired question-level intervals. |
-| 3 | Backtracking and position controls | Complete for the current HotpotQA study, including no-backtracking and position-matched random. Carry these controls into any broader claim where affordable. | Current overlap and paired intervals are in the manuscript; future replication must use newly frozen cohorts. |
+| 1 | Cost-aware recovery comparison | Completed: gold-free diagnosis/replay, three allowances, measured policy costs and the prespecified ten-second runtime comparison. End-to-end latency and active cancellation remain outside scope. | Diagnosis and runtime results, costs and paired intervals are in the reports and manuscript. Adaptations are labeled explicitly. |
+| 2 | Generality of the controlled comparison | Completed: Qwen32B and Mistral12B on HotpotQA, MuSiQue and 2Wiki, with 100 main and 20 development questions per dataset and model. | All six audited cells, model/dataset-specific repair rates, and the fixed 24-comparison family. |
+| 3 | Backtracking and position controls | Complete in the main study and all six replication cells, including no-backtracking and position-matched random. | Policy tables and paired intervals are in the manuscript; broader new claims need new frozen cohorts. |
 | 4 | Human validation, if retaining localization claims | Sample failures independently of repair success. The original three-dataset target is 50 traces per dataset, preferably two blinded annotators with disagreements preserved. | Exact/within-one step and error-class agreement, uncertainty and ambiguity counts. No annotations have been completed. |
 
 Judge-targeted conditions are privileged diagnostics, not a proven upper
@@ -220,8 +231,9 @@ physical execution reuse, split isolation, and interrupted-run recovery.
 The [current expert review](iclr_expert_review_2026-09-13.md) records the remaining gaps;
 [RUN_LOCAL.md](../RUN_LOCAL.md#controlled-development-pilot) provides a
 bounded development pilot. Position-matched random is implemented and
-evaluated. The close-method baseline and full human-labeling workflow remain
-outstanding; the latter is conditional on retaining localization claims.
+evaluated. The same-model diagnosis/replay adaptation is also complete;
+the full trained-method reproduction and human-labeling workflow remain
+outside scope. Human labels are conditional on retaining localization claims.
 
 ## Required Analyses, Not New Model Runs
 
@@ -250,12 +262,12 @@ remain absent. The examples do not establish failure-type prevalence.
 
 ## Stronger Evidence and Optional Extensions
 
-- **High priority for generality:** repeat the frozen core comparison with
-  a second model family. Without this, keep claims specific to the tested
-  Qwen agent. This is a research recommendation, not a formal ICLR rule.
-- **If making budget-robustness claims:** evaluate additional caps such as
-  0.5x and 2x. The revised CLI executes the configured list; the archived
-  script's hardcoded 1x results do not become a completed budget sweep.
+- **Completed generality check:** the frozen core comparison now includes
+  two model families on three QA datasets. Claims remain specific to those
+  evaluated models and the offline environment.
+- **Completed allowance check:** the separate Qwen HotpotQA diagnosis cohort
+  evaluates 0.5x, 1x and 2x recovery-token caps. This does not establish
+  allowance robustness for every replication cell or equal total compute.
 - **Only if retaining a causal context claim:** intervene on retained
   context while controlling evidence, prompt, and recovery allowance.
   Restart winning alone does not establish context contamination.
@@ -294,8 +306,8 @@ affordable frozen design and GPU availability. Human annotators are needed
 only for the proposed localization/mechanism extension.
 
 The close-comparator adaptation and additional allowances are complete.
-Independent replication and measured runtime are executing under the
-separate extension protocol. The
+Independent replication and measured runtime await retrieval and final
+audits under the separate extension protocol. The
 [current review](iclr_expert_review_2026-09-13.md#concrete-next-experimental-design)
 specifies the design boundaries. Statistical packaging is complete; full
 GPU replay packaging and final author review remain separate work.

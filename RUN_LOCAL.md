@@ -27,11 +27,25 @@ python -m pytest -q tests
 python scripts/build_iclr_draft.py
 ```
 
-The builder uses archived QA aggregates and explicitly indexed saved
-notebook tables to regenerate files under `paper/generated/`, including a
-provenance manifest with input hashes and cell indices. It checks that
-notebook and CSV baseline rates agree at displayed precision. It does not
-infer hidden table rows, missing raw trials, or confidence intervals.
+The paper build checks the audited main study, diagnosis follow-up,
+completed six-cell replication and runtime component before generating their assets. Historical
+aggregates and explicitly indexed notebook tables retain separate provenance.
+Generated LaTeX tables live in `paper/generated/tables/`; PDF/PNG figures
+live in `paper/generated/figures/`. Numeric macros and input-hash manifests
+remain in `paper/generated/`. Completed replication tables replace the
+earlier manually maintained status table. Recovered source records are required
+to rebuild audited results; passing CPU tests alone is not their reproduction.
+
+Reproduce all six extension cells from the downloaded raw archives with:
+
+```bash
+python scripts/finalize_extension_study.py --base output/aws-experiment/2026-09-15-extension-completion
+```
+
+`scripts/build_extension_paper.py` requires that successful reproduction,
+checks its input hashes and complete coverage, and runs in the default paper
+build. It rejects changed or incomplete evidence. The completed runtime
+component has its own validated builder, `scripts/build_runtime_paper.py`.
 
 With `latexmk`, a TeX distribution, and required font packages installed:
 
@@ -73,7 +87,9 @@ including `vllm>=0.19.0`; it is not a pinned reproduction environment.
 The previous instructions for vLLM 0.6.3 and a fixed overnight runtime were
 stale. Validate a compatible serving environment on the actual GPU, record
 its exact package versions, and measure a pilot before estimating run time.
-No real GPU smoke test has been completed in the current preparation pass.
+The completed AWS studies preserve their actual GPU preflights and pinned
+runtime records in the linked reports. A new environment still needs its
+own smoke test; those records do not validate every version in the ranges.
 
 The [study protocol](docs/iclr2027_study_protocol.md#implementation-gates-before-gpu-runs)
 contains implementation requirements for a confirmatory ICLR run. Do not

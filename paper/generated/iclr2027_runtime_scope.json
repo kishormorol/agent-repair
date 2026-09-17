@@ -1,0 +1,74 @@
+{
+  "scope": "completion-time success for one measured execution configuration",
+  "measured_time": "selection, prefix replay and recovery generation for the attempt; diagnosis acquisition is measured once per question and charged to each of its attempts",
+  "deadline_role": "attempts execute fully and a threshold is applied afterwards, so a deadline classifies completions and never cancels work or shortens an attempt",
+  "excluded": "deployed prefix caching, concurrency, repeated acquisition and matched total-resource comparisons are outside this configuration",
+  "policies": [
+    {
+      "strategy": "unc__perplexity__argmax__bt2",
+      "label": "Uncertainty",
+      "attempts": 75,
+      "questions": 25,
+      "finished": 49,
+      "step_limited": 26,
+      "token_limited": 0,
+      "errored": 0,
+      "mean_s": 5.117052820800005,
+      "max_s": 10.29746100999995,
+      "q25_s": 2.7494073649999677,
+      "q50_s": 4.4532746680001765,
+      "q75_s": 7.667870651500095,
+      "q90_s": 8.463166659399771,
+      "selection_mean_s": 0.0020006860400045377,
+      "recovery_mean_s": 5.11505213476
+    },
+    {
+      "strategy": "full_restart",
+      "label": "Restart",
+      "attempts": 75,
+      "questions": 25,
+      "finished": 48,
+      "step_limited": 27,
+      "token_limited": 0,
+      "errored": 0,
+      "mean_s": 5.134245114453364,
+      "max_s": 10.090833498000052,
+      "q25_s": 2.7617647860001853,
+      "q50_s": 4.92759148200048,
+      "q75_s": 7.206946390500093,
+      "q90_s": 8.20068071300011,
+      "selection_mean_s": 1.4867706657544961e-05,
+      "recovery_mean_s": 5.134230246746706
+    },
+    {
+      "strategy": "diagnosis_replay",
+      "label": "Diagnosis",
+      "attempts": 75,
+      "questions": 25,
+      "finished": 49,
+      "step_limited": 26,
+      "token_limited": 0,
+      "errored": 0,
+      "mean_s": 5.595694810826775,
+      "max_s": 10.921682821999866,
+      "q25_s": 2.893819129500116,
+      "q50_s": 4.49552177500027,
+      "q75_s": 8.439187229500249,
+      "q90_s": 9.23548767459988,
+      "selection_mean_s": 0.8102912264134193,
+      "recovery_mean_s": 4.785403584413356
+    }
+  ],
+  "totals": {
+    "attempts": 225,
+    "questions": 25,
+    "step_limited": 79,
+    "token_limited": 0
+  },
+  "source_sha256": {
+    "pooled-analysis-local.trials.csv": "5d2ae508bd5f3db068d672307d75eb8377f7404dd08866020c826730a8a1e9d0"
+  },
+  "code_sha256": {
+    "scripts/runtime_scope.py": "62f0f95f3918ff8bf6e4837e58c75e1e6db3ad03b348fc1cb56c7b76b0abccc3"
+  }
+}

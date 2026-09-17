@@ -107,9 +107,9 @@ def build_assets(out, analysis):
             contrasts.append([f"${allowance:g}\\times$", LABELS[control], f"{100*row['delta']:+.2f}",
                               f"[{100*row['delta_lo']:+.2f}, {100*row['delta_hi']:+.2f}]", f"{row['p_value']:.3f}",
                               f"{row['p_value_holm']:.3f}"])
-    write_table(out/"iclr2027_diagnosis_results.tex", ["Allowance", "Policy", "Successes", "Success (\\%)", "EM (\\%)", "F1"], results)
-    write_table(out/"iclr2027_diagnosis_costs.tex", ["Allowance", "Policy", "Generated", "Prompt", "Requests"], costs)
-    write_table(out/"iclr2027_diagnosis_contrasts.tex", ["Allowance", "Control", "$\\Delta$ (pp)", "95\\% interval (pp)", "$p$", "$p_{\\rm Holm}$"], contrasts)
+    write_table(out/"tables"/"iclr2027_diagnosis_results.tex", ["Allowance", "Policy", "Successes", "Success (\\%)", "EM (\\%)", "F1"], results)
+    write_table(out/"tables"/"iclr2027_diagnosis_costs.tex", ["Allowance", "Policy", "Generated", "Prompt", "Requests"], costs)
+    write_table(out/"tables"/"iclr2027_diagnosis_contrasts.tex", ["Allowance", "Control", "$\\Delta$ (pp)", "95\\% interval (pp)", "$p$", "$p_{\\rm Holm}$"], contrasts)
 
 
 def main():
@@ -119,8 +119,8 @@ def main():
                   "failed_questions": 118, "unique_repairs": 2079, "trial_rows": 3186,
                   "checks": "Protocol, five audits, local/remote JSON and all trial columns, complete policy/seed coverage and measured policy means",
                   "source_sha256": {name: hashlib.sha256((BASE/name).read_bytes()).hexdigest() for name in INPUTS},
-                  "asset_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-                                   for p in sorted(OUT.glob("iclr2027_diagnosis_*.tex"))}}
+                  "asset_sha256": {str(p.relative_to(OUT)): hashlib.sha256(p.read_bytes()).hexdigest()
+                                   for p in sorted((OUT/"tables").glob("iclr2027_diagnosis_*.tex"))}}
     (OUT/"iclr2027_diagnosis_provenance.json").write_text(json.dumps(provenance, indent=2)+"\n")
     print("Built audited diagnosis results, paired contrasts, and measured policy-cost tables.")
 

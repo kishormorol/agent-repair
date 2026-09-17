@@ -3,14 +3,32 @@
 ## Current Extension and Completed Studies
 
 The [replication and runtime extension](docs/aws_extension_2026-09-14.md)
-started September 14 at **17:18:37 UTC** and is executing under its frozen
-**$35 session ceiling** within the original $119 allocation. It evaluates
-two models and three datasets; its results and final audits are pending.
-The independent AWS stop is scheduled for **22:46:36 UTC**. The stopped-state
-observations below refer to earlier completed sessions.
+is complete. Its final continuation finished on **September 15 at 18:00 UTC**:
+two models, three datasets, **600 main evaluations, 120 development
+evaluations, 4,323 unique repairs and 8,016 trial rows**. All six cells pass
+independent replay, scoring and allowance audits with zero mismatches;
+local and remote exports reproduce across all 29 trial columns and result
+summaries. All **24 primary Holm-adjusted p-values are 1.000**.
 
-The manuscript now includes the completed diagnosis follow-up, its six paired
-contrasts and measured policy costs. The standalone abstract is synchronized.
+Both completed model archives are downloaded and checksum-verified.
+The final retrieval used CPU only; AWS independently confirmed **stopped**,
+with no public IP, and the original GPU configuration restored. The original
+scientific protocol, prior partial archives and all 8,536 inherited result
+files are preserved. The continuation passed **51 GPU preflight tests**;
+the local suite passed **314 tests**, plus five transport checks.
+
+The user-authorized **$50 extension cap** remains within the original
+**$119 allocation and $20 reserve**. The reconciled extension estimate is
+**$43.90** (the full-window estimate was $49.23), and all combined retrievals
+are bounded by **$1.22**, before tax and transfer and subject to the report's
+inherited shutdown assumption. The extension report records the start/stop evidence, resource
+amendments, earlier audit fixes and final reproduction.
+
+The manuscript includes the complete replication, diagnosis follow-up and
+runtime component: 25 questions, 225 attempts, and no clear advantage at
+the primary ten-second deadline. Its title, abstract, discussion and
+limitations reflect the completed multi-dataset study; tables and figures
+have separate directories. The standalone abstract is synchronized.
 
 The [diagnosis/replay follow-up is complete](docs/aws_diagnosis_2026-09-14.md).
 All 250 questions, 2,079 unique repairs and 3,186 trial rows are downloaded

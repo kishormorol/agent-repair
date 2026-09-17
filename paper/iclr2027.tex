@@ -3,11 +3,11 @@
 \usepackage{amsmath,amssymb,booktabs,graphicx,etoolbox,array}
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
-\hypersetup{pdftitle={Does Stored-Token Uncertainty Improve Trajectory Repair? A Controlled HotpotQA Study},pdfauthor={}}
+\hypersetup{pdftitle={A Controlled Test of Perplexity-Based Trajectory Repair: Two Model Families, Three QA Datasets, and an Exactly Balanced Origin Control},pdfauthor={}}
 % Keep words intact across page breaks, especially around floating results.
 \brokenpenalty=10000
 
-\title{Does Stored-Token Uncertainty\\Improve Trajectory Repair?\\A Controlled HotpotQA Study}
+\title{A Controlled Test of\\Perplexity-Based Trajectory Repair\\\large Two Model Families, Three QA Datasets,\\and an Exactly Balanced Origin Control}
 \author{Anonymous authors}
 % This local working copy has not been submitted; leave the official style file intact.
 \makeatletter
@@ -15,37 +15,46 @@
   {\PackageError{agent-repair}{Working-draft label patch failed}{Check the title macro.}}
 \makeatother
 \input{generated/iclr2027_numbers}
+\input{generated/iclr2027_position_pairs}
+\input{generated/iclr2027_replication_diagnostics}
+\input{generated/iclr2027_outcome_sensitivity}
+\input{generated/iclr2027_runtime_scope}
 % Working draft. The evidence and rerun requirements are recorded in
 % ../docs/iclr2027_readiness.md. Do not submit before those checks are complete.
 
 \begin{document}
 \maketitle
-\fancyhead[L]{Working draft: audited HotpotQA study}
+\fancyhead[L]{Working draft: audited QA repair studies}
 
 \begin{abstract}
-When a language model agent fails, recovery can preserve a trajectory prefix
-and regenerate its suffix, or restart from the original task. We test whether
-stored-token uncertainty helps select a recovery origin beyond simple
-positional choices in a ReAct-style agent. A controlled experiment with
-Qwen2.5-32B-Instruct-AWQ freezes \MainInitial{} HotpotQA questions before
-inference. Its \MainFailed{} initial failures receive six repair conditions
-and three seeds under matched retry hints, generated-token caps and new-step
-allowances. The prespecified perplexity/argmax policy with two-step
-backtracking achieves \MainTreatmentRate\% repair success, versus
-\MainRestartRate\% for full restart: a difference of \MainRestartDelta{}
-percentage points, with a question-level 95\% bootstrap interval from
-\MainRestartLow{} to \MainRestartHigh{}. Its success rate equals the
-position-matched random control; none of the four prespecified comparisons
-shows a clear advantage after Holm correction. Exploratory trace diagnostics
-show that the treatment differs from restart on only \ReviewActiveQuestions{}
-failed questions and uses \ReviewPromptIncrease\% more prompt tokens, with
-similar generated-token use. All \MainUniqueRepairs{} unique repair executions
-pass independent replay, scoring and allowance audits. Historical exclusion
-IDs are reconstructed, with the original full pool comparison unavailable.
-A separate 250-question cohort compares restart, uncertainty, and same-model
-diagnosis/replay at three allowances, with 2,079 additional unique repairs.
-Uncertainty again shows no clear advantage in six Holm-adjusted comparisons.
-These results do not establish equivalence or an advantage under equal total compute.
+Recovery from a failed agent trajectory can restart the task or preserve
+a prefix and regenerate its suffix. We test whether stored-token perplexity
+helps select a useful recovery origin beyond positional controls in
+ReAct-style QA agents. A prespecified \MainInitial{}-question HotpotQA study
+with Qwen2.5-32B-Instruct-AWQ compares six policies under matched retry hints,
+generated-token caps and new-step allowances. Two-step backtracking from
+the highest-perplexity step achieves \MainTreatmentRate\% repair success
+versus \MainRestartRate\% for restart: \MainRestartDelta{} percentage points
+(question-level 95\% bootstrap interval, \MainRestartLow{} to \MainRestartHigh{}).
+None of four primary comparisons shows a clear advantage. A separate
+250-question diagnosis/replay follow-up finds none across three token
+allowances and six primary comparisons. A frozen replication evaluates
+Qwen32B and Mistral-Nemo on HotpotQA, MuSiQue and 2WikiMultiHopQA: 600 main
+model/question evaluations, seven policies and three repair seeds. All 24
+primary comparisons remain inconclusive. A further frozen study pairs failed
+questions by identical original length and swaps each pair's chosen origins,
+holding the two arms' origin distributions exactly equal by construction rather
+than by fitting; that comparison is also inconclusive. Within that extension, 25 failed
+Qwen HotpotQA questions receive 225 additional timed attempts; success by
+ten seconds is 16.0\% for uncertainty, 17.3\% for restart and 12.0\% for
+diagnosis, with neither primary contrast significant. Each experiment
+uses its own prespecified Holm family. All new experiments pass independent
+replay, scoring and allowance audits. Exploratory main-study diagnostics
+find \ReviewPromptIncrease\% more prompt tokens than restart despite similar
+generated-token use. Historical exclusions rely on reconstructed pools.
+These results limit claims for this uncertainty policy in the evaluated
+offline setting; they establish neither equivalence nor an advantage under
+equal total compute.
 \end{abstract}
 
 \section{Introduction}
@@ -63,36 +72,41 @@ Conversely, a locally uncertain action can be useful exploration. Neither
 uncertainty nor agreement with an error annotation directly establishes
 the value of intervening at that step.
 
-We examine this distinction using a common execution loop for targeted
-regeneration and restart. The historical framework crosses five signals
-with six origin-selection rules and uses a larger model for privileged
-reference diagnostics. The completed six-condition study freezes one stored-token
-policy and evaluates six conditions under matched recovery allowances on
-HotpotQA. It uses no judge or outcome-based policy search. Reference annotations are not treated
-as infallible causal labels. Prior work already studies intervention-based
-debugging, localized QA repair with prefix reuse, and repair versus
-resampling \citep{ma2026dover,jiao2026doctor,luan2026symtrace}.
-The unresolved question here is whether stored-token uncertainty adds
-origin-selection value beyond position alone, without a separate diagnosis
-model, in a fixed tool environment. Neither prefix reuse nor the distinction
-between attribution and recovery is claimed as new.
+We isolate origin selection with a common execution loop for targeted
+regeneration and restart. One stored-token policy is fixed before outcomes
+and compared with positional controls under the same recovery allowances.
+Separate experiments add a same-model diagnosis comparator, vary token
+allowances, replicate across two models and three datasets, and measure
+success by a completion deadline. They ask whether
+uncertainty adds useful selection information in a fixed tool environment,
+and whether an observed success rate justifies a resource advantage.
+Prior work already studies intervention-based debugging, localized QA
+repair with prefix reuse, and repair versus resampling
+\citep{ma2026dover,jiao2026doctor,luan2026symtrace}. Our contribution is a
+controlled test of a specific selector against these alternatives, rather
+than a new claim about prefix reuse or causal error attribution.
 
-The evidence does not support a universal short-trajectory repair versus
-long-trajectory restart rule: evidence quality, error types, dataset, and
-budget can influence the ordering. We focus on three contributions:
+We make three contributions:
 \begin{enumerate}
-\item A prespecified six-condition HotpotQA comparison with question-level
-      paired inference, including a development-fitted position control
-      and a no-backtracking ablation; no clear uncertainty advantage is observed.
-      A separate 250-question follow-up adds a same-model diagnosis/replay
-      adaptation at three recovery-token allowances, also without a clear
-      uncertainty advantage.
-\item An exploratory decomposition of shared executions and observed
-      resource use, which exposes the limited number of distinct interventions
-      and separates output-token allowances from repeated prompt processing.
+\item Controlled comparisons of one fixed selector, highest-perplexity step
+      with two-step backtracking, spanning two model families and three QA
+      datasets, with question-level paired inference, a development-fitted
+      position control with measured replication imbalance, and a
+      no-backtracking ablation. Neither the main
+      study nor replication establishes an advantage for this policy in its
+      prespecified comparison family.
+\item An exactly balanced origin control: pairing failures by identical
+      original length and swapping each pair's chosen origins removes
+      positional imbalance by construction rather than by fitting, and the
+      comparison stays null. Alongside it, diagnosis, token-allowance and
+      completion-deadline comparisons distinguish conditional repair success
+      from resource savings and show which costs the allowances leave
+      unmatched. The diagnosis comparator is an untrained, origin-only
+      adaptation; its valid JSON and absent replication fallbacks establish
+      parser coverage, not diagnosis quality.
 \item Audited replay, reference scoring, complete trial coverage and frozen
-      inputs supporting reproduction of the controlled comparison. Older
-      three-dataset summaries are retained as separate historical context.
+      inputs supporting local reproduction of every completed comparison.
+      Older three-dataset summaries remain separate historical context.
 \end{enumerate}
 
 \section{Related Work}
@@ -170,15 +184,10 @@ and can turn targeted repair into a restart. Consequently, strategy counts
 are not counts of independent interventions.
 
 \paragraph{Reference annotations.}
-Let $k_J$ denote the earliest erroneous step identified by a language model
-judge. Agreement with $k_J$ measures reference-label localization. It is
-distinct from the origin that maximizes expected repair success,
-\begin{equation}
-  k^*(\tau,B)=\arg\max_k
-  \Pr\!\left[\operatorname{correct}(\operatorname{repair}(\tau,k,B))\right].
-\end{equation}
-The latter depends on the agent, retained context, recovery prompt, and
-budget $B$, and is not observed merely by asking a judge to label a trace.
+Historical diagnostics compare selected steps with a judge's error label
+$k_J$. The controlled studies use no such label for selection. Agreement
+with an error annotation does not identify the origin with the highest
+recovery success under a given agent, prompt and budget.
 
 \paragraph{Success across seeds.}
 For failed question $q$, strategy $a$, and generation seed $r$, write the
@@ -194,7 +203,7 @@ not the success rate of one sampled repair, and must be reported separately.
 
 \section{Uncertainty-Guided Regeneration}
 \subsection{Prespecified Stored-Token Policy}
-The controlled study uses step perplexity from stored sampled-token log
+The controlled studies use step perplexity from stored sampled-token log
 probabilities. For log probability $\ell_{it}$ of generated token $t$ in
 step $i$, define
 \begin{equation}
@@ -203,10 +212,9 @@ step $i$, define
 \end{equation}
 The policy selects the highest finite step score, breaking ties toward
 the earlier step, then subtracts two trajectory indices and clamps at zero.
-No additional uncertainty-acquisition model calls are required. Unusable
-measurements are skipped; an empty usable profile falls back to origin zero.
-This stored-token measure requires no additional sampled rollouts or diagnosis
-model. The policy was prespecified before main-study outcomes, rather than
+Unusable measurements are skipped; an empty usable profile falls back to
+origin zero. The stored-token measure requires no additional sampled
+rollouts or diagnosis-model calls. The policy was prespecified before main-study outcomes, rather than
 chosen as the best-performing development or test variant; this is not an
 evaluation of the best possible uncertainty estimator.
 
@@ -218,8 +226,8 @@ controlled experiment.
 
 \subsection{Interventions and Information Access}
 Full restart discards the failed context; targeted policies retain a prefix.
-All six controlled conditions receive the same generic retry hint. The
-uncertainty selector can inspect the complete failed
+All six main-study conditions and all seven replication conditions receive
+the same generic retry hint. The uncertainty selector can inspect the complete failed
 trace's uncertainty profile, but receives no answer or supporting-fact
 labels. The recovery model sees only the question, retained prefix, and
 generic hint; discarded suffix observations are not inserted into its
@@ -230,17 +238,37 @@ experiments. Their privileged information and unmatched historical restart
 hint are documented separately in Appendix~\ref{app:implementation}.
 
 \subsection{Budget Scope}
-The controlled repair cap is the original failed trajectory's generated-token
-count. Each request is bounded by the remaining cap, with at most eight new
-steps and 512 generated tokens per step. Retained steps do not consume new-step
-opportunities. The historical runner instead counted retained steps toward
-its eight-step limit and could overshoot its token cap during a final request.
-Its outcomes remain separate. Even the corrected allowances do not equalize
-realized tokens, prompt processing, latency or FLOPs; these require additional
-cost measurements.
+The main study and replication cap recovery generation at the original failed
+trajectory's generated-token count. The diagnosis follow-up varies this cap
+across $0.5\times$, $1\times$ and $2\times$; diagnosis acquisition is charged
+separately. Each request is bounded by the remaining cap, with at most eight
+new steps and 512 generated tokens per step. Retained steps do not consume
+new-step opportunities. The runtime experiment retains these step limits,
+removes the total generated-token cap and evaluates measured completion
+deadlines. These designs do not equalize realized tokens, prompt processing
+or FLOPs. The historical runner counted retained steps toward its eight-step
+limit and could overshoot its token cap; its outcomes remain separate.
 
 \section{Completed HotpotQA Study}
 \label{sec:evidence}
+\paragraph{Study organization.}
+Table~\ref{tab:study_coverage} separates the distinct main and diagnosis
+HotpotQA cohorts from replication's 300 questions shared across two models
+(600 evaluations). Runtime reuses 25 Qwen HotpotQA replication failures for
+fresh timed executions. The four, six, 24 and two primary tests belong to
+separately frozen Holm families, with no pooled confirmatory test.
+
+\begin{table}[t]
+\centering
+\caption{Completed study coverage, excluding development and historical runs.
+Repairs count unique executions; trial rows can reuse an execution across
+conditions. Runtime questions overlap replication, but its 225 executions
+are additional. Initial evaluations count model/question pairs.}
+\label{tab:study_coverage}
+\footnotesize
+\input{tables/study_coverage}
+\end{table}
+
 \subsection{Model, Cohort and Historical Exclusions}
 We evaluated Qwen2.5-32B-Instruct-AWQ on \MainInitial{} HotpotQA questions
 \citep{yang2018hotpotqa} using the supplied distractor-context paragraphs:
@@ -313,7 +341,7 @@ use the same cohort. The final column reports effective origin zero.
 Fixed early is descriptive. Copied execution rows are not independent trials.}
 \label{tab:main_results}
 \small
-\input{generated/iclr2027_main_results}
+\input{generated/tables/iclr2027_main_results}
 \end{table}
 
 \paragraph{Prespecified uncertainty versus controls.}
@@ -326,7 +354,7 @@ policy. Table~\ref{tab:main_results} also reports exact match and F1.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{generated/iclr2027_main_contrasts.pdf}
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_main_contrasts.pdf}
 \caption{Treatment minus control in repair success. Points are paired
 question-level differences; bars are individual, unadjusted 95\% bootstrap
 intervals over 113 questions. All four intervals include zero. All four
@@ -390,6 +418,91 @@ mean 40.31 generated tokens, 1,234.25 prompt tokens, and one model request
 per standalone policy attempt. Sharing its acquisition across physical
 study executions does not make diagnosis free for a deployed attempt.
 
+\section{Replication across Models and Datasets}
+\label{sec:replication}
+A separately frozen extension evaluates Qwen2.5-32B-Instruct-AWQ and
+Mistral-Nemo-Instruct-2407 on HotpotQA, MuSiQue and 2WikiMultiHopQA.
+Each dataset supplies 100 new main and 20 disjoint development questions,
+shared across models. Seven policies receive three seeds and a recovery
+allowance equal to the original generated-token count, including positional
+controls and same-model diagnosis/replay. Its 371 initial failures yield
+7,791 token-policy rows; runtime adds 225 attempts. All six cells pass
+independent replay, scoring and allowance audits and local/remote reproduction.
+
+\begin{table}[t]
+\centering\footnotesize
+\caption{Completed replication. Rates are conditional repair success (\%).
+$N_f$ counts failed questions; each policy receives three seeds per question.
+$\Delta$ is uncertainty minus restart in percentage points, with an individual
+95\% question-bootstrap interval. $p_H$ belongs to the fixed 24-comparison
+Holm family. Failure cohorts differ between models.}
+\label{tab:extension_overview}
+\input{generated/tables/iclr2027_extension_overview}
+\end{table}
+
+Uncertainty-minus-restart differences range from $-3.24$ to $+5.95$
+percentage points across cells (Table~\ref{tab:extension_overview}).
+All 24 primary Holm-adjusted $p$-values are 1.000, covering restart,
+development-fitted random, no-backtracking uncertainty and diagnosis/replay
+in every cell. That count overstates the evidence: only
+\RepNonzeroLow{}--\RepNonzeroHigh{} questions per contrast differ between the
+policies, and two cells cannot reach significance at any conventional level
+because their exact test has too few non-zero blocks. The Qwen 2Wiki interval
+excludes zero but rests on \RepExampleWins{} wins, \RepExampleLosses{} losses
+and \RepExampleTies{} ties, floor \RepExampleFloor{}; its $p_H=1.000$ gives no
+primary-test evidence. We retain both prespecified outputs; individual
+intervals are not simultaneous
+(Appendix~\ref{app:replication_diagnostics}).
+These comparisons establish neither equivalence nor a model reliability ranking.
+The random position control fits only 6--19 development failures per cell.
+Its origin-zero frequency exceeds treatment by 19.38 points on Qwen HotpotQA
+and 26.19 on Qwen 2Wiki. This imbalance limits isolation of uncertainty
+information from positional preferences; Appendix~\ref{app:position_balance}
+reports full distributions and execution overlap. A separately frozen
+follow-up removes that imbalance by construction rather than by fitting: on
+\PairQuestions{} fresh questions it pairs failures by exact original length and
+gives each question its partner's uncertainty-chosen origin, so the two arms
+carry \emph{identical} origin multisets. The comparison stays null, with
+Holm-adjusted $p$-values of \PairHotpotHolm{} and \PairTwoWikiHolm{} and the
+two datasets pointing in \emph{opposite} directions
+(Appendix~\ref{app:position_pairs}). All policy outcomes, costs and contrasts
+appear in Appendix~\ref{app:extension_protocol}.
+
+\section{Success under a Measured Time Limit}
+\label{sec:runtime}
+The runtime component uses the first 25 failed questions from the
+100-question Qwen HotpotQA replication cell.
+Restart, uncertainty and diagnosis each receive three seeds, with separate
+executions in shuffled order after model warmup and with prefix caching
+disabled. Attempts retain eight new steps and 512 tokens per request but
+have no total generated-token cap. Measured time includes selection,
+prefix replay and recovery. Diagnosis acquisition is measured once per
+question and charged to each attempt. The primary outcome is a correct
+completion by ten seconds; 5- and 20-second thresholds are exploratory.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_runtime_success.pdf}
+\caption{Completed runtime experiment: 25 questions and 75 attempts per
+policy. Each curve shows successful completions by the indicated time as
+a fraction of all attempts. The ten-second threshold is primary; the
+remaining curve is descriptive. Attempts execute fully before thresholds
+are applied, so the figure does not measure savings from cancellation.}
+\label{fig:runtime}
+\end{figure}
+
+At ten seconds, uncertainty succeeds on 12/75 attempts (16.0\%), restart
+on 13/75 (17.3\%), and diagnosis on 9/75 (12.0\%). Uncertainty minus
+restart is $-1.33$ percentage points (individual 95\% question-bootstrap
+interval $[-5.33,+2.67]$); versus diagnosis it is $+4.00$ points
+($[-4.00,+13.33]$). Both Holm-adjusted $p$-values are 1.000.
+This small, ordered cohort provides no clear deadline-success advantage;
+it does not establish equivalence or population-wide latency rankings.
+Median measured time is \RuntimeUncMedian{}, \RuntimeRestartMedian{} and
+\RuntimeDiagMedian{}~s respectively. Appendices~\ref{app:runtime_scope}
+and~\ref{app:extension_protocol} give the latency distribution, termination
+counts, thresholds and audit details.
+
 \section{Archived Results}
 \label{sec:archived}
 Older HotpotQA, MuSiQue and 2WikiMultiHopQA summaries cover \TotalFailed{}
@@ -434,7 +547,7 @@ out of 339 question/seed pairs. Different-question counts are out of 113
 questions with any distinct execution. Wins/losses/ties compare three-seed
 question means, not independent seed trials.}
 \label{tab:review_overlap}
-\input{generated/iclr2027_review_overlap}
+\input{generated/tables/iclr2027_review_overlap}
 \end{table}
 
 \paragraph{Observed resources and unfinished repairs.}
@@ -457,96 +570,88 @@ would achieve with more tokens. Section~\ref{sec:diagnosis_followup} reports
 separate executions at three allowances on another frozen cohort.
 
 \paragraph{Metric sensitivity and population interpretation.}
-The strict-EM treatment-minus-restart difference is $-1.47$ points
-(95\% interval [$-3.83,+0.59$]). Against uncertainty without backtracking,
-the exploratory EM difference is $+2.95$ points ([$+0.29,+5.60$]); the
-corresponding primary-gate comparison remains inconclusive. The eight
-secondary EM/F1 intervals in Table~\ref{tab:review_sensitivity} are unadjusted
-and exploratory. A separate descriptive comparison with fixed early gives
-$-1.77$ primary-gate points ([$-6.19,+2.65$]), without adding it to the
-prespecified family or selecting a replacement policy.
-
+The eight EM/F1 comparisons in Table~\ref{tab:review_sensitivity} and the
+descriptive fixed-early contrast are exploratory; they neither expand the
+primary family nor select a replacement policy.
 Keeping initially accepted answers and repairing only the 113 rejected ones
 yields \ReviewWholeSuccess\% full-cohort gate success for treatment and
 \ReviewWholeRestartSuccess\% for restart. These are reference-gated outcomes,
 not performance of a deployed failure detector. Forty initially accepted
 answers fail strict EM and were never repaired; an EM-only failure cohort
-would need additional executions. This distinction prevents a conditional
-repair rate from being mistaken for overall answer accuracy.
+would need additional executions.
 
 \section{Limitations}
 \paragraph{Scope and remaining comparisons.}
-The two completed controlled studies concern one quantized model, separate
-HotpotQA cohorts, offline evidence, and a permissive answer-success
-gate. Strict EM and F1 sensitivities retain that initial-failure cohort;
-an EM-only failure gate would require additional repaired questions. Transfer
-to other models, live retrieval, and other datasets is not established by
-these two studies. The separately frozen diagnosis/replay and three-allowance comparison is
-complete (Section~\ref{sec:diagnosis_followup}); matched runtime and broader
-replication are separate experiments. Human validation remains
-necessary for historical judge-localization claims and new mechanism claims;
-the main repair comparison instead uses deterministic reference-answer scoring.
+Two model families and three QA datasets, offline evidence and a permissive
+reference-answer gate do not establish transfer to live retrieval, other
+model scales or general agent tasks. Strict EM/F1 sensitivities retain the
+same initial-failure cohort; an EM-only gate requires additional repaired
+questions. Runtime questions overlap replication.
+
+\paragraph{Comparator and resource scope.}
+The diagnosis/replay adaptation omits trained diagnosis and diagnosis-specific
+repair operators. Runtime results use the first 25 failures, exclude startup
+and failure detection, and score completed attempts without active deadline
+cancellation. Diagnosis is timed once per question, leaving reacquisition
+variability unmeasured. Neither generation allowances nor deadline results
+establish an advantage at equal end-to-end latency, FLOPs or deployment cost.
 
 \paragraph{Exclusions and statistical precision.}
-The test IDs were fixed before new outcomes and are disjoint from declared
-historical exclusions, but those exclusions depend on reconstruction: the
-full original pool was not compared and undocumented runs cannot be ruled
-out. The position control fits 24 development failures and may imperfectly
-represent a broader origin distribution. A nonsignificant difference is
-not evidence of equivalence. Bootstrap intervals are individual intervals;
-they do not have simultaneous family-wise coverage. Sign-flip inference
-depends on within-question exchangeability, and seed sharing does not create
-additional independent questions.
+Test IDs are frozen and disjoint from reconstructed exclusions, but the
+original historical pool was not downloaded or compared and undocumented
+runs cannot be ruled out. Position controls fit 24 main-study development
+failures and 6--19 per replication cell; realized replication imbalance
+limits attribution to uncertainty beyond position. A nonsignificant
+difference is not evidence of equivalence. Bootstrap intervals lack
+simultaneous family-wise coverage; sign-flip inference requires within-question
+exchangeability. Shared seeds or executions do not add independent questions.
 
 \paragraph{Historical and replay boundaries.}
-The archived summaries retain prompt and budget confounds and lack raw
-trials for corrected paired inference. They do not inherit the main study's
-audit guarantees. Main-study prefix replay was audited against frozen local
-evidence; this does not guarantee identical stochastic suffixes or restore
-arbitrary mutable external state. Failure cohorts depend on the model and
-gate, so their conditional repair rates do not rank population reliability.
-The infrastructure estimate excludes tax, transfer and subsequent storage,
-and does not demonstrate matched total inference cost.
+Historical summaries retain prompt/budget confounds, incomplete raw trials
+and no human error-step validation. Prefix replay audits cover frozen local
+evidence; they do not guarantee identical stochastic suffixes or restore
+arbitrary mutable state. Conditional repair rates do not rank population
+reliability.
 
 \section{Conclusion}
-Trajectory repair requires choosing how much prior interaction to retain.
-In the completed six-condition HotpotQA study, the prespecified uncertainty
-policy achieved \MainTreatmentRate\% repair success versus
-\MainRestartRate\% for restart and the same success rate as the
-position-matched random control. None of the four primary comparisons
-provides clear evidence of an uncertainty-guided repair advantage. This is
-a result for one model, environment and allowance, not evidence of equivalence.
-Exploratory diagnostics show that treatment changes the restart execution on
-only \ReviewActiveQuestions{} failed questions and increases mean prompt-token
-usage by \ReviewPromptIncrease\%, despite similar output-token use. These
-observations qualify the result's scope; they do not identify what a larger
-allowance would achieve on these same questions or how another model would
-behave. The contribution is a bounded,
-reproducible empirical comparison. Stronger method, efficiency or generality
-claims require evidence beyond these conditional recovery comparisons.
-The separate diagnosis follow-up also found no clear uncertainty advantage
-across three generated-token allowances.
+One fixed selector, the highest-perplexity step with two-step backtracking,
+shows no clear advantage in any primary comparison family across two model
+families and three offline QA datasets. Main-study success is
+\MainTreatmentRate\% versus \MainRestartRate\% for restart, equal to the
+observed position-matched rate. Holding origin distributions exactly equal by
+construction leaves the result unchanged. Diagnosis, allowance and deadline
+comparisons remain inconclusive, and two replication cells could not have
+reached significance at any conventional level given their non-zero block
+counts. Main-study prompt usage rises by \ReviewPromptIncrease\% despite
+similar output-token use. These results support measuring acquisition and
+prompt costs alongside repair success; they establish neither policy
+equivalence, matched total compute, nor a limitation of uncertainty-guided
+repair as a method class, which this study does not test.
 
 \section*{Reproducibility Statement}
-The controlled study preserves frozen IDs and exclusions, model/source
-identities, executed notebooks, raw trajectories, repair rows, five archive
-checksums and independent audit outputs. The downloaded pooled analysis
-reproduces locally. Appendix~\ref{app:completion} specifies the protocol,
-provenance limits and audit counts. Review-stage diagnostics supply a checked
-analysis script, trial and initial-question CSVs, and source/code hashes;
-their exploratory status is explicit. A local statistical supplement bundles
-the two CSVs, frozen manifest, reference analyses, checksums and a standalone
-reproduction script. Extracted into an isolated directory, it reproduces all
-four primary and eight secondary comparisons, policy costs and full-cohort
-rates without cloud access. It does not reproduce model generations or
-replace the raw-trajectory audit. The separate diagnosis follow-up preserves
-six verified archives, including development, and independent audits of all
-five main batches. Its local reproduction compares all 3,186 trial rows and
-455 numeric values with the remote analysis; the paper's follow-up tables
-are generated from that checked output. Paper assets are generated from audited
-records and separately hashed historical summaries. Full GPU replay
-packaging and author review before release remain separate; human annotation
-and unrecovered historical raw trials are not supplied.
+All completed studies retain frozen cohorts, model/source identities, raw
+trajectories, checksums and independent audit outputs. Local analyses match
+the recovered results; paper assets are generated from checked records.
+Appendices~\ref{app:completion}, \ref{app:diagnosis_followup} and
+\ref{app:extension_protocol} give protocols and audit counts. The extension's
+8,016 rows and 29 trial columns include its 225 runtime attempts. Exploratory
+diagnostics and historical summaries are identified separately.
+
+A combined anonymous supplement now covers every completed study. From an
+isolated extraction, with no workspace path or cloud credential, it
+reproduces all four primary families from their packaged trial exports: the
+main HotpotQA study's 4 tests over 2,034 rows, the diagnosis and allowance
+follow-up's 6 tests over 3,186 rows, the replication's 24 tests over 8,016
+rows, and the length-matched swap's 2 tests over 738 rows. Each contrast's
+condition means and point estimate are recomputed from the rows, and each
+Holm adjustment is recomputed over its declared family; any altered file
+fails a checksum and any altered statistic fails the comparison. Three
+environments stay separate and are labelled as such in the bundle:
+statistical reproduction is included, while raw replay with reference
+scoring and GPU regeneration of trajectories are not, since those need the
+frozen raw trajectories and the pinned weights respectively. Human
+annotations and unrecovered historical raw trials are not supplied. Appendix~\ref{app:availability} distinguishes verification from
+release availability; author review and disclosure remain pending.
 
 \section*{AI Use Statement}
 Language models are used as agents and reference annotators. Generative AI
@@ -767,7 +872,7 @@ uncertainty grid, including informed variants; it is not a held-out policy.
 Historical budgets require auditing, and valid confidence intervals are pending.}
 \label{tab:results}
 \small
-\input{generated/iclr2027_results}
+\input{generated/tables/iclr2027_results}
 \end{table}
 
 Full restart exceeds generic judge-targeted repair in the archived HotpotQA
@@ -810,7 +915,7 @@ or its possible two-step backtracking.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{generated/iclr2027_repair_rates.png}
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_repair_rates.png}
 \caption{Descriptive archived rates for judge-targeted repair, two-step
 backtracking, and restart. All bars use mean seed success. The figure
 does not encode uncertainty intervals or establish a causal mechanism.}
@@ -861,7 +966,7 @@ budget, and question coverage, then evaluate a prespecified strategy.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{generated/iclr2027_localization_heatmap.png}
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_localization_heatmap.png}
 \caption{Exact agreement with the reference error step for argmax
 localization. Larger values indicate annotation agreement, not repair
 success or calibrated error probabilities. All entries are archived
@@ -894,7 +999,7 @@ HP: HotpotQA; MS: MuSiQue; 2W: 2WikiMultiHopQA. Prompt, uncertainty,
 diagnosis, and selection costs are not included.}
 \label{tab:cost}
 \small
-\input{generated/iclr2027_costs}
+\input{generated/tables/iclr2027_costs}
 \end{table}
 
 On HotpotQA, two-step-backtracked judge repair uses 272 generated tokens
@@ -908,7 +1013,7 @@ comparison, not statistically established dominance.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{generated/iclr2027_cost_success.png}
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_cost_success.png}
 \caption{Recovery-token cost versus success for the four recoverable
 baseline summaries. Markers are historical point estimates, with no
 confidence intervals. This is not the full-grid Pareto frontier and does
@@ -932,7 +1037,7 @@ Delta is informed minus generic, in percentage points, calculated from
 rounded archived means. Informed hints use the gold-aware annotation.}
 \label{tab:nudges}
 \small
-\input{generated/iclr2027_nudges}
+\input{generated/tables/iclr2027_nudges}
 \end{table}
 
 The direction varies with the origin, so these summaries support neither
@@ -951,12 +1056,12 @@ comparison does not demonstrate a gold-free self-correction capability.
 Figure~\ref{fig:localization}. Entries are fractions.}
 \label{tab:localization}
 \small
-\input{generated/iclr2027_localization}
+\input{generated/tables/iclr2027_localization}
 \end{table}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{generated/iclr2027_origin_hint_deltas.png}
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_origin_hint_deltas.png}
 \caption{Two descriptive changes in the reference-targeted comparisons.
 Left: moving the origin two steps earlier, from archived mean-rate CSVs.
 Right: informed minus generic hints at fixed offsets, from rounded saved
@@ -1148,7 +1253,7 @@ in percentage points. All use 113 paired question means. Intervals are
 individual 95\% bootstrap intervals; $p$-values are paired sign-flip tests.}
 \label{tab:main_contrasts}
 \small
-\input{generated/iclr2027_main_contrasts}
+\input{generated/tables/iclr2027_main_contrasts}
 \end{table}
 
 Strict exact match and continuous answer F1 are exploratory sensitivities
@@ -1175,7 +1280,7 @@ and recomputed answer metrics with the official HotpotQA reference scorer.
 mismatches and generated-token/new-step allowance violations; every count is zero.}
 \label{tab:main_audit}
 \small
-\input{generated/iclr2027_main_audit}
+\input{generated/tables/iclr2027_main_audit}
 \end{table}
 
 The audit covers \MainTrajectories{} trajectories, \MainObservations{}
@@ -1207,7 +1312,7 @@ contingency is an assumption, not a verified upper bound.
 This is not an AWS invoice or a matched-total-compute comparison.}
 \label{tab:main_cost}
 \small
-\input{generated/iclr2027_main_cost}
+\input{generated/tables/iclr2027_main_cost}
 \end{table}
 
 The estimate is US\$\MainEstimatedUSD{} before credits, tax and transfer;
@@ -1222,11 +1327,14 @@ these totals alone do not supply that comparison.
 The six-condition study does not include a diagnosis/replay comparator or
 additional token allowances. These comparisons were subsequently completed
 on a separate cohort (Section~\ref{sec:diagnosis_followup}). Replication on
-the other two QA datasets, a second model, matched runtime, a full-origin
+the other two QA datasets, a second model and measured runtime are covered
+by the separately frozen extension in Appendix~\ref{app:extension_protocol}.
+Its two-model replication and runtime component are complete
+(Sections~\ref{sec:replication} and~\ref{sec:runtime}). A full-origin
 matrix and new 72B reference annotations are outside these completed studies. FEVER
 remains excluded because its inspected loader substituted claim text for
-retrieved evidence. MuSiQue conversion and answer-alias handling require
-their own provenance/scoring audit before a corrected run.
+retrieved evidence. The extension independently audits MuSiQue conversion,
+answer aliases and dataset-specific reference scoring.
 
 Historical localization claims still require independent human judgments.
 The existing proposal samples 50 failed traces per QA dataset independently
@@ -1265,7 +1373,7 @@ questions and three seeds. F/B/S are counts terminating with an answer,
 at the token budget, or at the new-step limit; each row sums to 339.
 Prompt and output tokens are separate quantities, not an estimate of FLOPs.}
 \label{tab:review_costs}
-\input{generated/iclr2027_review_costs}
+\input{generated/tables/iclr2027_review_costs}
 \end{table}
 
 A repair can reach its token cap on a request that also emits a final
@@ -1278,6 +1386,15 @@ A different allowance requires separate executions; it cannot
 be reconstructed by reweighting these stopped traces.
 
 \subsection{Secondary Metrics and the Actual Failure Gate}
+The strict-EM treatment-minus-restart difference is $-1.47$ points
+(95\% interval [$-3.83,+0.59$]). Against uncertainty without backtracking,
+the exploratory EM difference is $+2.95$ points ([$+0.29,+5.60$]); the
+corresponding primary-gate comparison remains inconclusive. The eight
+secondary EM/F1 intervals in Table~\ref{tab:review_sensitivity} are unadjusted
+and exploratory. A separate descriptive comparison with fixed early gives
+$-1.77$ primary-gate points ([$-6.19,+2.65$]), without adding it to the
+prespecified family or selecting a replacement policy.
+
 \begin{table}[h]
 \centering\footnotesize
 \caption{Exploratory treatment-minus-control differences on the same 113
@@ -1286,7 +1403,7 @@ adjusted for the eight secondary comparisons. EM is in percentage points;
 F1 differences are multiplied by 100. The original primary tests use the
 answer-success gate, not these metrics.}
 \label{tab:review_sensitivity}
-\input{generated/iclr2027_review_sensitivity}
+\input{generated/tables/iclr2027_review_sensitivity}
 \end{table}
 
 \begin{table}[h]
@@ -1297,7 +1414,7 @@ to the original 113 failures. Three seeds estimate that repair's mean
 outcome. Initial rates were 54.80\% gate success, 38.80\% EM and 0.5164 F1.
 These are not outcomes of an EM-only rerun or a deployed failure detector.}
 \label{tab:review_population}
-\input{generated/iclr2027_review_population}
+\input{generated/tables/iclr2027_review_population}
 \end{table}
 
 The full-cohort calculation retains the same 40 F1-accepted but non-EM
@@ -1314,7 +1431,7 @@ they do not estimate prevalence, validate diagnoses or establish corrected
 causal mechanisms. F1 uses each full displayed answer; none of the 18 answers
 passes strict EM.
 
-\input{generated/iclr2027_review_cases}
+\input{generated/tables/iclr2027_review_cases}
 
 \subsection{Precision and Further Evidence}
 The 43-question nonzero-origin comparison has a 95\% interval
@@ -1353,7 +1470,7 @@ the earlier study. Generation uses temperature zero; repairs use 0.7.
 trials on the same 118 initial failures. Success is answer EM or F1 at least
 0.5. EM and F1 retain that failure cohort.}
 \label{tab:diagnosis_results}
-\input{generated/iclr2027_diagnosis_results}
+\input{generated/tables/iclr2027_diagnosis_results}
 \end{table}
 
 \begin{table}[ht]
@@ -1362,7 +1479,7 @@ trials on the same 118 initial failures. Success is answer EM or F1 at least
 are individual, unadjusted 95\% question-bootstrap intervals (10,000
 resamples). All six two-sided question sign-flip tests share one Holm family.}
 \label{tab:diagnosis_contrasts}
-\input{generated/iclr2027_diagnosis_contrasts}
+\input{generated/tables/iclr2027_diagnosis_contrasts}
 \end{table}
 
 Diagnosis uses the same model with temperature zero, a 512-token maximum,
@@ -1380,7 +1497,7 @@ adaptation, not a trained-method reproduction.
 including a complete diagnosis charge for diagnosis/replay. Generated-token
 allowances apply to recovery; prompt processing and diagnosis add cost.}
 \label{tab:diagnosis_costs}
-\input{generated/iclr2027_diagnosis_costs}
+\input{generated/tables/iclr2027_diagnosis_costs}
 \end{table}
 
 Physical execution sharing yields 2,079 unique repairs and 118 diagnoses.
@@ -1399,6 +1516,564 @@ allowances, or planned comparisons. Failed attempts remain preserved.
 The conservative infrastructure estimate for all diagnosis attempts and
 retrievals is \$18.29, excluding tax and transfer. The completed records
 support token and request accounting, not equal runtime or FLOPs.
+
+\section{Frozen Replication and Runtime Extension}
+\label{app:extension_protocol}
+This separate extension was frozen before its September 14, 2026 launch.
+Its two-model replication and runtime component completed on September 15.
+All six cells and their local/remote analyses are independently reproduced. The protocol
+adds newly sampled HotpotQA, MuSiQue and 2WikiMultiHopQA cohorts to the
+completed studies above. Earlier partial archives remain preserved alongside
+the completed records.
+
+\subsection{Cohorts, Models and Scoring}
+Each dataset contributes 100 main and 20 disjoint development questions,
+with identical question IDs across the two models: 600 completed main
+model/question evaluations and 120 development evaluations. Declared
+historical exclusions contain 1,049 HotpotQA IDs, 500 MuSiQue IDs and 500
+2WikiMultiHopQA IDs. Exclusion provenance retains the original historical
+pool limitation described above. The models are Qwen2.5-32B-Instruct-AWQ
+at revision \texttt{5c7cb76a268fc6cfbb9c4777eb24ba6e27f9ee6c}
+and Mistral-Nemo-Instruct-2407 in bfloat16 at revision
+\texttt{04d8a90549d23fc6bd7f642064003592df51e9b3}.
+Their failure cohorts are determined separately by the same reference gate;
+conditional recovery rates therefore do not directly rank model reliability.
+
+MuSiQue retains full source paragraphs, answer aliases and repeated titles
+in their source order. 2Wiki scoring includes its source aliases and
+demonyms. Support annotations are available to evaluation alone. The
+input audit performed 174,191 checks against the dataset reference scorers
+with zero mismatches. The recovery gate remains answer EM or F1 at least
+$0.5$, with strict EM and F1 reported on that same initial-failure cohort.
+Appendix~\ref{app:outcome_sensitivity} quantifies how far the conclusion
+depends on that gate: \GateOnly{} initial answers are accepted on the F1
+threshold alone and so are never repaired, and \GateRepairOnlyPct{}\% of
+accepted repairs fail strict EM.
+
+\subsection{Recovery Policies and Statistical Families}
+Seven policies receive three seeds, the same generic retry hint, a recovery
+allowance of one original generated-token count, eight new steps and a
+512-token per-request maximum. They are restart, offset-matched random,
+fixed early, uncertainty with two-step backtracking, development-fitted
+random, uncertainty without backtracking, and same-model diagnosis/replay.
+The development-fitted random policy retains the frozen identifier
+\texttt{position\_matched\_random}; its name does not imply exact realized
+test matching. Each model/dataset fits the distribution using only failures
+among its 20 development questions. The explicit origin-zero fallback for
+no development failures was unused in all six cells.
+Diagnosis pays its full measured acquisition cost.
+Identical origin/prompt/seed executions are shared in the token experiment,
+while each policy is charged the cost of its own attempt.
+
+Uncertainty is compared with restart, development-fitted random,
+no-backtracking uncertainty and diagnosis/replay in each of six cells.
+These form one prespecified 24-comparison Holm family. Questions are the
+paired resampling units after averaging their three seeds; individual
+95\% bootstrap intervals use 10,000 resamples. A zero-failure cell has no
+conditional repair estimate and contributes $p=1$ to the fixed family.
+No sample-size increase or policy selection is permitted in response to
+extension outcomes.
+
+\subsection{Realized Position Balance}
+\label{app:position_balance}
+These post-results diagnostics describe the frozen policies; they were not
+prespecified balance tests and do not refit the control or change any primary
+estimate. Let $k$ be the zero-indexed regeneration origin, which retains $k$
+original steps, and $T$ the original trajectory length. We report raw retained
+steps and normalized origin $z=k/\max(1,T-1)$, with $z=0$ for a one-step trace.
+Test distributions weight each failed question equally, then its three seeds
+equally. The repeated deterministic uncertainty origins do not supply three
+independent questions. Development distributions contain one origin per failed
+development question, before random sampling and rounding onto test lengths.
+Figure~\ref{fig:extension_position_ecdf} shows all three distributions.
+
+\begin{table}[htbp]
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Exploratory replication position diagnostics. $N_d$ is the number
+of development failures used in the fit; $N_f$ is the main-failure count.
+$U$ denotes uncertainty and $C$ development-fitted random. $P_0$ is the
+origin-zero percentage and $\bar{k}$ the mean retained-step count.
+$D=\sup_z|F_U(z)-F_C(z)|$ is the largest absolute gap between empirical
+normalized-origin cumulative distributions, on a 0--1 scale, with no
+significance test. Shared counts identical physical executions among
+$3N_f$ paired question/seed attempts.}
+\label{tab:extension_position_balance}
+\input{generated/tables/iclr2027_extension_position_balance}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_extension_position_ecdf.pdf}
+\caption{Full normalized-origin empirical cumulative distributions in all
+six replication cells. Solid and dashed curves describe main-failure policy
+attempts; dotted curves show the failed development traces used to fit each
+control. At a horizontal value $z$, the height is the fraction of origins at
+or below $z$. The vertical jump at zero counts full restarts. Differences
+between the dotted and dashed curves reflect test lengths, discrete rounding
+and the realized random draws; no test uncertainty is used to fit the control.}
+\label{fig:extension_position_ecdf}
+\end{figure}
+
+Qwen HotpotQA and Qwen 2Wiki each fit six development failures, five with
+origin zero. On main failures, their controls choose zero in 106/129 and
+73/84 rows, versus 81/129 and 51/84 for uncertainty. Mean retained lengths
+also differ: 0.25 versus 0.91 steps on HotpotQA and 0.49 versus 1.07 on
+2Wiki (control versus uncertainty). Origin-zero balance alone would miss
+other differences: Qwen MuSiQue differs by only 3.70 percentage points at
+zero but reaches a 0.125 cumulative-distribution gap elsewhere.
+
+Shared token executions require the same question, seed, origin, prompt
+and allowance. The two policies share 22.2--53.6\% of paired attempts
+(Table~\ref{tab:extension_position_balance}); the remaining attempts use
+different origins. Neither shared attempts nor similar marginal
+distributions prove equal outcomes or question-specific error localization.
+The saved row-level join and complete support counts retain each original
+length, raw origin and normalized origin. Their builder checks raw-record
+identities and hashes, reconstructs each development-only profile, and
+verifies every reported choice against the frozen policy and execution.
+
+The comparison therefore evaluates these two fixed policies, but their
+realized imbalance limits attribution of any difference specifically to
+uncertainty information beyond position. The main study's closer zero-origin
+balance cannot be assumed for replication. Stronger evidence would require
+a larger development failure sample and a newly frozen study with declared
+position/length diagnostics; retuning on these completed test results would
+not repair the confirmatory comparison. Appendix~\ref{app:position_pairs}
+reports such a study, run separately and frozen before execution.
+
+\subsection{Measured Runtime Scope}
+\label{app:runtime_scope}
+The runtime component answers a completion-time question for one execution
+configuration and is reported descriptively. Measured time covers selection,
+prefix replay and recovery generation for the attempt; diagnosis acquisition
+is measured once per question and charged to each of that question's
+attempts. A deadline plays no causal role during execution: every attempt
+runs to completion and the threshold is applied afterwards, so a deadline
+classifies completions and never cancels work or shortens an attempt.
+
+Across \RuntimeQuestions{} questions and \RuntimeAttempts{} attempts, median
+measured time is \RuntimeUncMedian{}~s for uncertainty,
+\RuntimeRestartMedian{}~s for restart and \RuntimeDiagMedian{}~s for
+diagnosis, with the distributions overlapping throughout
+(Figure~\ref{fig:runtime_latency}, Table~\ref{tab:runtime_latency}).
+\RuntimeStepLimited{} of \RuntimeAttempts{} attempts stop at the new-step
+limit and \RuntimeTokenLimited{} stop at a generated-token limit, because
+this component deliberately removes the token cap that the main and
+replication studies impose.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_runtime_latency.pdf}
+\caption{Empirical cumulative distribution of measured time per attempt. At a
+horizontal value $t$, the height is the percentage of that policy's attempts
+completing in at most $t$ seconds. The dashed line marks the primary
+ten-second threshold, which is applied after execution rather than enforced
+during it.}
+\label{fig:runtime_latency}
+\end{figure}
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Measured time per attempt in seconds, with completion counts.
+Finished attempts emit an answer; step-limited attempts exhaust the new-step
+allowance. No attempt stops at a generated-token limit in this component.}
+\label{tab:runtime_latency}
+\input{generated/tables/iclr2027_runtime_latency}
+\end{table}
+
+These numbers describe this configuration only. Deployed prefix caching,
+concurrency, repeated acquisition and a matched total-resource comparator are
+all outside it, and none of them can be inferred from these measurements. A
+broader efficiency claim would need a separately frozen runtime design with an
+adequate sample and realistic cache and concurrency settings; active
+cancellation would be required only for a claim about resources saved by
+stopping late attempts.
+
+\subsection{Dependence on the Success Definition}
+\label{app:outcome_sensitivity}
+The study gate accepts an answer on exact match \emph{or} token F1 at least
+0.5. Rescoring the completed records under strict EM is exploratory: it does
+not create a new failure cohort, because questions accepted under the gate
+were never offered repair and their repair outcomes do not exist. We write
+``accepted'' throughout for accepted under the study gate, never for strict EM.
+
+Of \GateQuestions{} initial evaluations, \GateAccepted{} are accepted and
+\GateExact{} match exactly, so \GateOnly{} answers (\GateOnlyPct{}\% of
+initial evaluations) are accepted on the F1 threshold alone and are therefore
+never repaired (Table~\ref{tab:outcome_gate}). This is a property of the gate,
+not an estimate of annotation error.
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Initial evaluations by success definition. Accepted uses the study
+gate; EM counts strict exact match; Gate only counts answers accepted on the
+F1 threshold alone, which are never offered repair.}
+\label{tab:outcome_gate}
+\input{generated/tables/iclr2027_outcome_gate}
+\end{table}
+
+The dependence is larger among repairs. Across uncertainty and restart
+attempts, \GateRepairOnly{} of \GateRepairAccepted{} accepted repairs
+(\GateRepairOnlyPct{}\%) fail strict EM. A reader who requires exact match
+would therefore see materially fewer successes for both policies. We do not
+report an EM-gated contrast as a result: the eligible failure set itself would
+change, and those additional repair outcomes were never generated.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_outcome_sensitivity.pdf}
+\caption{Left: initial accepted answers split into strict exact match and
+those accepted on the F1 threshold alone. Right: full-cohort accepted rate per
+policy, preserving answers already accepted; the dash marks the initial rate,
+so bar height above it is what repair adds.}
+\label{fig:outcome_sensitivity}
+\end{figure}
+
+Conditional repair rates describe failures only. Table~\ref{tab:outcome_full_cohort}
+instead reports the full cohort, preserving each already-accepted answer and
+taking a repair outcome only on failures, which is what a deployment would
+observe. Differences remain small in every cell, from \GateFullLow{} to
+\GateFullHigh{} percentage points, and the cells disagree in direction. These
+are descriptive; they carry no separate test and no family-wise adjustment.
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Full-cohort accepted percentage, preserving initially accepted
+answers and applying repair outcomes only to failures. $\Delta$ is
+uncertainty minus restart in percentage points.}
+\label{tab:outcome_full_cohort}
+\input{generated/tables/iclr2027_outcome_full_cohort}
+\end{table}
+
+\subsection{Paired Outcomes, Overlap, Termination and Practical Bounds}
+\label{app:replication_diagnostics}
+These are descriptive extensions of the frozen replication. Every primary
+Holm-adjusted output is reported unchanged; the exact values below are
+sensitivity checks, and no pooled confirmatory statistic is computed because
+question identifiers are shared across model cells.
+
+A count of adjusted $p$-values is a poor summary of how much evidence each
+cell carries. Table~\ref{tab:replication_outcomes} decomposes the
+uncertainty-minus-restart contrast into questions where the three-seed mean
+success is higher (W), lower (L) or equal (T). Ties are not discarded: every
+paired question, tied or not, belongs in the estimand and in the interval.
+They do drop out of the exact null, where a zero difference carries no sign to
+flip, and that is what governs resolution. With $m$ non-zero blocks an exact
+two-sided sign-flip test cannot report below $2/2^{m}$. Two cells sit above
+0.05 on that floor, so they could not have reached significance whatever their
+outcomes; this is a property of the design, not of the data.
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Paired uncertainty-minus-restart outcomes per cell. $N_q$ is the
+paired question count; W, L and T are questions with higher, lower and equal
+three-seed mean success. Floor is the smallest two-sided sign-flip $p$
+attainable given the non-zero block count. $\Delta$ and its percentile
+interval are the frozen primary outputs, in percentage points.}
+\label{tab:replication_outcomes}
+\input{generated/tables/iclr2027_replication_outcomes}
+\end{table}
+
+Qwen 2Wiki is the clearest example. Its $\Delta=\RepExampleDelta{}$ points
+with interval [\RepExampleLow{}, \RepExampleHigh{}] rests on
+\RepExampleWins{} questions with a higher treatment mean,
+\RepExampleLosses{} with a lower mean and \RepExampleTies{} ties. Its floor is
+\RepExampleFloor{}. The interval and the exact test are not in conflict; they
+answer different questions, and the sparse paired evidence explains why a
+positive-looking interval carries no primary-test support.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_replication_diagnostics.pdf}
+\caption{Left: paired uncertainty-minus-restart outcomes per cell, split into
+questions with higher, lower and equal three-seed mean success. Ties dominate
+every cell. Right: the smallest two-sided sign-flip $p$ each cell could
+attain, $2/2^{m}$ for $m$ non-zero blocks, on a logarithmic scale. Bars above
+the dashed 0.05 line mark cells that could not have reached significance
+whatever their outcomes.}
+\label{fig:replication_diagnostics}
+\end{figure}
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Execution overlap with restart. Attempts are question/seed pairs;
+Shared counts identical physical executions. $Q_{\neq}$ is the number of
+questions with at least one differing execution, which bounds how many
+questions could express any difference at all.}
+\label{tab:replication_overlap}
+\input{generated/tables/iclr2027_replication_overlap}
+\end{table}
+
+Sharing explains part of the tie rate. Uncertainty and restart run the
+identical execution on \RepSharedLow{}--\RepSharedHigh{}\% of paired attempts
+(Table~\ref{tab:replication_overlap}); those attempts are tied by
+construction, not by outcome. Only $Q_{\neq}$ questions per cell have any
+differing execution, and that count bounds how many could express a difference.
+
+Intervals are more informative than the test count as practical bounds. The
+completed main study rules out gains above $+0.88$ points, whereas Qwen 2Wiki
+permits a considerably larger effect. Treating all cells as equally
+informative loses that distinction. These bounds hold under the stated
+resampling assumptions and are individual, not simultaneous.
+
+Finally, \RepLimitStopped{}/\RepTreatmentRows{} uncertainty rows
+(\RepLimitPct{}\%) stop at the generated-token or new-step limit rather than
+finishing. This is a descriptive bottleneck. It does not show that a larger
+allowance would raise success; the allowance study in
+Appendix~\ref{app:diagnosis_followup} varied that budget directly and found no
+clear gain.
+
+\subsection{Length-Matched Swap: Design and Block Composition}
+\label{app:position_pairs}
+Run \PairRunID{} draws \PairQuestions{} fresh Qwen questions, excluding every
+identifier used by the earlier studies, and reuses those earlier questions only
+as development data for the secondary comparator. Of \PairFailures{} initial
+failures, \PairMatched{} pair by exact original length and \PairUnmatched{}
+remain as odd stratum remainders. The frozen design fixes
+\PairSeeds{} repair seeds, three policies and a \PairFamily{}-test primary
+family; execution produced \PairRepairs{} unique repairs and \PairRows{} trial
+rows. All originals are generated before any repair, and pairing consumes only
+identifiers and lengths, so no recovery outcome can influence which questions
+are compared or which origins they receive.
+
+Within a pair the swap control gives each question its partner's
+uncertainty-chosen origin. Pairing consumes identifiers and lengths only, and
+every original is generated before any repair, so no recovery outcome can
+influence which questions are compared or which origins they receive. The odd
+remainder in each length stratum is excluded and reported.
+
+Balance here is exact, not fitted. The audit re-derives every policy origin
+from independently recomputed uncertainty and requires the swapped pair to
+exchange origins exactly, the retained prefix lengths and per-question
+allowances to match, and execution sharing to track the selected origin. Both
+the on-instance and an independent local reproduction report zero mismatches.
+Because both arms keep the same seeds, hints and allowances, two policies that
+agree on an origin share one physical execution:
+\PairHotpotShared{}/\PairHotpotAttempts{} paired attempts on HotpotQA and
+\PairTwoWikiShared{}/\PairTwoWikiAttempts{} on 2Wiki. Shared attempts do not
+imply equal outcomes elsewhere. The descriptive secondary comparison against
+development-fitted random, now fitted on a much larger development failure
+sample, agrees with the primary result: \PairHotpotSecondaryDelta{} points on
+HotpotQA and \PairTwoWikiSecondaryDelta{} on 2Wiki.
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Length-matched swap experiment on \PairQuestions{} fresh questions.
+$N_f$ is the main-failure count and Pairs the number of length-matched blocks.
+$U$ and $S$ are mean per-seed success percentages for uncertainty and the
+swapped-origin control. $\Delta=U-S$ with a percentile interval over resampled
+pairs; $p$ is an exact two-sided pair-block sign-flip test and $p_H$ its
+Holm-adjusted value within the prespecified \PairFamily{}-test family.}
+\label{tab:position_pairs}
+\input{generated/tables/iclr2027_position_pairs}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_position_pairs.pdf}
+\caption{Left: uncertainty minus the swapped-origin control in percentage
+points, with the percentile interval over resampled pairs; the two datasets
+straddle zero in opposite directions. Right: pairs by the sign of their
+seed-summed difference, annotated with the resolution floor. Most pairs tie,
+which is what bounds the exact test rather than the size of the effect.}
+\label{fig:position_pairs}
+\end{figure}
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Sign-flip block composition. $+$, $-$ and $0$ count pairs whose
+seed-summed success difference is positive, negative or tied. Floor is the
+smallest two-sided $p$ attainable given the non-zero block count, $2/2^{m}$;
+a cell cannot report below its floor whatever the outcomes.}
+\label{tab:position_pair_blocks}
+\input{generated/tables/iclr2027_position_pair_blocks}
+\end{table}
+
+Under exact positional balance the comparison remains null
+(Table~\ref{tab:position_pairs}): Holm-adjusted $p$-values of
+\PairHotpotHolm{} and \PairTwoWikiHolm{}, with the datasets pointing in
+\emph{opposite} directions, \PairHotpotDelta{} percentage points on HotpotQA
+and \PairTwoWikiDelta{} on 2Wiki.
+
+The HotpotQA percentile interval excludes zero but should not be read as a
+positive effect: only \PairHotpotPositive{} of \PairHotpotPairs{} pairs are
+non-zero blocks, and an exact two-sided sign-flip test cannot report below
+$2/2^{m}$ for $m$ non-zero blocks, a floor of \PairHotpotFloor{} here. That
+cell could not have reached significance whatever the data showed, so the exact
+test does not corroborate the interval.
+
+Most pairs tie (Table~\ref{tab:position_pair_blocks}), which is the binding
+precision limit rather than the effect size. The exact test's resolution is
+governed by the non-zero block count, so both cells are underpowered by
+construction: a reader should treat these as bounded diagnostics and not as
+evidence of equivalence. Retaining every tied pair in the point estimate and
+interval, while excluding ties from the exact null, is the prespecified
+behaviour of the test, not a post-hoc choice. The swap borrows its partner's
+uncertainty, so it is a diagnostic comparator and not a policy anyone could run
+online; holding origins exactly equal leaves the tested rule no measurable
+advantage, but this establishes neither equivalence nor a power-backed absence
+of effect.
+
+\subsection{Measured Completion Deadlines}
+The runtime cohort is the first 25 frozen Qwen HotpotQA failures, or all
+failures if fewer. Restart, uncertainty with backtracking and diagnosis/replay
+each run separately with three seeds in shuffled order, after model warmup
+and with prefix caching disabled. Measured time includes origin acquisition,
+prefix replay and recovery. Diagnosis acquisition is measured once per
+question and charged in full to every diagnosis-policy attempt; its latency
+is not remeasured for every seed.
+
+Recovery retains eight new steps and the per-request token cap but has no
+total generated-token cap. Success by 10 seconds is primary, with two
+contrasts in a separate Holm family; 5 and 20 seconds are exploratory.
+Full attempts execute before applying these deadlines to measured outcomes.
+This design measures completion-time success, not savings from active
+cancellation, equal FLOPs or end-to-end latency including initial failure
+detection and model startup.
+
+\begin{table}[h]
+\centering\small
+\caption{Completed runtime component. Counts and rates use all 75 attempts
+per policy. Mean time includes unsuccessful attempts and full execution
+beyond a threshold. Ten seconds is primary; 5 and 20 seconds are exploratory.}
+\label{tab:runtime_results}
+\input{generated/tables/iclr2027_runtime_results}
+\end{table}
+
+\begin{table}[h]
+\centering\small
+\caption{Runtime treatment-minus-control differences in percentage points.
+Intervals are individual 95\% question-bootstrap intervals over 25 questions.
+Only the two ten-second comparisons receive the prespecified Holm correction;
+unadjusted exploratory intervals are not confirmatory evidence.}
+\label{tab:runtime_contrasts}
+\input{generated/tables/iclr2027_runtime_contrasts}
+\end{table}
+
+\subsection{Completed Replication Results}
+All six model/dataset cells have complete execution and independent audits.
+The 600 main evaluations contain 371 initial failures, with all seven
+policies and three seeds represented for every failure. Mistral contributes
+2,473 unique repairs and 4,788 trial rows; together with Qwen and the runtime
+component, the extension has 4,323 unique repairs and 8,016 trial rows.
+Every cell has zero audit mismatches. Initial reference-gate accuracy,
+strict EM and F1 are shown in Table~\ref{tab:extension_initial}.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Initial main-cohort outcomes before repair. Each cell also has
+20 separate development questions. Success uses the reference gate;
+EM and F1 use the corresponding dataset's scorer.}
+\label{tab:extension_initial}
+\input{generated/tables/iclr2027_extension_initial}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{generated/figures/iclr2027_extension_contrasts.pdf}
+\caption{Uncertainty-minus-restart repair-success differences across all
+six completed cells. Points average three seeds per failed question;
+bars are individual 95\% question-bootstrap intervals. They are not
+simultaneous intervals or inversions of the sign-flip test. Every contrast
+has $p_H=1.000$ in the prespecified 24-comparison family.}
+\label{fig:extension_contrasts}
+\end{figure}
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{All Qwen replication policies. Success, strict EM and F1 retain
+the same initially failed questions; each policy has three seeds per question.}
+\label{tab:extension_qwen_results}
+\input{generated/tables/iclr2027_extension_qwen32b_results}
+\end{table}
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{All Mistral replication policies, evaluated on its own frozen
+initial-failure cohorts. Conditional rates do not compare overall model reliability.}
+\label{tab:extension_mistral_results}
+\input{generated/tables/iclr2027_extension_mistral12b_results}
+\end{table}
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Qwen primary uncertainty-minus-control contrasts, in percentage
+points. Individual 95\% intervals and unadjusted $p$ accompany the
+Holm-adjusted $p_H$ from the full 24-comparison family.}
+\label{tab:extension_qwen_contrasts}
+\input{generated/tables/iclr2027_extension_qwen32b_contrasts}
+\end{table}
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Mistral primary contrasts, using the same full-family correction
+and interval construction as Table~\ref{tab:extension_qwen_contrasts}.}
+\label{tab:extension_mistral_contrasts}
+\input{generated/tables/iclr2027_extension_mistral12b_contrasts}
+\end{table}
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Qwen mean incremental tokens and model requests per policy attempt,
+including measured origin acquisition and diagnosis. Identical executions
+may be shared by the study, but each standalone policy is charged its full cost.}
+\label{tab:extension_qwen_costs}
+\input{generated/tables/iclr2027_extension_qwen32b_costs}
+\end{table}
+
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Mistral mean incremental policy costs under the same accounting
+as Table~\ref{tab:extension_qwen_costs}. Matching output allowances does not
+match prompt processing, runtime or total computation.}
+\label{tab:extension_mistral_costs}
+\input{generated/tables/iclr2027_extension_mistral12b_costs}
+\end{table}
+
+\clearpage
+
+\subsection{Recovery and Audit Provenance}
+All Qwen executions completed before an audit failure prevented Mistral
+from starting. A bounded retrieval recovered the original archive. JSON
+conversion of integer token-ID keys to strings changed sorting during
+checksum verification; restoring their original types reproduced the
+saved hashes without changing probability values or raw records.
+Cross-platform recomputation also produced tiny uncertainty differences:
+3,542 values differed, with maximum absolute error $1.78\times10^{-15}$.
+The amended auditor permits at most $10^{-12}$ absolute roundoff and
+requires exactly identical independently recomputed position profiles,
+policy origins, prompts, seeds and allowances. The statistical protocol
+and frozen input bytes are unchanged.
+
+The three Qwen audits cover 300 main and 60 development evaluations,
+1,850 unique repairs and 3,228 trial rows with zero mismatches. Their local
+and remote trial exports match across all 29 columns; all 4,739 original
+Qwen result files remain byte-identical. Platform-specific roundoff counts
+are validated and preserved separately from compared outcomes. Failing-first
+regressions cover token-key restoration, altered probabilities, excessive
+roundoff and even tolerated roundoff that changes a repair origin.
+Mistral continued on September 15 using the unchanged frozen design and
+amended audit source. Its continuation archived partial results at
+07:11 UTC before the independent AWS stop at 07:16:24 UTC. A subsequent
+GPU retrieval restart was rejected for insufficient capacity. A short
+CPU-only recovery retrieved and checksum-verified the archive without new
+inference; the instance was independently confirmed stopped and restored
+to its original GPU configuration. The original and continued archives,
+audit amendments, logs and budget records remain separate provenance
+artifacts. The authorized resource-only amendment raised the extension cap
+from \$35 to \$50 within the original US\$119 allocation and \$20 reserve.
+It preserved the frozen scientific protocol and all 8,536 previously saved
+result files. The completion finished at 18:00 UTC on September 15;
+all previously unfinished Mistral repairs are included. The final archives
+were recovered on CPU and the instance was independently verified stopped
+with its original GPU configuration restored. The reconciled extension
+estimate is \$43.90, with combined retrieval below \$1.22, excluding
+tax and transfer. The earlier original-session estimate assumes a
+60-second transition after guest shutdown; it is not an independently
+verified transition bound. These are infrastructure estimates, not invoices
+or policy-level efficiency estimates. No failed execution or earlier partial
+archive is silently discarded.
 
 \section{Related-Work Comparison and Required Controls}
 \label{app:related}
@@ -1434,36 +2109,63 @@ AgentRx; AgenticRAG-FP & Constraint-supported diagnosis; injected-fault attribut
 Doctor-RAG's reasoning-repair operator can reuse documents retrieved
 throughout the failed trace, and its study uses an EM-only failure gate
 \citep{jiao2026doctor}. A direct comparison must reconcile these differences,
-not copy published rates into our table. Prefer a verified released method
-when affordable. Otherwise label a same-model diagnosis-and-replay
-implementation as an adaptation, not a Doctor-RAG reproduction. An
-origin-only arm should use the same generic hint and prefix-only recovery
-information as uncertainty. A full-policy arm may use diagnosis-specific
-guidance, but must declare that access and include diagnosis, tool and
-selection costs. Report training/distillation costs separately if incurred.
-The six-condition study implements neither arm. The separate follow-up
-evaluates the origin-only adaptation with its full acquisition charge;
-it does not evaluate diagnosis-specific retry guidance or reproduce the
-trained Doctor-RAG system.
+not copy published rates into our table. Our same-model diagnosis-and-replay
+implementation is an origin-only adaptation with the same generic hint and
+prefix-only recovery information as uncertainty. The six-condition main
+study omits this arm; the separate follow-up and all six replication cells
+evaluate it with its full acquisition charge. They do not evaluate
+diagnosis-specific retry guidance or reproduce the trained Doctor-RAG
+system. A future full-method comparison would need to declare any additional
+evidence and guidance, include diagnosis, tool and selection costs, and
+report training or distillation costs separately if incurred.
 
 \paragraph{Position-distribution control.}
-The completed HotpotQA experiment includes both offset-matched random and
-the development-fitted normalized-position control in
-Appendix~\ref{app:completion}. The latter does not read test uncertainty
-profiles. Its realized origin-zero frequency is 60.77\%, compared with
-61.95\% for the treatment, and their paired success difference is zero
-with a 95\% interval of $[-2.95,+2.95]$ points. This does not prove exact
-distributional matching or policy equivalence. The separate diagnosis/replay
-adaptation provides a closer comparator, while a verified trained-method
-reproduction remains untested.
+The main study and six replication cells include offset-matched random and a
+development-fitted position control that does not read test uncertainty.
+In the main study, origin-zero frequencies are 60.77\% for the latter and
+61.95\% for treatment; their paired success difference is zero with a
+95\% interval of $[-2.95,+2.95]$ points. These observations establish neither
+exact distributional matching nor equivalence. Replication matching is weaker:
+Appendix~\ref{app:position_balance} gives full distributions, including the
+26.19-point origin-zero gap on Qwen 2Wiki.
 
 \paragraph{Scope of further evidence.}
-The portable notebook's four-condition default is a feasibility profile;
-the frozen main run supplied the position profile and six-condition policy.
-Further conditions require a new frozen design and an affordable allocation
-before their test outcomes. The completed cohort must not be expanded or
-reused for outcome-based policy selection and then presented as untouched
-evaluation. The current results support a bounded empirical comparison;
-adding citations alone does not resolve the broader empirical novelty question.
+The completed manifests distinguish the main six-policy study, three-policy
+diagnosis follow-up, seven-policy replication and three-policy runtime
+experiment. New selectors, a trained-method reproduction, human error-step
+validation and end-to-end resource comparisons require additional evidence.
+Any confirmatory extension must freeze its hypotheses and analysis before
+new outcomes. Selecting a policy on these completed cohorts would require
+fresh evaluation data for an untouched test.
+
+\section{Artifact Availability and Verification Scope}
+\label{app:availability}
+Table~\ref{tab:artifact_availability} distinguishes records checked locally
+from a package ready for independent release. Statistical reproduction
+recomputes results from saved trials; the raw-trajectory audit additionally
+checks scoring, retained tool state, execution coverage and allowances.
+Neither check is a fresh model-generation rerun.
+
+\begin{table}[h]
+\centering
+\caption{Verification and packaging status of the evidence used in this draft.
+Retained records are not a claim that all artifacts have been anonymously
+released. Replication counts here include the runtime component.}
+\label{tab:artifact_availability}
+\small
+\input{tables/artifact_availability}
+\end{table}
+
+The combined anonymous supplement covering all four completed studies passes
+isolated-extraction checks: every packaged file is checksummed, every primary
+family is recomputed from its trial export, and a scan rejects workspace
+paths, account identifiers and private keys before packaging. Raw-record
+replay with the frozen reference scorers, and regeneration under the pinned
+model weights, remain separate environments that the bundle does not claim.
+A release package must additionally retain third-party notices and remove
+identifying notebook and operational metadata. Statistical
+reproduction and fresh GPU runs need separate environment checks. Author
+review, disclosure and submission checks remain outstanding. Packaging cannot
+supply missing human labels, historical-pool comparisons or further experiments.
 
 \end{document}

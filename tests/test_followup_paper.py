@@ -19,9 +19,9 @@ def followup_evidence(tmp_path):
 def test_followup_tables_use_all_audited_allowances_and_policy_costs(tmp_path):
     analysis = load_followup()
     build_assets(tmp_path, analysis)
-    results = (tmp_path / "iclr2027_diagnosis_results.tex").read_text()
-    costs = (tmp_path / "iclr2027_diagnosis_costs.tex").read_text()
-    contrasts = (tmp_path / "iclr2027_diagnosis_contrasts.tex").read_text()
+    results = (tmp_path / "tables/iclr2027_diagnosis_results.tex").read_text()
+    costs = (tmp_path / "tables/iclr2027_diagnosis_costs.tex").read_text()
+    contrasts = (tmp_path / "tables/iclr2027_diagnosis_contrasts.tex").read_text()
     for multiplier in [.5, 1., 2.]:
         for strategy, label in LABELS.items():
             policy = analysis["policy_accounting"][f"{strategy}@{multiplier:g}"]

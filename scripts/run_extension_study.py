@@ -24,11 +24,31 @@ from src.repair.strategies import select_target_step, make_rng
 from src.uncertainty.metrics import compute_math_metrics
 
 
+def _restore_token_keys(value):
+    """Recover TokenInfo's integer keys before checking its original hash.
+
+    JSON object keys are strings, while TokenInfo.to_dict() returns integer
+    token IDs. Sorting IDs such as 2 and 10 gives a different order after a
+    plain JSON round trip. Restore only the token schema, leaving unrelated
+    numeric string keys and the stored checksum unchanged.
+    """
+    if set(value) == {"token_id", "token_str", "logprob", "top_logprobs"}:
+        probabilities = value["top_logprobs"]
+        restored = {}
+        for key, probability in probabilities.items():
+            token_id = int(key)
+            if str(token_id) != key:
+                raise ValueError("Noncanonical token ID in top_logprobs")
+            restored[token_id] = probability
+        value["top_logprobs"] = restored
+    return value
+
+
 def save_envelope(path, payload, identity):
     path = Path(path)
     value = {"identity": identity, "sha256": fingerprint(payload), "payload": payload}
     if path.exists():
-        if json.loads(path.read_text()) != value:
+        if json.loads(path.read_text(), object_hook=_restore_token_keys) != value:
             raise ValueError(f"Preserve conflicting output: {path}")
         return payload
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -41,7 +61,7 @@ def save_envelope(path, payload, identity):
 def load_envelope(path, identity):
     if not Path(path).is_file():
         raise ValueError(f"Missing required output: {path}")
-    saved = json.loads(Path(path).read_text())
+    saved = json.loads(Path(path).read_text(), object_hook=_restore_token_keys)
     if saved.get("identity") != identity or saved.get("sha256") != fingerprint(saved.get("payload")):
         raise ValueError(f"Cached output identity/checksum mismatch: {path}")
     return saved["payload"]

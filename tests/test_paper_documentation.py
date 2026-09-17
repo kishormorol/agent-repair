@@ -81,13 +81,13 @@ def test_active_paper_records_completed_main_study_and_deferred_scope():
     assert "MULTIPLIERS = [1.0]" in parameters
     assert r"\section{Archived Results}" in manuscript
     assert r"\section{Controlled Repair Results}" in manuscript
-    assert "Working draft: audited HotpotQA study" in manuscript
+    assert "Working draft: audited QA repair studies" in manuscript
     assert "It has not been executed" not in manuscript
     assert "No new GPU experiments are reported" not in manuscript
     assert r"US\$119" in manuscript and r"$18N$" in manuscript
     assert "TOTAL_BUDGET_USD = 119.0" in parameters
     assert "A nonsignificant" in manuscript and "not evidence of equivalence" in manuscript
-    assert "with the original full" in manuscript and "pool comparison unavailable" in manuscript
+    assert "original historical pool" in manuscript and "not downloaded or compared" in manuscript
     assert "diagnosis/replay comparator" in manuscript
 
 
@@ -134,3 +134,27 @@ def test_pilot_profile_activates_controlled_paths_without_privileged_hints(tmp_p
     assert set(cfg.uncertainty.metrics) == {"token_entropy", "perplexity", "max_token_prob"}
     for key in ("data_raw", "data_processed", "trajectories", "repairs", "logs"):
         assert "hotpotqa/qwen32b/pilot-v1/" in cfg.path(key)
+
+
+def test_paper_scope_is_bounded_to_the_policy_actually_tested():
+    """Title, contributions and conclusion must answer the same narrow question."""
+    manuscript = (ROOT / "paper/iclr2027.tex").read_text()
+    prose = " ".join(manuscript.split())
+    title = manuscript.split(r"\title{", 1)[1].split("}", 1)[0]
+    standalone = (ROOT / "paper_title_abstract.md").read_text()
+
+    # The old title asked about the whole stored-token uncertainty family.
+    assert "Does Stored-Token Uncertainty" not in manuscript
+    assert "Perplexity-Based Trajectory Repair" in title
+    assert "Perplexity-Based Trajectory Repair" in standalone
+    assert "pdftitle={A Controlled Test of Perplexity-Based" in manuscript
+
+    contributions = prose.split("We make three contributions", 1)[1].split(r"\end{enumerate}", 1)[0]
+    assert "one fixed selector" in contributions
+    assert "two-step backtracking" in contributions
+    # The diagnosis comparator's JSON validity is parser coverage, not quality.
+    assert "parser coverage, not diagnosis quality" in contributions
+
+    conclusion = prose.split(r"\section{Conclusion}", 1)[1].split(r"\section*", 1)[0]
+    assert "One fixed selector" in conclusion
+    assert "not test" in conclusion and "method class" in conclusion

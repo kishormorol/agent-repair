@@ -1,0 +1,215 @@
+{
+  "gate": "exact match or token F1 at least 0.5",
+  "status": "exploratory rescoring of completed records; not a new failure cohort",
+  "terminology": "accepted means accepted under the study gate, never strict EM",
+  "unrepaired_note": "Questions accepted under the gate were never offered repair, so an EM-gated conclusion needs a separately frozen study.",
+  "cells": [
+    {
+      "model_key": "qwen32b",
+      "dataset": "hotpotqa",
+      "questions": 100,
+      "accepted": 57,
+      "exact_match": 44,
+      "accepted_not_exact": 13,
+      "failures_offered_repair": 43,
+      "policies": {
+        "unc__perplexity__argmax__bt2": {
+          "attempts": 129,
+          "accepted": 15,
+          "exact_match": 8,
+          "accepted_not_exact": 7,
+          "mean_success": 0.11627906976744186,
+          "mean_em": 0.06201550387596899,
+          "mean_f1": 0.12732033821385105,
+          "full_cohort": 0.62
+        },
+        "full_restart": {
+          "attempts": 129,
+          "accepted": 18,
+          "exact_match": 11,
+          "accepted_not_exact": 7,
+          "mean_success": 0.13953488372093023,
+          "mean_em": 0.08527131782945736,
+          "mean_f1": 0.1515158398879329,
+          "full_cohort": 0.63
+        }
+      },
+      "full_cohort_delta": -0.010000000000000009
+    },
+    {
+      "model_key": "qwen32b",
+      "dataset": "musique",
+      "questions": 100,
+      "accepted": 28,
+      "exact_match": 22,
+      "accepted_not_exact": 6,
+      "failures_offered_repair": 72,
+      "policies": {
+        "unc__perplexity__argmax__bt2": {
+          "attempts": 216,
+          "accepted": 10,
+          "exact_match": 5,
+          "accepted_not_exact": 5,
+          "mean_success": 0.046296296296296294,
+          "mean_em": 0.023148148148148147,
+          "mean_f1": 0.05969671074762233,
+          "full_cohort": 0.3133333333333333
+        },
+        "full_restart": {
+          "attempts": 216,
+          "accepted": 17,
+          "exact_match": 13,
+          "accepted_not_exact": 4,
+          "mean_success": 0.0787037037037037,
+          "mean_em": 0.06018518518518518,
+          "mean_f1": 0.09924543876857259,
+          "full_cohort": 0.33666666666666667
+        }
+      },
+      "full_cohort_delta": -0.023333333333333373
+    },
+    {
+      "model_key": "qwen32b",
+      "dataset": "2wikimultihopqa",
+      "questions": 100,
+      "accepted": 72,
+      "exact_match": 64,
+      "accepted_not_exact": 8,
+      "failures_offered_repair": 28,
+      "policies": {
+        "unc__perplexity__argmax__bt2": {
+          "attempts": 84,
+          "accepted": 18,
+          "exact_match": 13,
+          "accepted_not_exact": 5,
+          "mean_success": 0.21428571428571427,
+          "mean_em": 0.15476190476190477,
+          "mean_f1": 0.2266813187916468,
+          "full_cohort": 0.78
+        },
+        "full_restart": {
+          "attempts": 84,
+          "accepted": 13,
+          "exact_match": 9,
+          "accepted_not_exact": 4,
+          "mean_success": 0.15476190476190477,
+          "mean_em": 0.10714285714285714,
+          "mean_f1": 0.1732369137343385,
+          "full_cohort": 0.7633333333333333
+        }
+      },
+      "full_cohort_delta": 0.01666666666666672
+    },
+    {
+      "model_key": "mistral12b",
+      "dataset": "hotpotqa",
+      "questions": 100,
+      "accepted": 22,
+      "exact_match": 13,
+      "accepted_not_exact": 9,
+      "failures_offered_repair": 78,
+      "policies": {
+        "unc__perplexity__argmax__bt2": {
+          "attempts": 234,
+          "accepted": 29,
+          "exact_match": 23,
+          "accepted_not_exact": 6,
+          "mean_success": 0.12393162393162394,
+          "mean_em": 0.09829059829059829,
+          "mean_f1": 0.1496970793658155,
+          "full_cohort": 0.31666666666666665
+        },
+        "full_restart": {
+          "attempts": 234,
+          "accepted": 27,
+          "exact_match": 18,
+          "accepted_not_exact": 9,
+          "mean_success": 0.11538461538461539,
+          "mean_em": 0.07692307692307693,
+          "mean_f1": 0.1288359841457459,
+          "full_cohort": 0.31
+        }
+      },
+      "full_cohort_delta": 0.006666666666666654
+    },
+    {
+      "model_key": "mistral12b",
+      "dataset": "musique",
+      "questions": 100,
+      "accepted": 17,
+      "exact_match": 13,
+      "accepted_not_exact": 4,
+      "failures_offered_repair": 83,
+      "policies": {
+        "unc__perplexity__argmax__bt2": {
+          "attempts": 249,
+          "accepted": 15,
+          "exact_match": 11,
+          "accepted_not_exact": 4,
+          "mean_success": 0.060240963855421686,
+          "mean_em": 0.04417670682730924,
+          "mean_f1": 0.07689155384576037,
+          "full_cohort": 0.22
+        },
+        "full_restart": {
+          "attempts": 249,
+          "accepted": 18,
+          "exact_match": 14,
+          "accepted_not_exact": 4,
+          "mean_success": 0.07228915662650602,
+          "mean_em": 0.05622489959839357,
+          "mean_f1": 0.09511056993901515,
+          "full_cohort": 0.23
+        }
+      },
+      "full_cohort_delta": -0.010000000000000009
+    },
+    {
+      "model_key": "mistral12b",
+      "dataset": "2wikimultihopqa",
+      "questions": 100,
+      "accepted": 33,
+      "exact_match": 21,
+      "accepted_not_exact": 12,
+      "failures_offered_repair": 67,
+      "policies": {
+        "unc__perplexity__argmax__bt2": {
+          "attempts": 201,
+          "accepted": 32,
+          "exact_match": 18,
+          "accepted_not_exact": 14,
+          "mean_success": 0.15920398009950248,
+          "mean_em": 0.08955223880597014,
+          "mean_f1": 0.1832112954045055,
+          "full_cohort": 0.43666666666666665
+        },
+        "full_restart": {
+          "attempts": 201,
+          "accepted": 34,
+          "exact_match": 19,
+          "accepted_not_exact": 15,
+          "mean_success": 0.1691542288557214,
+          "mean_em": 0.0945273631840796,
+          "mean_f1": 0.18542910489479822,
+          "full_cohort": 0.44333333333333336
+        }
+      },
+      "full_cohort_delta": -0.00666666666666671
+    }
+  ],
+  "totals": {
+    "questions": 600,
+    "accepted": 229,
+    "exact_match": 177,
+    "accepted_not_exact": 52,
+    "repair_accepted": 246,
+    "repair_accepted_not_exact": 84
+  },
+  "source_sha256": {
+    "pooled-analysis-local.json": "0f5cd73390fabc12840436b458961858ababb8d5887b8ee1bbe47c28a8c3f726",
+    "pooled-analysis-local.trials.csv": "5d2ae508bd5f3db068d672307d75eb8377f7404dd08866020c826730a8a1e9d0"
+  },
+  "code_sha256": {
+    "scripts/outcome_sensitivity.py": "650c625e0fecc1e9e35bc6f705dc0af9cedb8e293af3a1042121c6cad1745cd1"
+  }
+}

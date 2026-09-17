@@ -1,0 +1,23 @@
+{
+  "scope": "Completed runtime component, independently reproduced from the preserved Qwen recovery records",
+  "protocol_sha256": "be6f3170150ca7541cf5a4cb3d8742dddb7582d1ec995293959a7b76b2fc305c",
+  "questions": 25,
+  "trials": 225,
+  "primary_deadline_s": 10.0,
+  "primary_family_size": 2,
+  "source_sha256": {
+    "output/aws-experiment/2026-09-14-extension/qwen-analysis-audited.json": "6a2f358a7eaf61d79c6277b850f5863dd7f621506ff58e6d730a355b5bff7eb1",
+    "output/aws-experiment/2026-09-15-extension-resume/retrieved/results/qwen32b-analysis.json": "7211306d32a323522008d343e694016dd050c534b1420319e7aa91a11a9ddcad",
+    "output/aws-experiment/2026-09-14-extension/qwen-analysis-audited.trials.csv": "27c9e38df633fcc2c7da4e551d630ebd2312f45d7dcb081dc209a2169648c1c6",
+    "output/aws-experiment/2026-09-15-extension-resume/remote-qwen32b-analysis.trials.csv": "27c9e38df633fcc2c7da4e551d630ebd2312f45d7dcb081dc209a2169648c1c6"
+  },
+  "asset_sha256": {
+    "tables/iclr2027_runtime_contrasts.tex": "b58d501e4b0442009877ca1e859a70ba02669c472c03d8ca3c678ddb4399ddb6",
+    "tables/iclr2027_runtime_latency.tex": "d0ae5f780943dc80ee54d12e13cddb91ee26a8c51bd8228fab6e06fe38cb644c",
+    "tables/iclr2027_runtime_results.tex": "41199dd12d5820be20e81e86f6953956daed62994ffce6c294939d1a697ecc27",
+    "figures/iclr2027_runtime_latency.pdf": "309c6a1dd92359a33d4ab41ed026d56fd45e15c545eb953210e6e3688183b681",
+    "figures/iclr2027_runtime_latency.png": "e3f1a9d0e1ffef52736e1ef084f7eb5fdc62a35816f516340ceecfb482f5c977",
+    "figures/iclr2027_runtime_success.pdf": "121a79a2f7048bc96991b0ecb8812e6551c299d1ba1afdd329be582783c48c8b",
+    "figures/iclr2027_runtime_success.png": "7bd7fe35c7605f74ddafdcb6257988a6c7f90071b4f055d8b622e8c63233e761"
+  }
+}

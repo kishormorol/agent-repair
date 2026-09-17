@@ -71,7 +71,7 @@ def test_restored_nudge_table_compares_the_same_origin():
     rows = {row["dataset"]: row for row in read_rows(
         ROOT / "results/cross_dataset/cross_dataset_traj_stats.csv")}
     summaries, _ = load_notebook_summaries(rows)
-    table = (ROOT / "paper/generated/iclr2027_nudges.tex").read_text()
+    table = (ROOT / "paper/generated/tables/iclr2027_nudges.tex").read_text()
     for dataset in DATASETS:
         for offset in (0, 2):
             key = "oracle_targeted" + ("__bt2" if offset else "")
@@ -95,14 +95,14 @@ def test_main_tables_and_intervals_use_all_audited_conditions(tmp_path):
     records = load_main_study()
     build_main_assets(tmp_path, records)
     summary = records["main-summary.json"]
-    table = (tmp_path / "iclr2027_main_results.tex").read_text()
+    table = (tmp_path / "tables/iclr2027_main_results.tex").read_text()
     for name, label in MAIN_STRATEGIES.items():
         row = summary["strategies"][name]
         assert f"{label} & {row['successful_seed_trials']}/339 & {100 * row['success_rate']:.2f}" in table
-    contrasts = (tmp_path / "iclr2027_main_contrasts.tex").read_text()
+    contrasts = (tmp_path / "tables/iclr2027_main_contrasts.tex").read_text()
     assert "Full restart & -1.47 & [-4.13, +0.88] & 0.358 & 1.000" in contrasts
     assert "Position-matched random & +0.00 & [-2.95, +2.95] & 1.000 & 1.000" in contrasts
-    assert (tmp_path / "iclr2027_main_contrasts.pdf").read_bytes().startswith(b"%PDF")
+    assert (tmp_path / "figures/iclr2027_main_contrasts.pdf").read_bytes().startswith(b"%PDF")
 
 
 @pytest.mark.parametrize("filename,change,message", [
@@ -148,14 +148,14 @@ def test_review_assets_surface_costs_overlap_and_secondary_scoring(tmp_path):
     from scripts.build_iclr_draft import load_review_diagnostics, build_review_assets
     report = load_review_diagnostics(load_main_study())
     build_review_assets(tmp_path, report)
-    assert "Full restart & 210 & 43 & 5 / 8 / 100" in (tmp_path / "iclr2027_review_overlap.tex").read_text()
-    costs = (tmp_path / "iclr2027_review_costs.tex").read_text()
+    assert "Full restart & 210 & 43 & 5 / 8 / 100" in (tmp_path / "tables/iclr2027_review_overlap.tex").read_text()
+    costs = (tmp_path / "tables/iclr2027_review_costs.tex").read_text()
     assert "Full restart & 271.6 & 3153.3" in costs
     assert "Uncertainty + backtrack 2 & 269.9 & 4083.3" in costs
-    sensitivity = (tmp_path / "iclr2027_review_sensitivity.tex").read_text()
+    sensitivity = (tmp_path / "tables/iclr2027_review_sensitivity.tex").read_text()
     assert "+2.95 [+0.29, +5.60]" in sensitivity
-    assert "Uncertainty + backtrack 2 & 59.20 & 42.00" in (tmp_path / "iclr2027_review_population.tex").read_text()
-    cases = (tmp_path / "iclr2027_review_cases.tex").read_text()
+    assert "Uncertainty + backtrack 2 & 59.20 & 42.00" in (tmp_path / "tables/iclr2027_review_population.tex").read_text()
+    cases = (tmp_path / "tables/iclr2027_review_cases.tex").read_text()
     assert cases.count(r"\paragraph{Case") == 3
     assert "Gate; F1, seeds 0/1/2" in cases
 
@@ -179,3 +179,51 @@ def test_review_loader_rejects_changed_or_inconsistent_diagnostics(review_eviden
     review_evidence.write_text(json.dumps(report))
     with pytest.raises(ValueError):
         load_review_diagnostics(load_main_study(), review_evidence)
+
+
+def test_every_generated_figure_is_saved_in_both_pdf_and_png():
+    """LaTeX embeds the PDF; the PNG is for slides, issues and quick review."""
+    figures = ROOT / "paper/generated/figures"
+    stems = {path.stem for path in figures.glob("*.pdf")} | {path.stem for path in figures.glob("*.png")}
+    assert stems, "no generated figures found"
+    missing = {stem: [suffix for suffix in ("pdf", "png")
+                      if not (figures / f"{stem}.{suffix}").is_file()]
+               for stem in sorted(stems)}
+    assert not any(missing.values()), f"figures missing a format: { {k: v for k, v in missing.items() if v} }"
+
+
+def test_every_figure_builder_emits_both_formats():
+    """A new savefig call must not reintroduce a single-format figure."""
+    single = []
+    for script in sorted((ROOT / "scripts").glob("*.py")):
+        source = script.read_text()
+        if "paper/generated" not in source and "figures" not in source:
+            continue
+        for line in source.splitlines():
+            stripped = line.strip()
+            if not stripped.startswith("fig.savefig("):
+                continue
+            # Dual-format calls interpolate the extension from the loop variable.
+            if "{extension}" in stripped or "path" in stripped:
+                continue
+            if '.png"' in stripped or ".png'" in stripped:
+                single.append(f"{script.name}: {stripped}")
+    assert not single, "single-format figure savefig calls: " + "; ".join(single)
+
+
+def test_new_experiment_figures_are_referenced_by_the_manuscript():
+    manuscript = (ROOT / "paper/iclr2027.tex").read_text()
+    for stem in ["iclr2027_position_pairs", "iclr2027_replication_diagnostics"]:
+        assert f"generated/figures/{stem}.pdf" in manuscript, stem
+        assert (ROOT / f"paper/generated/figures/{stem}.png").is_file(), stem
+
+
+def test_generated_macro_names_are_valid_latex_control_sequences():
+    """A digit in a macro name silently breaks the build at \\begin{document}."""
+    import re
+    bad = []
+    for path in sorted((ROOT / "paper/generated").glob("iclr2027*.tex")):
+        for name in re.findall(r"\\newcommand\{\\(\w+)\}", path.read_text()):
+            if not name.isalpha():
+                bad.append(f"{path.name}: {name}")
+    assert not bad, f"macro names must be letters only: {bad}"

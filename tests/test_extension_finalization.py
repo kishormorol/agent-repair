@@ -27,6 +27,35 @@ def test_extension_reproduction_compares_rows_by_identity_and_tolerates_rounding
     assert result["matched"] and result["trial_rows_compared"] == 6
 
 
+def test_extension_reproduction_records_platform_roundoff_without_requiring_equal_counts(exports):
+    local, remote = exports
+    for path, count, error in [(local, 1006, 1.78e-15), (remote, 0, 0.)]:
+        report = json.loads(path.read_text())
+        report["audits"][0].update(model_key="model", dataset="dataset", uncertainty_abs_tolerance=1e-12,
+                                   uncertainty_values_with_roundoff=count, uncertainty_max_abs_error=error)
+        path.write_text(json.dumps(report))
+    result = compare_exports(local, remote)
+    assert result["matched"]
+    diagnostics = result["uncertainty_roundoff_diagnostics"]
+    assert diagnostics["local"][0]["count"] == 1006
+    assert diagnostics["remote"][0]["count"] == 0
+
+
+@pytest.mark.parametrize("field,value", [("uncertainty_max_abs_error", 1e-4),
+                                         ("uncertainty_abs_tolerance", 1e-3),
+                                         ("uncertainty_values_with_roundoff", -1)])
+def test_extension_reproduction_rejects_invalid_roundoff_diagnostics(exports, field, value):
+    for path in exports:
+        report = json.loads(path.read_text())
+        report["audits"][0].update(model_key="model", dataset="dataset", uncertainty_abs_tolerance=1e-12,
+                                   uncertainty_values_with_roundoff=1, uncertainty_max_abs_error=1e-15)
+        # Matching invalid diagnostics on both machines must still be rejected.
+        report["audits"][0][field] = value
+        path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="roundoff"):
+        compare_exports(*exports)
+
+
 @pytest.mark.parametrize("defect", ["incomplete", "analysis", "answer", "missing_row", "duplicate"])
 def test_extension_reproduction_rejects_changed_or_incomplete_results(exports, defect):
     local, remote = exports

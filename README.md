@@ -7,16 +7,21 @@ trajectory should recovery retain? This repository studies suffix
 regeneration, full restart, and uncertainty-based selection of repair origins
 in ReAct-style agents with question-specific offline evidence.
 
-> **ICLR 2027 preparation, September 14, 2026:** the six-condition AWS
+> **ICLR 2027 preparation, September 15, 2026:** the six-condition AWS
 > HotpotQA study and the separate diagnosis/replay follow-up are complete and
 > audited. Neither found a clear uncertainty-repair advantage. The manuscript
 > reports both completed studies alongside historical
 > exploratory results, with new execution, cost and scoring diagnostics and a
 > verified statistical supplement. The follow-up report adds a same-model
 > diagnosis/replay comparator and three allowances. A separately frozen
-> two-model, three-dataset replication and runtime extension is executing
-> within its $35 session ceiling. Its outcomes and audits are pending;
-> human validation remains incomplete.
+> two-model, three-dataset replication is also complete: 600 main evaluations,
+> 4,323 unique repairs and 8,016 trial rows pass all six independent audits
+> and local/remote reproduction, with zero mismatches. All 24 primary
+> Holm-adjusted p-values are 1.000. The completed runtime component has its
+> own two-comparison family. All archives are recovered and EC2 is independently
+> verified stopped with its GPU configuration restored. The extension remains
+> within the authorized $50 cap and the original $119 allocation.
+> Human validation remains incomplete.
 > This is not a completed or accepted submission. FEVER
 > results are excluded.
 
@@ -28,9 +33,9 @@ in ReAct-style agents with question-specific offline evidence.
 | [Completed AWS main study](docs/aws_main_2026-09-12.md) | Audited 250-question, six-condition HotpotQA results, paired comparisons and cost estimate |
 | [Current expert review and fixes](docs/iclr_expert_review_2026-09-13.md) | September 13 assessment, six gaps, implemented diagnostics and remaining experimental design |
 | [Completed diagnosis/replay follow-up](docs/aws_diagnosis_2026-09-14.md) | Audited 250-question comparison across three allowances: 2,079 repairs, 3,186 trial rows, no clear uncertainty advantage; EC2 stopped |
-| [Active replication and runtime extension](docs/aws_extension_2026-09-14.md) | Frozen two-model, three-dataset experiment; 600 main model/question evaluations, seven policies and a separate latency study |
+| [Completed replication and runtime extension](docs/aws_extension_2026-09-14.md) | All six cells and 8,016 trial rows independently reproduced; no clear advantage in 24 primary contrasts; archives recovered and EC2 stopped |
 | [Statistical supplement](output/reviewer-2026-09-12/agent-repair-statistical-supplement.zip) | Checksummed records and standalone reproduction of four primary and eight secondary contrasts; full GPU replay is separate |
-| [ICLR manuscript](paper/iclr2027.tex) | Anonymous working draft: main text ends on page eight, followed by references and technical appendices |
+| [ICLR manuscript](paper/iclr2027.tex) | Anonymous working draft with completed studies, references and technical appendices |
 | [Title and abstract](paper_title_abstract.md) | Current evidence-limited abstract, aligned with the manuscript |
 | [Experiments to complete](docs/experiments_to_run.md) | Full-paper restoration map, prioritized experiments, and deadline workback |
 | [Section-by-section review](docs/paper_section_review.md) | September 9 revisions, six additional related papers, and unresolved evidence checks |
@@ -48,7 +53,12 @@ they are not the ICLR submission.
 The manuscript includes the six-condition HotpotQA results, a figure of the
 four paired confidence intervals, and the completed diagnosis follow-up's
 nine policy/allowance results, six paired contrasts and measured policy costs.
-Both studies retain their execution audits and historical-ID limitations.
+It also reports the completed two-model, three-dataset replication, every
+policy's results and costs, all 24 paired contrasts, and the completed
+25-question runtime experiment with its success-by-time figure and primary
+ten-second contrasts. Tables are organized under
+`paper/generated/tables/` and figures under `paper/generated/figures/`.
+All studies retain their execution audits and historical-ID limitations.
 Historical signal definitions, recovery costs, hint comparisons
 and localization diagnostics are preserved in the appendix. The abstract and
 conclusion report no clear uncertainty-repair advantage; missing comparisons
@@ -68,7 +78,11 @@ was −1.47 percentage points (95% bootstrap interval −4.13 to +0.88).
 All four primary Holm-adjusted p-values were 1.000. This does not establish
 equivalence. Estimated infrastructure usage is $9.16 before credits,
 tax and transfer, within the $25 session allowance and original $119 allocation.
-The other two QA datasets are being evaluated in the separate extension.
+The completed two-model, three-dataset replication adds 600 main and 120
+development evaluations. Its six uncertainty-minus-restart differences
+range from -3.24 to +5.95 percentage points; no contrast in the fixed
+24-comparison family shows a clear advantage. Earlier partial archives
+remain preserved alongside the completed extension.
 
 The [September 14 diagnosis/replay follow-up](docs/aws_diagnosis_2026-09-14.md)
 completed a separate frozen cohort of 250 questions under 0.5×, 1× and 2×
@@ -285,9 +299,10 @@ ICLR confirmatory study. The new
 equal new-step allowances, an origin sweep, and isolated paths. See
 [pilot commands](RUN_LOCAL.md#controlled-development-pilot) and the
 [reviewer report](docs/reviewer_report.md) for fixed defects and remaining
-experimental blockers. The six-condition HotpotQA GPU run and artifact audit
-are complete. Broader replication, historical provenance verification and
-full-cost comparisons remain pending.
+experimental blockers. The main study, diagnosis follow-up, six-cell
+replication and runtime experiment are complete and audited. Historical
+provenance verification, human validation and full end-to-end cost remain
+outside the completed evidence.
 
 ### Pipeline Map
 
@@ -334,6 +349,6 @@ For current code use, cite the repository URL and the exact Git revision
 used. Add the final paper citation only when its title, author list, and
 publication record are established.
 
-The historical README stated Apache-2.0, but this snapshot has no `LICENSE`
-file. The repository owner needs to confirm and include the intended
-license before a reproducible code release; this audit does not grant one.
+The repository includes an [MIT license](LICENSE). The historical README's
+Apache-2.0 statement was stale. Dataset, model and other third-party materials
+retain their own licenses and notices.

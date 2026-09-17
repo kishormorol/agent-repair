@@ -14,8 +14,8 @@
     "retrieved/main/pooled-analysis.trials.csv": "7785bb5a7cedd18a5f5228bd7f8001448eed653ae5cfa2da8b0556aef1767e9f"
   },
   "asset_sha256": {
-    "iclr2027_diagnosis_contrasts.tex": "3a6be39da5e42c43d59f8543eecb77f108f91a7a3b377eabb721e436b3a1c1a6",
-    "iclr2027_diagnosis_costs.tex": "c50c23ab51ecb6643f35e865cc30cd7c68d10a1763cd325c3b28f267d29cd316",
-    "iclr2027_diagnosis_results.tex": "c8a170756fdbcfae5d98c597855513e49808be9bcf7d27b902d888d3d347ef98"
+    "tables/iclr2027_diagnosis_contrasts.tex": "3a6be39da5e42c43d59f8543eecb77f108f91a7a3b377eabb721e436b3a1c1a6",
+    "tables/iclr2027_diagnosis_costs.tex": "c50c23ab51ecb6643f35e865cc30cd7c68d10a1763cd325c3b28f267d29cd316",
+    "tables/iclr2027_diagnosis_results.tex": "c8a170756fdbcfae5d98c597855513e49808be9bcf7d27b902d888d3d347ef98"
   }
 }

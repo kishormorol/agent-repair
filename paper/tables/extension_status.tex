@@ -1,0 +1,15 @@
+% Administrative snapshot, September 15, 2026.
+% Sources: qwen-analysis-audited.json, mistral-hotpotqa-audit.json,
+% and mistral-recovery-inventory.json in output/aws-experiment/.
+\begin{tabular}{llrrl}
+\toprule
+Model & Dataset & Main saved & Repairs complete & Cell status \\
+\midrule
+Qwen32B & HotpotQA & 100/100 & 43/43 & Audited \\
+Qwen32B & MuSiQue & 100/100 & 72/72 & Audited \\
+Qwen32B & 2Wiki & 100/100 & 28/28 & Audited \\
+Mistral12B & HotpotQA & 100/100 & 78/78 & Audited locally \\
+Mistral12B & MuSiQue & 100/100 & 62/83 & Partial \\
+Mistral12B & 2Wiki & 0/100 & -- & Not started \\
+\bottomrule
+\end{tabular}

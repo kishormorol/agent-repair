@@ -1,0 +1,27 @@
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Dataset & Policy & Successes & Success (\%) & EM (\%) & F1 \\
+\midrule
+HotpotQA & Restart & 18/129 & 13.95 & 8.53 & 0.1515 \\
+HotpotQA & Random, backtrack 2 & 22/129 & 17.05 & 11.63 & 0.1789 \\
+HotpotQA & Fixed early & 11/129 & 8.53 & 5.43 & 0.1148 \\
+HotpotQA & Uncertainty, backtrack 2 & 15/129 & 11.63 & 6.20 & 0.1273 \\
+HotpotQA & Dev.-fitted random & 18/129 & 13.95 & 7.75 & 0.1485 \\
+HotpotQA & Uncertainty, no backtracking & 11/129 & 8.53 & 5.43 & 0.1160 \\
+HotpotQA & Diagnosis/replay & 14/129 & 10.85 & 7.75 & 0.1358 \\
+MuSiQue & Restart & 17/216 & 7.87 & 6.02 & 0.0992 \\
+MuSiQue & Random, backtrack 2 & 11/216 & 5.09 & 3.70 & 0.0775 \\
+MuSiQue & Fixed early & 14/216 & 6.48 & 6.48 & 0.0873 \\
+MuSiQue & Uncertainty, backtrack 2 & 10/216 & 4.63 & 2.31 & 0.0597 \\
+MuSiQue & Dev.-fitted random & 14/216 & 6.48 & 5.56 & 0.0846 \\
+MuSiQue & Uncertainty, no backtracking & 14/216 & 6.48 & 3.70 & 0.0888 \\
+MuSiQue & Diagnosis/replay & 16/216 & 7.41 & 5.56 & 0.0940 \\
+2Wiki & Restart & 13/84 & 15.48 & 10.71 & 0.1732 \\
+2Wiki & Random, backtrack 2 & 15/84 & 17.86 & 11.90 & 0.1912 \\
+2Wiki & Fixed early & 17/84 & 20.24 & 19.05 & 0.2334 \\
+2Wiki & Uncertainty, backtrack 2 & 18/84 & 21.43 & 15.48 & 0.2267 \\
+2Wiki & Dev.-fitted random & 13/84 & 15.48 & 9.52 & 0.1675 \\
+2Wiki & Uncertainty, no backtracking & 19/84 & 22.62 & 17.86 & 0.2337 \\
+2Wiki & Diagnosis/replay & 14/84 & 16.67 & 8.33 & 0.1814 \\
+\bottomrule
+\end{tabular}

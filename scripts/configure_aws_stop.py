@@ -54,6 +54,9 @@ def main():
     subprocess.run(["systemctl", "daemon-reload"], check=True)
     subprocess.run(["systemctl", "enable", "--now", unit + ".timer"], check=True)
     subprocess.run(["systemctl", "is-active", "--quiet", unit + ".timer"], check=True)
+    # Retire the short staging shutdown only after its replacement is active.
+    # Otherwise it blocks SSH logins and powers off the running experiment.
+    subprocess.run(["shutdown", "-c"], check=True)
     subprocess.run(["systemctl", "list-timers", unit + ".timer", "--no-pager"], check=True)
 
 

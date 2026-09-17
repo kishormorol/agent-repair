@@ -5,6 +5,41 @@ import pytest
 from scripts.configure_aws_stop import timer_units
 
 
+def test_verified_guest_timer_replaces_bootstrap_shutdown(monkeypatch, tmp_path):
+    import sys
+    import scripts.configure_aws_stop as stop
+
+    calls=[]
+    monkeypatch.setattr(sys,'argv',['configure_aws_stop','--deadline','unused','--install'])
+    monkeypatch.setattr(stop,'timer_units',lambda _:('service','timer'))
+    monkeypatch.setattr(stop.os,'geteuid',lambda:0)
+    monkeypatch.setattr(stop,'Path',lambda _:tmp_path)
+    monkeypatch.setattr(stop.subprocess,'run',lambda command,**_:calls.append(command))
+    stop.main()
+    assert ['shutdown','-c'] in calls
+    assert calls.index(['shutdown','-c'])>calls.index(['systemctl','is-active','--quiet','aws119-budget-stop.timer'])
+
+
+def test_failed_guest_timer_preserves_bootstrap_shutdown(monkeypatch, tmp_path):
+    import sys
+    import subprocess
+    import scripts.configure_aws_stop as stop
+
+    calls=[]
+    def run(command,**kwargs):
+        calls.append(command)
+        if command[:2]==['systemctl','is-active']:
+            raise subprocess.CalledProcessError(1,command)
+    monkeypatch.setattr(sys,'argv',['configure_aws_stop','--deadline','unused','--install'])
+    monkeypatch.setattr(stop,'timer_units',lambda _:('service','timer'))
+    monkeypatch.setattr(stop.os,'geteuid',lambda:0)
+    monkeypatch.setattr(stop,'Path',lambda _:tmp_path)
+    monkeypatch.setattr(stop.subprocess,'run',run)
+    with pytest.raises(subprocess.CalledProcessError):
+        stop.main()
+    assert ['shutdown','-c'] not in calls
+
+
 NOW = dt.datetime(2026, 9, 11, 12, tzinfo=dt.timezone.utc)
 
 
