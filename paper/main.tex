@@ -265,7 +265,7 @@ We validate the judge against 50 human-labeled trajectories per dataset, measuri
 % Pre-place full-width figure so it appears at the top of the Results page
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_cross_dataset_bars.png}
+\includegraphics[width=\textwidth]{figures-old/fig_cross_dataset_bars.png}
 \caption{Repair success rates (\%) across four benchmarks and seven strategy categories. 2WikiMultiHopQA shows the highest absolute fix rates; ensemble strategies achieve 2--4$\times$ higher rates at substantially greater compute cost.}
 \label{fig:cross_bars}
 \end{figure*}
@@ -333,7 +333,7 @@ This finding validates the motivation for our cascade-aware localization rules, 
 
 \begin{figure}[!b]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig_backtracking_gain.png}
+\includegraphics[width=\columnwidth]{figures-old/fig_backtracking_gain.png}
 \caption{Left: Oracle, Oracle+bt2, and Full Restart fix rates. Right: Backtracking gain (Oracle+bt2 $-$ Oracle). The +12.0 pp gain on 2WikiMultiHopQA confirms strong error cascade effects.}
 \label{fig:bt_gain}
 \end{figure}
@@ -389,7 +389,7 @@ Random baseline & 0.223 & 0.304 & 0.153 & 0.236 \\
 
 \begin{figure}[!b]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig_localization_heatmap.png}
+\includegraphics[width=\columnwidth]{figures-old/fig_localization_heatmap.png}
 \caption{Localization accuracy (argmax top-1) by uncertainty metric and dataset. Self-consistency achieves the highest accuracy across all benchmarks, reaching 0.404 on 2WikiMultiHopQA.}
 \label{fig:loc_heatmap}
 \end{figure}
@@ -451,7 +451,7 @@ We investigate why full restart outperforms oracle-targeted repair on multi-hop 
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig_traj_length_vs_repair.png}
+\includegraphics[width=\columnwidth]{figures-old/fig_traj_length_vs_repair.png}
 \caption{Trajectory length vs.\ repair effectiveness. Shorter trajectories (FEVER, 2WikiMHQA) favor targeted repair; longer trajectories (HotpotQA, MuSiQue) favor full restart, consistent with the context contamination hypothesis.}
 \label{fig:traj_repair}
 \end{figure}
@@ -475,7 +475,7 @@ We identify two dominant failure modes in localization:
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_pareto_all_datasets.png}
+\includegraphics[width=\textwidth]{figures-old/fig_pareto_all_datasets.png}
 \caption{Cost-accuracy Pareto fronts for all four datasets. Each grey dot is an individual repair strategy; labeled points show baselines. On 2WikiMultiHopQA, many uncertainty strategies dominate the Pareto front above Full Restart.}
 \label{fig:pareto}
 \end{figure*}
