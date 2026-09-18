@@ -46,6 +46,32 @@ aws service-quotas get-requested-service-quota-change \
 
 Filing does not authorize launching an instance or spending the credit.
 
+## Status check, September 17 evening
+
+Read live from the Service Quotas API, no mutation:
+
+| Field | Value |
+| --- | --- |
+| Request status | `CASE_OPENED` |
+| Case opened | `178968447400347` |
+| Last updated | 2026-09-17 18:34:38 EDT |
+| Applied G/VT quota, `eu-west-2` | **0.0 vCPUs** |
+
+**The 18:34 update is an acknowledgement, not an approval.** AWS restated the
+request correctly - EU (London), all G and VT instances, new limit 8 - and
+said the resolution requires collaboration with an internal team, which they
+had initiated, with a further update to follow. Nothing is granted: the request
+has not moved to `APPROVED` and the applied value is still zero, so **no G
+instance can launch on this account yet**.
+
+AWS did **not** ask for a use case. The request therefore sits with the
+internal team carrying the numbers only; the justification below is still
+unattached. Confirm any eventual decision on the Service Quotas page for the
+account, not from an email, exactly as
+[`aws_quota_appeal.md`](aws_quota_appeal.md) required for the first account.
+The case text cannot be read from the CLI - account 304118843563 is on Basic
+support and `support describe-cases` returns `SubscriptionRequiredException`.
+
 ## Verified account state (September 17, 2026)
 
 Read from the configured AWS CLI profiles on the author's machine. No
