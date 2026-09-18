@@ -583,13 +583,13 @@ perplexity, so missing signal does not explain the result.
 
 \section{Limitations}
 \paragraph{Scope and remaining comparisons.}
-Two model families and three QA datasets, offline evidence and a permissive
-reference-answer gate do not establish transfer to live retrieval, other
-model scales or general agent tasks. Strict EM/F1 sensitivities retain the
-same initial-failure cohort; an EM-only gate requires additional repaired
-questions. Runtime questions overlap replication. Prefix replay does not
-guarantee identical stochastic suffixes or restore arbitrary mutable state,
-and conditional repair rates do not rank population reliability.
+Two open-weight model families and three QA datasets, offline evidence and a
+permissive reference-answer gate do not establish transfer to live retrieval,
+other model scales, closed frontier models or general agent tasks; the tested
+policy needs per-token log probabilities and pinned weights, which many
+commercial APIs do not provide (Appendix~\ref{app:completion}). An EM-only
+gate would need additional repairs. Prefix replay does not guarantee
+identical stochastic suffixes or restore arbitrary mutable state.
 
 \paragraph{Comparator and resource scope.}
 The diagnosis/replay adaptation omits trained diagnosis and diagnosis-specific
@@ -1194,7 +1194,18 @@ Historical results elsewhere in the paper are not relabeled as its outcomes.
 \subsection{Frozen Conditions and Model}
 The main model and tokenizer snapshot was
 \texttt{Qwen/Qwen2.5-32B-Instruct-AWQ}, revision
-\path{5c7cb76a268fc6cfbb9c4777eb24ba6e27f9ee6c}. The run used one AWS
+\path{5c7cb76a268fc6cfbb9c4777eb24ba6e27f9ee6c}.
+Every agent in this paper is an open-weight model served locally, and the
+design requires it rather than merely preferring it. The tested policy is
+computed from the log probability of every sampled token, and the historical
+signals also use the top twenty alternatives at each position; many
+commercial chat APIs do not expose these for all models. Frozen protocols
+pin each model by revision hash so that replay audits can require zero
+mismatches, whereas a hosted model can change or be retired without a
+pinnable identifier, and the runtime comparison needs hardware and cache
+settings the study controls. The results therefore say nothing directly about
+closed frontier models, for which this policy cannot be computed as
+specified; that is also a practical limit on the policy itself. The run used one AWS
 London \texttt{g7e.2xlarge} with a 96GB RTX PRO 6000 GPU. Initial generation
 was greedy; repairs used temperature $0.7$, seeds $0,1,2$ and batch size two.
 Every repair had at most eight new steps, 512 generated tokens per step,
