@@ -3,9 +3,10 @@
 Project: [https://www.overleaf.com/project/6aabddbb2fd2d7027c78b548](https://www.overleaf.com/project/6aabddbb2fd2d7027c78b548)
 ("agent-repair"), linked to `kishormorol/agent-repair` on `main`.
 
-**Status: live and verified.** The Overleaf copy compiles to 40 pages with
-0 errors, identical to the local build. Its only warning is a cosmetic float
-specifier; the 17 info messages are underfull boxes.
+**Status: live and verified.** Re-verified on September 17 after pulling the
+ICLR-feedback revisions: the Overleaf copy compiles to 44 pages, the same as
+the local build, and shows the current title. The earlier check, at 40 pages,
+predates those revisions.
 
 **The share link is deliberately not recorded here.** An Overleaf link of the
 form `overleaf.com/<token>` grants access to anyone who holds it, and this
