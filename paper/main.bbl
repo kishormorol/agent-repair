@@ -11,18 +11,18 @@ Ho, X.; Duong~Nguyen, A.-K.; Sugawara, S.; and Aizawa, A. 2020.
 \newblock Constructing A Multi-Hop {QA} Dataset for Comprehensive Evaluation of Reasoning Steps.
 \newblock In \emph{International Conference on Computational Linguistics (COLING)}.
 
-\bibitem[{Huang et~al.(2024)Huang, Xia, Xing, Yu, and Chang}]{huang2024large}
-Huang, J.; Xia, X.; Xing, X.; Yu, J.; and Chang, K.-W. 2024.
+\bibitem[{Huang et~al.(2024)Huang, Chen, Mishra, Zheng, Yu, Song, and Zhou}]{huang2024large}
+Huang, J.; Chen, X.; Mishra, S.; Zheng, H.~S.; Yu, A.~W.; Song, X.; and Zhou, D. 2024.
 \newblock Large Language Models Cannot Self-Correct Reasoning Yet.
-\newblock \emph{International Conference on Learning Representations (ICLR)}.
+\newblock In \emph{International Conference on Learning Representations (ICLR)}.
 
 \bibitem[{Kadavath et~al.(2022)Kadavath, Conerly, Askell, Henighan, Drain, Perez, Schiefer, Hatfield-Dodds, DasSarma, Tran-Johnson, Johnston, El-Showk, Jones, Elhage, Hume, Chen, Bai, Bowman, Fort, Ganguli, Hernandez, Jacobson, Kernion, Kravec, Lovitt, Ndousse, Olsson, Ringer, Amodei, Brown, Clark, Joseph, Mann, McCandlish, Olah, and Kaplan}]{kadavath2022language}
 Kadavath, S.; Conerly, T.; Askell, A.; Henighan, T.; Drain, D.; Perez, E.; Schiefer, N.; Hatfield-Dodds, Z.; DasSarma, N.; Tran-Johnson, E.; Johnston, S.; El-Showk, S.; Jones, A.; Elhage, N.; Hume, T.; Chen, A.; Bai, Y.; Bowman, S.; Fort, S.; Ganguli, D.; Hernandez, D.; Jacobson, J.; Kernion, J.; Kravec, S.; Lovitt, L.; Ndousse, K.; Olsson, C.; Ringer, S.; Amodei, D.; Brown, T.; Clark, J.; Joseph, N.; Mann, B.; McCandlish, S.; Olah, C.; and Kaplan, J. 2022.
 \newblock Language Models (Mostly) Know What They Know.
 \newblock \emph{arXiv preprint arXiv:2207.05221}.
 
-\bibitem[{Lightman et~al.(2024)Lightman, Kosaraju, Burda, Edwards, Baker, Lee, Leike, Schulman, and Sutskever}]{lightman2024lets}
-Lightman, H.; Kosaraju, V.; Burda, Y.; Edwards, H.; Baker, B.; Lee, T.; Leike, J.; Schulman, J.; and Sutskever, K.~C., Ilya~andAlignment. 2024.
+\bibitem[{Lightman et~al.(2024)Lightman, Kosaraju, Burda, Edwards, Baker, Lee, Leike, Schulman, Sutskever, and Cobbe}]{lightman2024lets}
+Lightman, H.; Kosaraju, V.; Burda, Y.; Edwards, H.; Baker, B.; Lee, T.; Leike, J.; Schulman, J.; Sutskever, I.; and Cobbe, K. 2024.
 \newblock Let's Verify Step by Step.
 \newblock In \emph{International Conference on Learning Representations (ICLR)}.
 
@@ -46,8 +46,8 @@ Qian, C.; Han, C.; Fung, Y.~R.; Qin, Y.; Liu, Z.; and Ji, H. 2023.
 \newblock {CREATOR}: Tool Creation for Disentangling Abstract and Concrete Reasoning of Large Language Models.
 \newblock In \emph{Findings of the Association for Computational Linguistics (EMNLP)}.
 
-\bibitem[{Shinn et~al.(2023)Shinn, Cassano, Gopinath, Narasimhan, and Yao}]{shinn2023reflexion}
-Shinn, N.; Cassano, F.; Gopinath, A.; Narasimhan, K.; and Yao, S. 2023.
+\bibitem[{Shinn et~al.(2023)Shinn, Cassano, Berman, Gopinath, Narasimhan, and Yao}]{shinn2023reflexion}
+Shinn, N.; Cassano, F.; Berman, E.; Gopinath, A.; Narasimhan, K.; and Yao, S. 2023.
 \newblock Reflexion: Language Agents with Verbal Reinforcement Learning.
 \newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}.
 
@@ -56,8 +56,8 @@ Thorne, J.; Vlachos, A.; Christodoulopoulos, C.; and Mittal, A. 2018.
 \newblock {FEVER}: a Large-scale Dataset for Fact Extraction and {VERification}.
 \newblock In \emph{Conference of the North American Chapter of the Association for Computational Linguistics (NAACL)}.
 
-\bibitem[{Tian et~al.(2023)Tian, Mitchell, Yao, Manning, and Finn}]{tian2023just}
-Tian, K.; Mitchell, E.; Yao, H.; Manning, C.~D.; and Finn, C. 2023.
+\bibitem[{Tian et~al.(2023)Tian, Mitchell, Zhou, Sharma, Rafailov, Yao, Finn, and Manning}]{tian2023just}
+Tian, K.; Mitchell, E.; Zhou, A.; Sharma, A.; Rafailov, R.; Yao, H.; Finn, C.; and Manning, C. 2023.
 \newblock Just Ask for Calibration: Strategies for Eliciting Calibrated Confidence Scores from Language Models Fine-Tuned with Human Feedback.
 \newblock In \emph{Conference on Empirical Methods in Natural Language Processing (EMNLP)}.
 

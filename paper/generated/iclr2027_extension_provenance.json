@@ -25,9 +25,9 @@
     "tables/iclr2027_extension_qwen32b_results.tex": "e74815480318a5085ae2803d09b27868c0977cb28d6892ce1c9b5e3333c9e9f7",
     "tables/iclr2027_extension_runtime.tex": "41199dd12d5820be20e81e86f6953956daed62994ffce6c294939d1a697ecc27",
     "tables/iclr2027_extension_runtime_contrasts.tex": "b58d501e4b0442009877ca1e859a70ba02669c472c03d8ca3c678ddb4399ddb6",
-    "figures/iclr2027_extension_contrasts.pdf": "05b62bd886db0b79cf00f82f6a86095a490412b7e75d59ffbfe70e2d3fc70532",
+    "figures/iclr2027_extension_contrasts.pdf": "5cb0ecdbc0d19d1937544e05a13f897af197e62b1dbd64e4537da8c539669d26",
     "figures/iclr2027_extension_contrasts.png": "81dd107f87b58329af5b7208d22ba1db622c7ce21af847ac5da2b3b34d381cdf",
-    "figures/iclr2027_extension_position_ecdf.pdf": "8e05e11233ff37805dd0d4706304c6b6762a672d5a9c02e6bbb13ac24caaa133",
+    "figures/iclr2027_extension_position_ecdf.pdf": "72a8fa69dfa41f26dc2d9d41d3ed52950ab938a93349e17c661b5faacbb76192",
     "figures/iclr2027_extension_position_ecdf.png": "a8a03b0f037385c344114f8a8f9dde363c38e63157ce8445dc703e933042d675",
     "iclr2027_extension_position_balance.json": "3feadb9691ee656180f0cc408de7dbb4520b3a246f200b09e682b935f55459bd",
     "iclr2027_extension_position_rows.csv": "b1c6f32cb72a539936cbe7567b5b17095cf9a85ea44615300d6ff6f4f48a3ee1"
