@@ -51,3 +51,10 @@ tmp/
 
 # Local working memory: operational and billing detail, not for a public repo
 MEMORY.md
+
+# Stray latexmk output next to the source. The paper's PDFs are built to
+# output/pdf by `make iclr-draft` and `make submission`; a copy here is a
+# leftover from compiling iclr2027.tex in place and goes stale immediately.
+# paper/main.pdf is tracked on purpose, as the record of the superseded
+# manuscript, so this is deliberately narrow.
+paper/iclr2027.pdf
