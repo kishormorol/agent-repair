@@ -46,7 +46,9 @@ History, Word count, Submit, Download and Settings.)
 
 1. Authorize Overleaf to access GitHub when prompted.
 2. Choose **link to an existing repository** and select
-   `kishormorol/agent-repair`, branch `close-review-gaps`.
+   `kishormorol/agent-repair`, branch `main`. Not `close-review-gaps`: that
+   was the working branch before it merged, and it has been frozen since
+   September 17, so a project linked to it would never see a later change.
 3. Then **Menu → Settings → Main document** and set it to
    `paper/iclr2027.tex`. Overleaf will not find it otherwise, because the paper
    is not at the repository root.
