@@ -1,0 +1,24 @@
+name: Tell the submission plan
+
+# A push here is worth recording in the submission plan now, not at its next hourly
+# check, so this asks the plan's sync to run. It changes nothing in this repository.
+# Pushes the sync made itself are skipped: that run has already seen them.
+on:
+  push:
+
+permissions: {}
+
+jobs:
+  notify:
+    if: ${{ !contains(github.event.head_commit.message, 'Ledger-Sync:') && !contains(github.event.head_commit.message, 'Overleaf-Sync:') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask the submission plan to sync
+        env:
+          GH_TOKEN: ${{ secrets.LEDGER_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::notice::LEDGER_TOKEN is not set, so the plan picks this push up at its next hourly check."
+            exit 0
+          fi
+          gh workflow run sync.yml --repo kishormorol/submission-ledger --ref main
