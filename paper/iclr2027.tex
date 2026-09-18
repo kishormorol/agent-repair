@@ -101,6 +101,15 @@ repair with prefix reuse, and repair versus resampling
 controlled test of a specific selector against these alternatives, rather
 than a new claim about prefix reuse or causal error attribution.
 
+\paragraph{Why this selector.}
+Perplexity is the cheapest uncertainty signal a finished generation offers
+\citep{kadavath2022language,manakul2023selfcheckgpt}, and argmax with a fixed
+backoff is the smallest rule turning it into an origin. It was our archived
+framework's default, where backing off two steps raised mean success on all
+three datasets (Section~\ref{sec:archived}) --- an apparent benefit from an
+uncontrolled internal baseline, not a published claim, and exactly the kind of
+evidence a control can remove.
+
 We make three contributions:
 \begin{enumerate}
 \item Controlled comparisons of one fixed selector, highest-perplexity step
@@ -156,6 +165,14 @@ study interventions for attribution or repair
 \citep{lin2026reflect,shah2026causal,bonagiri2026causalflow}.
 AgenticRAG-FP injects faults and re-executes downstream reasoning to test
 attribution against known interventions \citep{pothuru2026failures}.
+Recent systems replace passive step scoring with active investigation: FALAT
+searches typed dependencies to prune and verify candidates
+\citep{rafi2026falat}, AgentDebugX runs multi-turn root-cause diagnosis in a
+detect--attribute--recover--rerun loop \citep{zhu2026agentdebugx}, and
+tree-search agents revisit reasoning nodes during generation
+\citep{zhou2024lats}. All select an origin with far more information than the
+stored-token statistic tested here; none is evaluated below, and these nulls
+do not transfer to them.
 Our naturally failed traces lack such intervention-grounded causal labels.
 
 \paragraph{Uncertainty signals.}
@@ -181,7 +198,12 @@ actions are \texttt{search}, \texttt{lookup}, and \texttt{finish}.
 The implemented QA success criterion accepts an answer when its normalized
 exact match is one or its token F1 is at least $0.5$. This threshold is a
 study-specific recovery criterion, not the official aggregate metric for
-every benchmark. Only trajectories that fail this gate enter repair.
+every benchmark. It is deliberately permissive: normalization already absorbs
+case, articles and punctuation, so an answer below $0.5$ token F1 disagrees
+with the reference on most of its content rather than on formatting, and the
+cohort entering repair is one of substantive answer failures
+(Appendix~\ref{app:outcome_sensitivity} repeats every comparison under strict
+exact match). Only trajectories that fail this gate enter repair.
 Evaluation therefore estimates recovery conditional on a known benchmark
 failure; the reference answer is not available to an ordinary deployed
 failure detector.
@@ -212,12 +234,14 @@ binary repair outcome as $Y_{qar}$. Our primary descriptive statistic is
                  \frac{1}{S_q}\sum_{r=1}^{S_q}Y_{qar}.
   \label{eq:success}
 \end{equation}
-Each question receives equal weight. Thresholding each question's mean
+Each question receives equal weight; $S_q$ is written per question because the
+estimator needs no balanced design, though $S_q=3$ throughout.
+Thresholding each question's mean
 success to obtain a majority-over-seeds outcome measures repeatability,
 not the success rate of one sampled repair, and must be reported separately.
 
 \section{Uncertainty-Guided Regeneration}
-\subsection{Prespecified Stored-Token Policy}
+\subsection{Prespecified Stored-Token Policy}\label{sec:policy}
 The controlled studies use step perplexity from stored sampled-token log
 probabilities. For log probability $\ell_{it}$ of generated token $t$ in
 step $i$, define
@@ -227,8 +251,11 @@ step $i$, define
 \end{equation}
 The policy selects the highest finite step score, breaking ties toward
 the earlier step, then subtracts two trajectory indices and clamps at zero.
-Unusable measurements are skipped; an empty usable profile falls back to
-origin zero. The stored-token measure requires no additional sampled
+A step's measurement is unusable, and skipped, when it stores no generated
+tokens or when any stored token lacks a finite, non-positive log probability,
+either of which leaves $U_i^{\mathrm{ppl}}$ undefined; an empty usable profile
+falls back to origin zero. The $\min$ with 20 prevents overflow and does not
+winsorize the signal. The stored-token measure requires no additional sampled
 rollouts or diagnosis-model calls. The policy was prespecified before main-study outcomes, rather than
 chosen as the best-performing development or test variant; this is not an
 evaluation of the best possible uncertainty estimator.
@@ -258,7 +285,11 @@ trajectory's generated-token count. The diagnosis follow-up varies this cap
 across $0.5\times$, $1\times$ and $2\times$; diagnosis acquisition is charged
 separately. Each request is bounded by the remaining cap, with at most eight
 new steps and 512 generated tokens per step. Retained steps do not consume
-new-step opportunities. The runtime experiment retains these step limits,
+new-step opportunities. For an early failure, restart must regenerate a whole
+chain within the budget the original used, while repair spends it on a suffix;
+this asymmetry runs against restart, so it cannot explain a null in which
+restart is never outperformed.
+The runtime experiment retains these step limits,
 removes the total generated-token cap and evaluates measured completion
 deadlines. These designs do not equalize realized tokens, prompt processing
 or FLOPs. The historical runner counted retained steps toward its eight-step
@@ -318,9 +349,12 @@ Reference answers affect evaluation and failure selection, not origin choice
 or the recovery prompt. There is no diagnosis-model condition in this study.
 
 The position control was fitted to 24 failed original development trajectories
-without using their repair outcomes. It uniformly samples an observed effective
-origin, normalizes by the development trajectory length and maps to the new
-length with nearest-position, half-up rounding. All 50 development source
+without using their repair outcomes. A trajectory has no effective origin
+independent of a selection policy, so the matched distribution is the one the
+prespecified policy of Section~\ref{sec:policy} produced on those development
+trajectories. The control samples one of those origins uniformly, normalizes
+by the development trajectory length and maps to the new length with
+nearest-position, half-up rounding. All 50 development source
 questions are excluded. The frozen profile reads no test uncertainty scores;
 matching in expectation does not guarantee identical finite-sample histograms.
 Appendix~\ref{app:completion} specifies all origin formulas and profile provenance.
@@ -366,6 +400,11 @@ random (36/339), 9.73\% for position-matched random (33/339), and 8.55\% for
 uncertainty without backtracking (29/339). Fixed early achieves 11.50\%
 (39/339), but its descriptive point estimate does not establish a superior
 policy. Table~\ref{tab:main_results} also reports exact match and F1.
+The treatment does not exceed restart here: the apparent benefit named in the
+title is the gain in the uncontrolled archived runs of
+Section~\ref{sec:archived}, which these matched controls do not reproduce.
+Treatment equalling the position-matched rate exactly is the precise sense in
+which selection adds nothing beyond position.
 
 \begin{figure}[t]
 \centering
@@ -404,9 +443,10 @@ Initial generation used 57,499 generated tokens; unique repairs used
 usage, including startup, retrieval and storage through the recorded cutoff,
 was US\$\MainEstimatedUSD{}, within a US\$25 session allowance. This is an
 estimate before credits, tax and transfer, not an invoice or a per-policy
-efficiency comparison. The instance was confirmed stopped. Equal caps
-and shared executions do not establish equal realized computation or a
-wall-clock speedup.
+efficiency comparison; Appendix~\ref{app:completion} records the cost
+worksheet and the verified shutdown sequence. Equal caps and shared
+executions do not establish equal realized computation or a wall-clock
+speedup.
 
 \section{Diagnosis and Allowance Follow-up}\label{sec:diagnosis_followup}
 A separate frozen cohort of 250 HotpotQA questions excludes all 799
@@ -489,7 +529,9 @@ The runtime component uses the first 25 failed questions from the
 100-question Qwen HotpotQA replication cell.
 Restart, uncertainty and diagnosis each receive three seeds, with separate
 executions in shuffled order after model warmup and with prefix caching
-disabled. Attempts retain eight new steps and 512 tokens per request but
+disabled, which isolates per-attempt cost but charges prefix-preserving repair
+for prompt recomputation that a cache would serve
+(Appendix~\ref{app:runtime_scope}). Attempts retain eight new steps and 512 tokens per request but
 have no total generated-token cap. Measured time includes selection,
 prefix replay and recovery. Diagnosis acquisition is measured once per
 question and charged to each attempt. The primary outcome is a correct
@@ -529,72 +571,15 @@ contains their rates and diagnostics; these summaries support neither a
 causal error-cascade claim nor an established length-based recovery rule.
 
 \paragraph{Review-stage diagnostics.}
-The following trace, cost and cohort diagnostics were added during manuscript
-review after the primary results were known. They are exploratory and do not
-replace the frozen four-comparison family. Their inputs were checked against
-all five archived batches; Appendix~\ref{app:review_diagnostics} gives the
-analysis record, secondary outcomes and illustrative cases.
-
-\paragraph{How much distinct intervention was tested.}
-The treatment and restart share all three executions on 70 of the 113 failed
-questions. Only \ReviewActiveQuestions{} questions have a nonzero treatment
-origin. Let $D_q$ indicate such an origin and let $\Delta_D$ denote the
-mean treatment-minus-restart difference within those questions. Because
-identical origins, hints and seeds share an execution,
-\begin{equation}
- \widehat\Delta=\frac{N_D}{N}\widehat\Delta_D
- =\frac{43}{113}(-3.88\text{ percentage points})
- \simeq -1.47\text{ percentage points}.
- \label{eq:overlap_decomposition}
-\end{equation}
-The subgroup interval is [\ReviewActiveLow{}, \ReviewActiveHigh{}] points.
-This does not change the primary estimand or discard its zero differences:
-$N=113$ remains the primary resampling sample. It shows how often the
-policies can disagree and why the subgroup estimate is imprecise.
-Across all questions, treatment has a higher seed mean on five, a lower mean
-on eight, and the same mean on 100. The position-matched comparison has
-93 questions with at least one distinct execution, so the lack of a primary
-advantage cannot be attributed solely to collapse into restart.
-
-\begin{table}[t]
-\centering\footnotesize
-\caption{Exploratory execution overlap with the treatment. Shared counts are
-out of 339 question/seed pairs. Different-question counts are out of 113
-questions with any distinct execution. Wins/losses/ties compare three-seed
-question means, not independent seed trials.}
-\label{tab:review_overlap}
-\input{generated/tables/iclr2027_review_overlap}
-\end{table}
-
-\paragraph{Observed resources and unfinished repairs.}
-Uncertainty repair uses 269.9 generated and 4,083.3 prompt tokens per attempt,
-versus 271.6 and 3,153.3 for restart: \ReviewPromptIncrease\% more prompt
-tokens with similar output-token use. The paired differences are $-1.7$
-output tokens (individual 95\% interval [$-8.9,+5.7$]) and $+930.0$ prompt
-tokens ([$+579.2,+1321.9$]). Prefix reuse therefore does not imply lower
-recorded prompt usage. These counts do not measure cached-prefill savings,
-FLOPs or policy latency; Table~\ref{tab:review_costs} reports all six policies.
-
-Original-failure token allowances range from 77 to 548 (median 344), and
-original failed trajectories have a median of six steps. The treatment
-ends \ReviewBudgetStops/339 repairs at the token budget and
-\ReviewStepStops/339 at the step limit; together, 168/339 attempts emit no
-final answer. All 637 original failed-trace steps have usable perplexity,
-with no empty-profile fallback. Thus missing signal records do not explain
-the observed result. Stopping at a cap does not identify what the same attempt
-would achieve with more tokens. Section~\ref{sec:diagnosis_followup} reports
-separate executions at three allowances on another frozen cohort.
-
-\paragraph{Metric sensitivity and population interpretation.}
-The eight EM/F1 comparisons in Table~\ref{tab:review_sensitivity} and the
-descriptive fixed-early contrast are exploratory; they neither expand the
-primary family nor select a replacement policy.
-Keeping initially accepted answers and repairing only the 113 rejected ones
-yields \ReviewWholeSuccess\% full-cohort gate success for treatment and
-\ReviewWholeRestartSuccess\% for restart. These are reference-gated outcomes,
-not performance of a deployed failure detector. Forty initially accepted
-answers fail strict EM and were never repaired; an EM-only failure cohort
-would need additional executions.
+Exploratory diagnostics added after the primary results were known qualify
+the null without replacing the frozen four-comparison family
+(Appendix~\ref{app:review_diagnostics}). Treatment and restart share all
+three executions on 70 of 113 failed questions, but the position-matched
+control differs on 93, so the null is not merely collapse into restart.
+Treatment uses \ReviewPromptIncrease\% more prompt tokens than restart at
+similar output, and 168/339 of its attempts end at a token or step cap
+without an answer. All 637 original failed-trace steps have usable
+perplexity, so missing signal does not explain the result.
 
 \section{Limitations}
 \paragraph{Scope and remaining comparisons.}
@@ -602,7 +587,9 @@ Two model families and three QA datasets, offline evidence and a permissive
 reference-answer gate do not establish transfer to live retrieval, other
 model scales or general agent tasks. Strict EM/F1 sensitivities retain the
 same initial-failure cohort; an EM-only gate requires additional repaired
-questions. Runtime questions overlap replication.
+questions. Runtime questions overlap replication. Prefix replay does not
+guarantee identical stochastic suffixes or restore arbitrary mutable state,
+and conditional repair rates do not rank population reliability.
 
 \paragraph{Comparator and resource scope.}
 The diagnosis/replay adaptation omits trained diagnosis and diagnosis-specific
@@ -624,16 +611,20 @@ within-question exchangeability, and shared seeds or executions add no
 independent questions. Precision, not effect size, binds these nulls:
 \PairTiedPairs{} of \PairPairs{} swap pairs tie, so \PairBlockedCells{} of
 \PairTotalCells{} swap cells and two of six replication cells could not have
-reached a conventional level whatever their outcomes. More questions alone
-would not fix it: the cell with the most pairs shares the highest floor because
-its extra pairs were ties (Appendix~\ref{app:position_pairs}).
+reached a conventional level whatever their outcomes. The floor falls only as
+non-tied pairs accumulate, and at this tie rate the cell with the most pairs
+shares the highest floor because its extra pairs tied
+(Appendix~\ref{app:position_pairs}).
 
-\paragraph{Historical and replay boundaries.}
-Historical summaries retain prompt/budget confounds, incomplete raw trials
-and no human error-step validation. Prefix replay audits cover frozen local
-evidence; they do not guarantee identical stochastic suffixes or restore
-arbitrary mutable state. Conditional repair rates do not rank population
-reliability.
+\paragraph{What these limits imply for future work.}
+Four steps follow. Power a resolving design on expected discordant executions
+rather than failures. Test diagnosis-driven repair against a trained or search-based comparator
+\citep{rafi2026falat,zhu2026agentdebugx} rather than the untrained adaptation
+used here. Measure latency with prefix caching enabled, so retained prefixes
+are served from cache as in deployment. Finally, offline QA reduces recovery
+to regenerating text; environments with irreversible external state
+\citep{zhou2024webarena} would test whether origin choice matters more when a
+prefix cannot simply be replayed.
 
 \section{Conclusion}
 One fixed selector, the highest-perplexity step with two-step backtracking,
@@ -641,14 +632,13 @@ shows no clear advantage in any primary comparison family across two model
 families and three offline QA datasets. Main-study success is
 \MainTreatmentRate\% versus \MainRestartRate\% for restart, equal to the
 observed position-matched rate. Holding origin distributions exactly equal by
-construction leaves the result unchanged. Diagnosis, allowance and deadline
-comparisons remain inconclusive, and two replication cells could not have
-reached significance at any conventional level given their non-zero block
-counts. Main-study prompt usage rises by \ReviewPromptIncrease\% despite
+construction leaves the result unchanged. Untrained-diagnosis, allowance and
+deadline comparisons remain inconclusive and say nothing about trained
+diagnosis; two replication cells could not have reached significance given
+their non-zero block counts. Main-study prompt usage rises by \ReviewPromptIncrease\% despite
 similar output-token use. These results support measuring acquisition and
-prompt costs alongside repair success; they establish neither policy
-equivalence, matched total compute, nor a limitation of uncertainty-guided
-repair as a method class, which this study does not test.
+prompt costs alongside repair success, not equivalence, matched compute or a
+limit on uncertainty-guided repair as a method class, which we do not test.
 
 \section*{Reproducibility Statement}
 All completed studies retain frozen cohorts, model/source identities, raw
@@ -675,19 +665,25 @@ frozen raw trajectories and the pinned weights respectively. Human
 annotations and unrecovered historical raw trials are not supplied.
 
 What remains outstanding is stated here rather than left implicit. Independent
-verification is assigned but not complete: one reviewer is examining the
-statistical argument, in particular whether the resolution floor is used fairly
-and whether these nulls are rigorous or underpowered, and a second is
-independently reproducing the packaged statistics and tracing reported claims
-back to records. Their findings are not yet incorporated. The historical
+verification is assigned but not complete. Two internal project auditors,
+commissioned by the authors and distinct from this venue's peer reviewers, are
+at work: one is examining the statistical argument, in particular whether the
+resolution floor is used fairly and whether these nulls are rigorous or
+underpowered, and the second is independently reproducing the packaged
+statistics and tracing reported claims back to records. Their findings are not
+yet incorporated. The historical
 appendix and pre-September material were not re-verified alongside the recent
 work and should be read as carrying their original, weaker guarantees. Human
 error-step annotation remains unavailable, which bounds this work to answer
 scoring rather than error localization. The compute allocation is exhausted, so
 any question this review raises that needs new inference requires a new
-resource decision rather than a continuation. The AI use statement is a draft
-pending author attestation; assisted content is not yet author-verified. Appendix~\ref{app:availability} distinguishes verification from
-release availability; author review and disclosure remain pending.
+resource decision rather than a continuation. The AI use statement records the
+author's own verification of the assisted work and states the limits of that
+checking: it was carried out by the author who also directed the assistance,
+so it is verification rather than independent replication, and it did not
+re-derive the historical appendix.
+Appendix~\ref{app:availability} distinguishes verification from release
+availability.
 
 \input{ai_use_statement}
 
@@ -744,8 +740,8 @@ test upstream and positional preferences:
 \item \textbf{Gradient:} select the step with the largest increase in
       uncertainty between successive scored steps.
 \item \textbf{Position-weighted:} maximize
-      $0.5\widetilde U_i+0.5(1-\widetilde i)$, using min--max normalized
-      uncertainty and position.
+      $0.5\widetilde U_i+0.5(1-\widetilde\imath)$, the min--max normalized
+      uncertainty and position of Equation~\ref{eq:position_weighted}.
 \end{itemize}
 Ties favor earlier steps. Missing scores are skipped. Upstream localization
 and explicit backtracking can compound: selecting two steps before a peak
@@ -875,10 +871,14 @@ scored-step list, whereas the additional backtrack offset subtracts two
 trajectory indices. These operations can differ when scores are missing.
 
 The position-weighted rule min--max normalizes uncertainty and position
-within the scored trajectory and gives each an equal weight:
+within the scored trajectory and gives each an equal weight. Writing
+$\widetilde U_i$ and $\widetilde\imath$ for those normalized values, the
+criterion maximized in Appendix~\ref{app:signals} as
+$0.5\widetilde U_i+0.5(1-\widetilde\imath)$ is
 \begin{equation}
- C_i = \tfrac12\frac{U_i-U_{\min}}{U_{\max}-U_{\min}}
-       +\tfrac12\left(1-\frac{i-i_{\min}}{i_{\max}-i_{\min}}\right).
+ C_i = \tfrac12\underbrace{\frac{U_i-U_{\min}}{U_{\max}-U_{\min}}}_{\widetilde U_i}
+       +\tfrac12\left(1-\underbrace{\frac{i-i_{\min}}{i_{\max}-i_{\min}}}_{\widetilde\imath}\right).
+  \label{eq:position_weighted}
 \end{equation}
 When either range is zero, the corresponding denominator is replaced by
 one. Empty score profiles fall back to origin zero in the repair selector.
@@ -1227,9 +1227,13 @@ Uncertainty, no backtrack & $k_U$ \\
 
 The position profile contains 24 failed original development trajectories;
 its effective-origin counts are 14 at zero, two at one, five at three, one
-at four and two at five. It uses no development repair outcomes. For a
-uniformly sampled development entry $j$ with origin $k_j$ and length $T_j$,
-the new origin is
+at four and two at five. It uses no development repair outcomes. Each $k_j$ is
+the effective origin that the prespecified policy of Section~\ref{sec:policy}
+selected on development trajectory $j$: a trajectory carries no effective
+origin independent of the policy that selects one, so this is the distribution
+being matched. For a uniformly sampled development entry $j$ with origin $k_j$
+and development trajectory length $T_j$, the new origin for an evaluated
+question $q$ whose failed trajectory has $T_q$ steps is
 \begin{equation}
  K_{\mathrm{dev}}=\left\lfloor
  \frac{k_j}{\max(1,T_j-1)}(T_q-1)+\frac12\right\rfloor.
@@ -1387,6 +1391,69 @@ rejecting missing trials, inconsistent shared executions or allowance
 violations. Exported trial and initial-question CSVs, the analysis-code
 hashes and the review-stage analysis plan accompany the diagnostic JSON.
 The original primary estimates and Holm family are unchanged.
+
+\subsection{Distinct Intervention, Resources and Metric Sensitivity}
+\label{app:review_overlap}
+\paragraph{How much distinct intervention was tested.}
+The treatment and restart share all three executions on 70 of the 113 failed
+questions. Only \ReviewActiveQuestions{} questions have a nonzero treatment
+origin. Let $D_q$ indicate such an origin and let $\Delta_D$ denote the
+mean treatment-minus-restart difference within those questions. Because
+identical origins, hints and seeds share an execution,
+\begin{equation}
+ \widehat\Delta=\frac{N_D}{N}\widehat\Delta_D
+ =\frac{43}{113}(-3.88\text{ percentage points})
+ \simeq -1.47\text{ percentage points}.
+ \label{eq:overlap_decomposition}
+\end{equation}
+The subgroup interval is [\ReviewActiveLow{}, \ReviewActiveHigh{}] points.
+This does not change the primary estimand or discard its zero differences:
+$N=113$ remains the primary resampling sample. It shows how often the
+policies can disagree and why the subgroup estimate is imprecise.
+Across all questions, treatment has a higher seed mean on five, a lower mean
+on eight, and the same mean on 100. The position-matched comparison has
+93 questions with at least one distinct execution, so the lack of a primary
+advantage cannot be attributed solely to collapse into restart.
+
+\begin{table}[t]
+\centering\footnotesize
+\caption{Exploratory execution overlap with the treatment. Shared counts are
+out of 339 question/seed pairs. Different-question counts are out of 113
+questions with any distinct execution. Wins/losses/ties compare three-seed
+question means, not independent seed trials.}
+\label{tab:review_overlap}
+\input{generated/tables/iclr2027_review_overlap}
+\end{table}
+
+\paragraph{Observed resources and unfinished repairs.}
+Uncertainty repair uses 269.9 generated and 4,083.3 prompt tokens per attempt,
+versus 271.6 and 3,153.3 for restart: \ReviewPromptIncrease\% more prompt
+tokens with similar output-token use. The paired differences are $-1.7$
+output tokens (individual 95\% interval [$-8.9,+5.7$]) and $+930.0$ prompt
+tokens ([$+579.2,+1321.9$]). Prefix reuse therefore does not imply lower
+recorded prompt usage. These counts do not measure cached-prefill savings,
+FLOPs or policy latency; Table~\ref{tab:review_costs} reports all six policies.
+
+Original-failure token allowances range from 77 to 548 (median 344), and
+original failed trajectories have a median of six steps. The treatment
+ends \ReviewBudgetStops/339 repairs at the token budget and
+\ReviewStepStops/339 at the step limit; together, 168/339 attempts emit no
+final answer. All 637 original failed-trace steps have usable perplexity,
+with no empty-profile fallback. Thus missing signal records do not explain
+the observed result. Stopping at a cap does not identify what the same attempt
+would achieve with more tokens. Section~\ref{sec:diagnosis_followup} reports
+separate executions at three allowances on another frozen cohort.
+
+\paragraph{Metric sensitivity and population interpretation.}
+The eight EM/F1 comparisons in Table~\ref{tab:review_sensitivity} and the
+descriptive fixed-early contrast are exploratory; they neither expand the
+primary family nor select a replacement policy.
+Keeping initially accepted answers and repairing only the 113 rejected ones
+yields \ReviewWholeSuccess\% full-cohort gate success for treatment and
+\ReviewWholeRestartSuccess\% for restart. These are reference-gated outcomes,
+not performance of a deployed failure detector. Forty initially accepted
+answers fail strict EM and were never repaired; an EM-only failure cohort
+would need additional executions.
 
 \subsection{Policy Costs and Termination}
 Costs in Table~\ref{tab:review_costs} average seeds within each question.
@@ -1715,7 +1782,16 @@ allowance. No attempt stops at a generated-token limit in this component.}
 
 These numbers describe this configuration only. Deployed prefix caching,
 concurrency, repeated acquisition and a matched total-resource comparator are
-all outside it, and none of them can be inferred from these measurements. A
+all outside it, and none of them can be inferred from these measurements.
+Disabling prefix caching is not neutral between the arms. Prefix-preserving
+repair resubmits a retained prefix that a served deployment would ordinarily
+hit in the key-value cache, and it carries \ReviewPromptIncrease\% more
+prompt tokens than restart, so recomputing that prompt charges the targeted
+policy for work a cache would supply. Enabling reuse would therefore be
+expected to move latency in the targeted policy's favour, by an amount these
+measurements cannot bound; the deadline result reported here should be read
+as a measurement of this uncached configuration rather than as a latency
+ranking that would survive a cached one. A
 broader efficiency claim would need a separately frozen runtime design with an
 adequate sample and realistic cache and concurrency settings; active
 cancellation would be required only for a claim about resources saved by
@@ -1866,15 +1942,14 @@ length and \PairUnmatched{} remain as odd stratum remainders. Each cell fixes
 three repair seeds, three policies and its own \PairFamily{}-test primary
 family; execution produced \PairRepairs{} unique repairs and \PairRows{} trial
 rows. The cells share a cohort, which makes them a direct contrast and, for the
-same reason, forbids a pooled confirmatory statistic. All originals are generated before any repair, and pairing consumes only
-identifiers and lengths, so no recovery outcome can influence which questions
-are compared or which origins they receive.
+same reason, forbids a pooled confirmatory statistic. All originals are
+generated before any repair, and pairing consumes only identifiers and
+lengths, so no recovery outcome can influence which questions are compared or
+which origins they receive.
 
 Within a pair the swap control gives each question its partner's
-uncertainty-chosen origin. Pairing consumes identifiers and lengths only, and
-every original is generated before any repair, so no recovery outcome can
-influence which questions are compared or which origins they receive. The odd
-remainder in each length stratum is excluded and reported.
+uncertainty-chosen origin. The odd remainder in each length stratum is
+excluded and reported.
 
 Balance here is exact, not fitted. The audit re-derives every policy origin
 from independently recomputed uncertainty and requires the swapped pair to
@@ -1943,9 +2018,15 @@ test does not corroborate the interval.
 Most pairs tie: \PairTiedPairs{} of \PairPairs{} across the two cells
 (Table~\ref{tab:position_pair_blocks}). That, not the effect size, is the
 binding precision limit, and \PairBlockedCells{} of \PairTotalCells{} cells
-sit above 0.05 on their own floor. More questions alone would not fix it: the
-cell with the most pairs shares the highest floor, because its extra pairs were
-ties. The exact test's resolution is
+sit above 0.05 on their own floor. The floor is $2/2^{m}$ in the number of
+non-zero blocks $m$, so it is not fixed by the cohort size directly: $m$ grows
+with the cohort only at the rate at which pairs fail to tie, and clearing 0.05
+at all requires $m\geq6$. At the tie rate observed here that rate is low
+enough that the cell with the most pairs shares the highest floor, because its
+extra pairs were ties; adding questions at this rate buys resolution far more
+slowly than the failure count suggests, and a design targeting a conventional
+level must be powered on the expected discordant rate rather than on failed
+trajectories. The exact test's resolution is
 governed by the non-zero block count, so both cells are underpowered by
 construction: a reader should treat these as bounded diagnostics and not as
 evidence of equivalence. Retaining every tied pair in the point estimate and

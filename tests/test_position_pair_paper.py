@@ -179,5 +179,8 @@ def test_manuscript_states_what_remains_outstanding():
                     "not yet incorporated",
                     "were not re-verified",
                     "allocation is exhausted",
-                    "pending author attestation"]:
+                    # The AI use statement carries the author's attestation, so
+                    # the manuscript must state the limits of that checking
+                    # rather than describe it as still pending.
+                    "verification rather than independent replication"]:
         assert pending in prose, pending
